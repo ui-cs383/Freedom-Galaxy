@@ -54,3 +54,25 @@ Bolded names are Team Leads
   <td> Robert </td>
  </tr>
 </table>
+
+
+## Markdown
+Markdown is used as an easy to read and write way to display basic HTML elements.
+This README for example is using markdown and HTML combined for various things. 
+Messages in GitHub issues use GitHub Flavored Markdown as well. 
+### Lists in Markdown
+<pre>
+#### Diagram
+ - Player
+  - Rebel Player
+  - Imperial Player
+     - Cool Guy
+</pre>
+
+Will produce:
+
+#### Diagram
+ -  Player
+  - Rebel Player
+  - Imperial Player
+     - Cool Guy

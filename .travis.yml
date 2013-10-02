@@ -5,7 +5,8 @@ python:
 # command to install dependencies
 install:
     - "pip install pylint --use-mirrors"
+    - "pip install coverage --use-mirrors"
 # command to run tests
 script: 
-    - nosetests
+    - nosetests --with-coverage
     - pylint --rcfile=pylint.conf fitg

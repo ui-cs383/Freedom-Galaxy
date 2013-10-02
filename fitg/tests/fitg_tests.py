@@ -1,5 +1,5 @@
-import sys
+from sys import version_info
+from nose.tools import ok_
 
 def test_version():
-    if not sys.version_info[0] == 3:
-        assert False
+    ok_(version_info[0] == 3, "Expected Python version 3.x")

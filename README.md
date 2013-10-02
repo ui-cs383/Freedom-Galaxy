@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ui-cs383/Freedom-Galaxy.png)](https://travis-ci.org/ui-cs383/Freedom-Galaxy)
+
 # Freedom-Galaxy
 
 This repository is just for general information, issue tracking and discussions.  Please see the issues tab!

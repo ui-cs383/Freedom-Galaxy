@@ -1,3 +1,6 @@
+#Created by: Greg Donaldson
+#Purpose: Upload .dat files into a database using SQLAlchemy. For use by the Backend Team.
+
 from sqlalchemy import *
 from dataSnag import *
 

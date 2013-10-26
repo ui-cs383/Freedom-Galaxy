@@ -14,9 +14,12 @@ def planets(file):
         if i == 0 :
             i += 1
             continue
-        else:
+        elif line[-1] == '\n':
             temp = line[:(len(line)-1)].split(',')
             dataList.append(temp)
+        else:
+            temp = line.split(',')
+            dataList.append(temp)            
         i += 1
     
     return dataList

@@ -2,29 +2,29 @@ from sqlalchemy import *
 from dataSnag import *
 
 actionList = commaWithSpace("action.dat")
-#arc.dat: Need key
+#arc.dat: Needed for Province Game
 #backdoor.dat: Scenario
 ccList = commaOnly("cc_tab.dat")
 charList = commaOnly("charactr.dat")
 detectList = commaOnly("detect.dat")
-#distance.dat: Need Key
+#distance.dat: Needed for Province Game
 #egrix.dat: Scenario
-#environ.dat: Need key
+environList = commaOnly("environ.dat")
 #galactic.dat: Scenario
-#galevent.dat: Discuss, implement later.
-#guistar.dat: Need key
+#galevent.dat: Needed for Galactic Game
+#guistar.dat: Scenario file. Necessary?
 #helsinki.dat: Scenario
-#lookup.dat: Need key
+#lookup.dat: Needed for Galactic Game.
 milCombatList = commaOnly("milcomb.dat")
 #orlog.dat: Scenario
-#path.dat: Need key
+#path.dat: Need key, no idea.
 planetList = commaOnly("planet.dat")
 possessionList = commaWithSpace("possessn.dat")
 #possimg.dat: Discuss. Need to be stored for Client?
 raceList = raceSnag("races.dat")
 #sov_hnd.dat: Need key, not star system
 spaceshipList = commaOnly("spacship.dat")
-#strategy.dat: Need key
+#strategy.dat: Galactic Game
 #varu.dat: Scenario
 
 dictList = []
@@ -66,7 +66,8 @@ Characters = Table('Characters', metadata,
     Column('diplomacy', Integer),
     Column('navigation', Integer),
     Column('homeworld', String(40)),
-    Column('bonuses', String(40))
+    Column('bonuses', String(40)),
+    Column('wounds', Integer)
 )
 
 Detection = Table('Detection', metadata,
@@ -79,6 +80,18 @@ Detection = Table('Detection', metadata,
     Column('5or6', String(40)),
     Column('7or8', String(40)),
     Column('9ormore', String(40))
+)
+
+Environ = Table('Environ', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('type', String(40)),
+    Column('size', Integer),
+    Column('race', Integer),
+    Column('starfaring', Boolean),
+    Column('resources', Integer),
+    Column('',Integer),
+    Column('monster', String(40)),
+    Column('', Integer)
 )
 
 milCombat = Table('milCombat', metadata,
@@ -113,7 +126,8 @@ Possessions = Table('Possessions', metadata,
     Column('stat2', String(40)),
     Column('stat3', String(40)),
     Column('stat4', String(40)),
-    Column('owner', String(40))
+    Column('owner', String(40)),
+    Column('damaged', Boolean)
 )
 
 Races = Table('Races', metadata,
@@ -149,7 +163,7 @@ for list in charList:
     temp = {'name' : list[0], 'gif' : list[1], 'title' : list[2], 'location' : list[3], 
             'side' : list[4], 'combat' : list[5], 'endurance' : list[6], 'intelligence' : list[7], 
             'leadership' : list[8], 'diplomacy' : list[9], 'navigation' : list[10], 
-            'homeworld' : list[11], 'bonuses' : list[12]}
+            'homeworld' : list[11], 'bonuses' : list[12], 'wounds' : 0}
     dictList.append(temp)
 conn.execute(Characters.insert(), dictList)
 dictList = []
@@ -185,25 +199,25 @@ for list in possessionList:
         continue
     elif len(list) == 4:
         temp = {'type' : list[0], 'name' : list[1], 'gif' : list[2], 'stat1' : list[3], 
-                'stat2' : "", 'stat3' : "", 'stat4' : "", 'owner' : ""}
+                'stat2' : "", 'stat3' : "", 'stat4' : "", 'owner' : "", 'damaged' : False}
     elif len(list) == 5:
         temp = {'type' : list[0], 'name' : list[1], 'gif' : list[2], 'stat1' : list[3], 
-                'stat2' : list[4], 'stat3' : "", 'stat4' : "", 'owner' : ""}
+                'stat2' : list[4], 'stat3' : "", 'stat4' : "", 'owner' : "", 'damaged' : False}
     elif len(list) == 6:
         temp = {'type' : list[0], 'name' : list[1], 'gif' : list[2], 'stat1' : list[3], 
-                'stat2' : list[4], 'stat3' : list[5], 'stat4' : "", 'owner' : ""}
+                'stat2' : list[4], 'stat3' : list[5], 'stat4' : "", 'owner' : "", 'damaged' : False}
     elif len(list) == 7:
         temp = {'type' : list[0], 'name' : list[1], 'gif' : list[2], 'stat1' : list[3], 
-                'stat2' : list[4], 'stat3' : list[5], 'stat4' : list[6], 'owner' : ""}
+                'stat2' : list[4], 'stat3' : list[5], 'stat4' : list[6], 'owner' : "", 'damaged' : False}
     dictList.append(temp)
     
 for list in spaceshipList:
     if list[7] == "null":
         temp = {'type' : list[0], 'name' : list[1], 'gif' : list[2], 'stat1' : list[3], 
-                'stat2' : list[4], 'stat3' : list[5], 'stat4' : list[6], 'owner' : ""}
+                'stat2' : list[4], 'stat3' : list[5], 'stat4' : list[6], 'owner' : "", 'damaged' : False}
     else:
         temp = {'type' : list[0], 'name' : list[1], 'gif' : list[2], 'stat1' : list[3], 
-                'stat2' : list[4], 'stat3' : list[5], 'stat4' : list[6], 'owner' : list[7]}
+                'stat2' : list[4], 'stat3' : list[5], 'stat4' : list[6], 'owner' : list[7], 'damaged' : False}
     dictList.append(temp)
 conn.execute(Possessions.insert(), dictList)
 dictList = []

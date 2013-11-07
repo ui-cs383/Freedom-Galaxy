@@ -1,4 +1,4 @@
-#Author: Greg Donaldson
+#Authors: Greg Donaldson, Jeff Crocker
 #Purpose: Created for the purpose of pulling data from the .dat files for Freedom in the Galaxy. 
 #Primarily for use by the backend team. This will allow for a database to be used.
 
@@ -7,15 +7,17 @@
 
 import os
 from sqlalchemy import *
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from dataSnag import *
 
 Base = declarative_base()           #Alright, set up the database.
-Session = sessionmaker()     #Create a Session, binding it to the database.
+db = create_engine('sqlite:///Freedom.db')
+Session = sessionmaker(bind=db)     #Create a Session, binding it to the database.
+
 
 def loadDatabase ():
-    
+    print "Loading database"
     #Alright, time to check if the database already exists. If it does, get rid of it. 
     #If it doesn't, don't.
     try:
@@ -24,7 +26,6 @@ def loadDatabase ():
     except:      
         db = create_engine('sqlite:///Freedom.db')
 
-    Session.configure(bind=db)
 
     #These are the lists returned by dataSnag's functions. Necessary for the database.
 
@@ -143,11 +144,15 @@ def loadDatabase ():
 
 # Test data for Stack manipulation and others
 
-    temp = Stack(1,2,3,1131,['Adam Starlight'],['Zina Adora'],[])
+    temp = Stack(1,1131)
+    temp.characters = [ session.query(Character).filter_by(name = 'Adam Starlight').one(),
+                        session.query(Character).filter_by(name = 'Zina Adora').one()]
     session.add(temp)
-    temp = Stack(2,1,2,1131,['Senator Dermond'],[],[])
+    temp = Stack(2,1131)
+    temp.characters = [ session.query(Character).filter_by(name = 'Senator Dermond').one()]
     session.add(temp)
     session.commit()
+
 
 
 class Action(Base):
@@ -200,6 +205,8 @@ class Character(Base):
     wounds = Column(Integer)                    #Number of character's wounds.
     detected = Column(Boolean)                  #Whether or not the character is detected.
     possession = Column(Boolean)                #What the character has in their possession.
+    stack_id = Column(Integer, ForeignKey('stacks.id'))
+    stack = relationship("Stack", backref=backref('characters', order_by=combat))
     
     def __init__(self, name, gif, title, location, side, 
                 combat, endurance, intelligence, leadership, diplomacy, 
@@ -223,10 +230,7 @@ class Character(Base):
         
     def __repr__(self):
         return "<Character('%s','%s', '%s')>" % (self.name, self.gif, 
-                self.title, self.location, self.side, self.combat, 
-                self.endurance, self.intelligence, self.leadership, 
-                self.diplomacy, self.navigation, self.homeworld, self.bonuses, 
-                self.wounds, self.detected, self.possession)                        
+                self.title)                        
         
 class Detection(Base):
     __tablename__ = 'detection'
@@ -392,24 +396,14 @@ class Race(Base):
                 self.combat, self.endurance, self.firefight)
         
 class Stack(Base):
-    __tablename__ = 'Stacks'
+    __tablename__ = 'stacks'
 
     id = Column(Integer, primary_key=True)
-    size = Column(Integer)
-    combatrating = Column(Integer)
     location = Column(String(40))
-    active = Column(PickleType)
-    inactive = Column(PickleType)
-    captive = Column(PickleType)
 
-    def __init__(self, id, size, combatrating, location, active, inactive, captive):
+    def __init__(self, id, location):
         self.id = id
-        self.size = size
-        self.combatrating = combatrating
         self.location = location
-        self.active = active
-        self.inactive = inactive
-        self.captive = captive
 
     # function to add unit to stack, check if not already in another stack, if so, remove?
 

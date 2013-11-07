@@ -11,21 +11,20 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from dataSnag import *
 
-#Alright, time to check if the database already exists. If it does, get rid of it. 
-#If it doesn't, don't.
-
-try:
-    os.remove("Freedom.db")
-    db = create_engine('sqlite:///Freedom.db')
-except:      
-    db = create_engine('sqlite:///Freedom.db')  
-
 Base = declarative_base()           #Alright, set up the database.
-Session = sessionmaker(bind=db)     #Create a Session, binding it to the database.
-
-
+Session = sessionmaker()     #Create a Session, binding it to the database.
 
 def loadDatabase ():
+    
+    #Alright, time to check if the database already exists. If it does, get rid of it. 
+    #If it doesn't, don't.
+    try:
+        os.remove("Freedom.db")
+        db = create_engine('sqlite:///Freedom.db')
+    except:      
+        db = create_engine('sqlite:///Freedom.db')
+
+    Session.configure(bind=db)
 
     #These are the lists returned by dataSnag's functions. Necessary for the database.
 
@@ -71,8 +70,7 @@ def loadDatabase ():
     session.commit()
     
     for list in ccList:
-        temp = charCombat(i, list[0], list[1], list[2], list[3], list[4], 
-                          list[5], list[6], list[7], list[8], list[9])
+        temp = charCombat(i, list[0:10])
         session.add(temp)
         i += 1
     i = 1
@@ -144,14 +142,9 @@ def loadDatabase ():
     session.commit()
 
 # Test data for Stack manipulation and others
-    testList = [{'id' : 1, 'size' : 2, 'combatrating' : 3, 'location' : 1131,
-            'active' : ['Adam Starlight'], 'inactive' : ['Zina Adora'], 'captives' : [] },
-            {'id' : 2, 'size' : 1, 'combatrating' : 2, 'location' : 1131,
-            'active' : ['Senator Dermond'], 'inactive' : [], 'captives' : [] }]
 
     temp = Stack(1,2,3,1131,['Adam Starlight'],['Zina Adora'],[])
     session.add(temp)
-    session.commit()
     temp = Stack(2,1,2,1131,['Senator Dermond'],[],[])
     session.add(temp)
     session.commit()
@@ -181,30 +174,12 @@ class Action(Base):
 class charCombat(Base):
     __tablename__ = 'charCombat'
     dice = Column(Integer, primary_key=True)    #This simulates the character combat table. Dice is the row, where each column is the difference in modifiers.
-    neg7orless = Column(String)                 #-7 or less column.
-    neg6toneg4 = Column(String)                 #-6 to -4 column.
-    neg3toneg2 = Column(String)                 #-3 to -2 column.
-    negone = Column(String)                     #-1 column
-    zero = Column(String)                       # 0 column
-    one = Column(String)                        # 1 column
-    twoto3 = Column(String)                     # 2 to 3 column.
-    fourto6 = Column(String)                    # 4 to 6 column.
-    sevento10 = Column(String)                  # 7 to 10 column.
-    elevenormore = Column(String)               # 11 or more column.
-    
-    def __init__(self, dice, neg7orless, neg6toneg4, neg3toneg2, negone, 
-                zero, one, twoto3, fourto6, sevento10, elevenormore) :
+    results = Column(PickleType)
+
+
+    def __init__(self, dice, results):
         self.dice = dice
-        self.neg7orless = neg7orless
-        self.neg6toneg4 = neg6toneg4
-        self.neg3toneg2 = neg3toneg2
-        self.negone = negone
-        self.zero = zero
-        self.one = one
-        self.twoto3 = twoto3
-        self.fourto6 = fourto6
-        self.sevento10 = sevento10
-        self.elevenormore = elevenormore
+        self.results = results
         
 
 class Character(Base):

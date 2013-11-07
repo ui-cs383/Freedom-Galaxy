@@ -7,10 +7,9 @@ def MoveStack(StackID, Location):
 	oldloc = session.query(Stack).filter_by(id = StackID).first().location
 	# test if possible move
 
-	MovingStack = session.query(Stack).filter(Stack.id==StackID).first()
+	MovingStack = session.query(Stack).filter_by(id = StackID).first()
 	print "Moving Stack: " + str(StackID) + " from " + str(oldloc) + " to " + str(newloc.id)
 	MovingStack.location = newloc.id
-
 
 	session.add(MovingStack)
 	session.commit()

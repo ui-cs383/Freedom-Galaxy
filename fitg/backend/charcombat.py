@@ -16,30 +16,36 @@ def CharCombat(AtkID, DefID):
 		CR += session.query(Character).filter_by(name = unit).one().combat
 
 	AtkStack.combatrating = CR
-
 	CD = AtkStack.combatrating - DefStack.combatrating
-
+	print "Computed CombatDifferential: " + str(CD)
+	
 	# still needs to include breakoff and capture modifiers
 	# also decision if firefight or hand-to-hand
 
-	AtkResult = session.query(charCombat).filter_by(dice = randint(1,6)).one()
-	DefResult = session.query(charCombat).filter_by(dice = randint(1,6)).one()
+	AtkResult = session.query(charCombat).filter_by(dice = randint(1,6)).one().results
+	DefResult = session.query(charCombat).filter_by(dice = randint(1,6)).one().results
 
-
-	print AtkResult.dice
-
-'''	AtkWounds = AtkResult[charCombatTranslate(CD)].split('/')[0]
+	AtkWounds = AtkResult[charCombatTranslate(CD)].split('/')[0]
 	DefWounds = DefResult[charCombatTranslate(CD)].split('/')[1]
 
-	if '*' in AtkWounds:
-		AtkStack.captives.append(DefStack.active.pop(randint(0,len(DefStack.active)-1)))
-	if '*' in DefWounds:
-		AtkStack.captives.append(DefStack.active.pop(randint(0,len(DefStack.active)-1)))
-'''
-	
+	print "Attacking Stack wounds: " + str(AtkWounds)
+	print "Defending Stack wounds: " + str(DefWounds)
 
-	#session.add(AtkStack, DefStack)
-	#session.commit
+	#if '*' in AtkWounds:
+	if True:
+		print "Captured!"
+		AtkStack.captive.append(DefStack.active.pop(randint(0,len(DefStack.active)-1)))
+	if '*' in DefWounds:
+		print "Captured!"
+		AtkStack.captive.append(DefStack.active.pop(randint(0,len(DefStack.active)-1)))
+
+	print "Inside Function:"
+	print session.query(Stack).filter_by(id = 2).one().active
+	print session.query(Stack).filter_by(id = 1).one().active
+	print session.query(Stack).filter_by(id = 2).one().captive	
+
+	session.add(AtkStack, DefStack)
+	session.commit()
 
 def charCombatTranslate(CD):
 	if CD > 11:
@@ -47,10 +53,14 @@ def charCombatTranslate(CD):
 	elif CD < -7:
 		CD = -7
 
-	translator = ['neg7orless','neg6toneg4','neg6toneg4','neg6toneg4','neg3toneg2',\
-					'neg3toneg2','negone','zero','one','twoto3','twoto3','fourto6',\
-					'fourto6','fourto6','sevento10','sevento10','sevento10','sevento10','elevenormore']
+	translator = [0,1,1,1,2,2,3,4,5,6,6,7,7,7,8,8,8,8,9]
 
 	return translator[CD+7] # must shift over for table to align
 
 CharCombat(2,1)
+
+session = Session()
+print "Outside Function:"
+print session.query(Stack).filter_by(id = 2).one().active
+print session.query(Stack).filter_by(id = 1).one().active
+print session.query(Stack).filter_by(id = 2).one().captive	

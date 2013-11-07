@@ -1,0 +1,32 @@
+The following is the database key to assist in interpreting the database created by Greg Donaldson.
+This is meant as a quick reference guide. For more information, please see database_creation.py
+
+Example Table:
+variable1, variable2, variable3, etc...
+
+Action Table:
+cardNumber, firstOpt, secondOpt, thirdOpt
+
+charCombat:
+dice, neg7orless, neg6toneg4, neg3toneg2, negone, zero, one, twoto3, fourto6, sevento10, elevenormore
+
+Characters:
+name, gif, title, location, side, combat, endurance, intelligence, leadership, diplomacy, navigation, homeworld, bonuses, wounds, detected, possession
+
+Detection:
+dice, zero, one, two, three, four, fiveor6, sevenor8, nineormore
+
+Environ:
+id, type, size, race, starfaring, resources, starresources, monster, coup, sov
+
+milCombat:
+dice, oneto6, oneto5, oneto4, oneto3, oneto2, oneto1, twoto1, threeto1, fourto1, fiveto1, sixto1
+
+Planets:
+id, name, race, sloyalty, aloyalty, numEnvirons
+
+Possesions:
+type, name, gif, stat1, stat2, stat3, stat4, owner, damaged
+
+Races
+name, environ, combat, endurance, firefight

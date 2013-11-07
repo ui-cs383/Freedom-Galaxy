@@ -6,6 +6,8 @@
 import io
 import sys
 
+#This function is used for files that use commas to space out values present.
+
 def commaOnly(file):
     dataList = []
     f = open(file, 'r')
@@ -21,6 +23,8 @@ def commaOnly(file):
     
     return dataList
 
+#This function is used with files that space out values with a comma followed by a space.
+    
 def commaWithSpace(file):
     dataList = []
     f = open(file, 'r')
@@ -39,6 +43,8 @@ def commaWithSpace(file):
     
     return dataList
         
+#This function is for files that use only commas to seperate values, but end a line with a semi-colon.        
+        
 def commasAndSemiColon(file):
     dataList = []
     f = open(file, 'r')
@@ -56,6 +62,8 @@ def commasAndSemiColon(file):
             dataList.append(tempList)
     
     return dataList
+    
+#This function is solely for pulling races out of races.dat.
     
 def raceSnag(file):
     dataList = []

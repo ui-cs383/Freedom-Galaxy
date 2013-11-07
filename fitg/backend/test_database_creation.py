@@ -11,9 +11,6 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from dataSnag import *
 
-#Alright, time to check if the database already exists. If it does, get rid of it. 
-#If it doesn't, don't.
-
 try:
     os.remove("Freedom.db")
     db = create_engine('sqlite:///Freedom.db')
@@ -22,6 +19,7 @@ except:
 
 Base = declarative_base()           #Alright, set up the database.
 Session = sessionmaker(bind=db)     #Create a Session, binding it to the database.
+session = Session()                 #Instantiate the database.
 
 
 
@@ -55,8 +53,9 @@ def loadDatabase ():
     #strategy.dat: Galactic Game
     #varu.dat: Scenario
 
-
-    session = Session()  
+    #Alright, time to check if the database already exists. If it does, get rid of it. 
+    #If it doesn't, don't.
+            
     Base.metadata.create_all(db)    #Create the database.
   
     i = 1
@@ -143,20 +142,6 @@ def loadDatabase ():
         session.add(temp)
     session.commit()
 
-# Test data for Stack manipulation and others
-    testList = [{'id' : 1, 'size' : 2, 'combatrating' : 3, 'location' : 1131,
-            'active' : ['Adam Starlight'], 'inactive' : ['Zina Adora'], 'captives' : [] },
-            {'id' : 2, 'size' : 1, 'combatrating' : 2, 'location' : 1131,
-            'active' : ['Senator Dermond'], 'inactive' : [], 'captives' : [] }]
-
-    temp = Stack(1,2,3,1131,['Adam Starlight'],['Zina Adora'],[])
-    session.add(temp)
-    session.commit()
-    temp = Stack(2,1,2,1131,['Senator Dermond'],[],[])
-    session.add(temp)
-    session.commit()
-
-
 class Action(Base):
     __tablename__ = 'actions'
     cardNumber = Column(Integer, primary_key=True)  #This is the primary key. Its used to help 'randomly' draw a card.
@@ -172,7 +157,8 @@ class Action(Base):
         self.secondOpt = secondOpt
         self.thirdOpt = thirdOpt
         
-    #This is the function that returns the internal representaion
+    #This is the function that is called when an instance of this class
+    # is asked to 'repr'esent itself, ie. print AnInstance will print the returned string
     
     def __repr__(self):
         return "<Action('%s','%s', '%s')>" % (self.cardNumber, 
@@ -206,6 +192,10 @@ class charCombat(Base):
         self.sevento10 = sevento10
         self.elevenormore = elevenormore
         
+    def __repr__(self):
+        return "<charCombat('%s','%s', '%s')>" % (self.dice, self.neg7orless, 
+                self.neg6toneg4, self.neg3toneg2, self.negone, self.zero, 
+                self.one, self.twoto3, self.fourto6, self.sevento10, self.elevenormore)
 
 class Character(Base):
     __tablename__ = 'characters'
@@ -307,9 +297,11 @@ class Environ(Base):
         self.monster = monster
         self.coup = coup
         self.sov = sov
-      
+   '''     
     def __repr__(self):
-        return "<Environ('%s','%s', '%s')>" % (self.id, self.type, self.size)
+        return "<Environ('%s','%s', '%s')>" % (self.id, self.type, self.size, 
+                self.race, self.starfaring, self.resources, 
+                self.starresources, self.monster, self.coup, self.sov)   '''
         
 class milCombat(Base):
     __tablename__ = 'milCombat'
@@ -415,7 +407,7 @@ class Race(Base):
     def __repr__(self):
         return "<Race('%s','%s', '%s')>" % (self.name, self.environ, 
                 self.combat, self.endurance, self.firefight)
-        
+
 class Stack(Base):
     __tablename__ = 'Stacks'
 

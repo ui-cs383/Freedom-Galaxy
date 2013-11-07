@@ -1,5 +1,5 @@
 from database_creation import *
-from mappings import *
+from random import randint
 
 
 def CharCombat(AtkID, DefID):
@@ -25,18 +25,21 @@ def CharCombat(AtkID, DefID):
 	AtkResult = session.query(charCombat).filter_by(dice = randint(1,6)).one()
 	DefResult = session.query(charCombat).filter_by(dice = randint(1,6)).one()
 
-	AtkWounds = AtkResult[charCombatTranslate(CD)].split('/')[0]
+
+	print AtkResult.dice
+
+'''	AtkWounds = AtkResult[charCombatTranslate(CD)].split('/')[0]
 	DefWounds = DefResult[charCombatTranslate(CD)].split('/')[1]
 
 	if '*' in AtkWounds:
 		AtkStack.captives.append(DefStack.active.pop(randint(0,len(DefStack.active)-1)))
 	if '*' in DefWounds:
 		AtkStack.captives.append(DefStack.active.pop(randint(0,len(DefStack.active)-1)))
-
+'''
 	
 
-	session.add(AtkStack, DefStack)
-	session.commit
+	#session.add(AtkStack, DefStack)
+	#session.commit
 
 def charCombatTranslate(CD):
 	if CD > 11:
@@ -44,7 +47,9 @@ def charCombatTranslate(CD):
 	elif CD < -7:
 		CD = -7
 
-	translator = [0,1,1,1,2,2,3,4,5,6,6,7,7,7,8,8,8,8,9]
+	translator = ['neg7orless','neg6toneg4','neg6toneg4','neg6toneg4','neg3toneg2',\
+					'neg3toneg2','negone','zero','one','twoto3','twoto3','fourto6',\
+					'fourto6','fourto6','sevento10','sevento10','sevento10','sevento10','elevenormore']
 
 	return translator[CD+7] # must shift over for table to align
 

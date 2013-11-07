@@ -1,15 +1,14 @@
 from database_creation import *
-from mappings import *
 
 def MoveStack(StackID, Location):
 	session = Session()
 
-	newloc = session.query(Environs).filter_by(id = Location).one()
-	oldloc = session.query(Stacks).filter_by(id = StackID).one().location
-
+	newloc = session.query(Environ).filter_by(id = Location).first()
+	oldloc = session.query(Stack).filter_by(id = StackID).first().location
 	# test if possible move
 
-	MovingStack = session.query(Stack).filter(Stack.id==StackID).one()
+	MovingStack = session.query(Stack).filter(Stack.id==StackID).first()
+	print "Moving Stack: " + str(StackID) + " from " + str(oldloc) + " to " + str(newloc.id)
 	MovingStack.location = newloc.id
 
 

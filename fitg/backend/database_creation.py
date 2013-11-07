@@ -46,9 +46,9 @@ def loadDatabase ():
     
     try:
         os.remove("Freedom.db")
-        db = create_engine('sqlite:///C:\\Python27\\Freedom.db')
+        db = create_engine('sqlite:///Freedom.db')
     except:      
-        db = create_engine('sqlite:///C:\\Python27\\Freedom.db')    
+        db = create_engine('sqlite:///Freedom.db')    
     
     Base = declarative_base()           #Alright, set up the database.
     Session = sessionmaker(bind=db)     #Create a Session, binding it to the database.
@@ -57,7 +57,7 @@ def loadDatabase ():
     #Each class of the database is one of the tables inside of it.
     
     class Action(Base):
-        __tablename__ = 'Action'
+        __tablename__ = 'actions'
         cardNumber = Column(Integer, primary_key=True)  #This is the primary key. Its used to help 'randomly' draw a card.
         firstOpt = Column(String)                       #This is the first option on the card.
         secondOpt = Column(String)                      #This is the second option on the card.
@@ -71,8 +71,8 @@ def loadDatabase ():
             self.secondOpt = secondOpt
             self.thirdOpt = thirdOpt
             
-        #Not sure what this does, to be honest. Took it from the SQLAlchemy site on databases.
-        #I'm not sure if it does anything right now.
+        #This is the function that is called when an instance of this class
+        # is asked to 'repr'esent itself, ie. print AnInstance will print the returned string
         
         def __repr__(self):
             return "<Action('%s','%s', '%s')>" % (self.cardNumber, 
@@ -111,8 +111,8 @@ def loadDatabase ():
                     self.neg6toneg4, self.neg3toneg2, self.negone, self.zero, 
                     self.one, self.twoto3, self.fourto6, self.sevento10, self.elevenormore)
 
-    class Characters(Base):
-        __tablename__ = 'Characters'
+    class Character(Base):
+        __tablename__ = 'characters'
         name = Column(String, primary_key=True)     #Name of the character.
         gif = Column(String)                        #Character's associated gif.
         title = Column(String)                      #Character's title, if any.
@@ -151,14 +151,14 @@ def loadDatabase ():
             self.possession = possession
             
         def __repr__(self):
-            return "<Characters('%s','%s', '%s')>" % (self.name, self.gif, 
+            return "<Character('%s','%s', '%s')>" % (self.name, self.gif, 
                     self.title, self.location, self.side, self.combat, 
                     self.endurance, self.intelligence, self.leadership, 
                     self.diplomacy, self.navigation, self.homeworld, self.bonuses, 
                     self.wounds, self.detected, self.possession)                        
             
     class Detection(Base):
-        __tablename__ = 'Detection'
+        __tablename__ = 'detection'
         dice = Column(Integer, primary_key=True)    #This simulates the Detection table. Dice is the row, where each column is the evasion statistic.
         zero = Column(String)
         one = Column(String)
@@ -187,7 +187,7 @@ def loadDatabase ():
                     self.fiveor6, self.sevenor8, self.nineormore)
                     
     class Environ(Base):
-        __tablename__ = 'Environ'
+        __tablename__ = 'environs'
         id = Column(String, primary_key=True)   #The environ id. First three characters refer to the planet, last character is the order of the environ (first, second, etc)
         type = Column(String)                   #Environ type
         size = Column(Integer)                  #Environ size
@@ -253,8 +253,8 @@ def loadDatabase ():
                     self.oneto5, self.oneto4, self.oneto3, self.oneto2, self.oneto1, 
 					self.twoto1, self.threeto1, self.fourto1, self.fiveto1, self.sixto1)
                     
-    class Planets(Base):
-        __tablename__ = 'Planets'
+    class Planet(Base):
+        __tablename__ = 'planets'
         id = Column(Integer)                        #Planet id.
         name = Column(String, primary_key=True)     #Planet name.
         race = Column(String)                       #Native race to the planet, if any.
@@ -271,11 +271,11 @@ def loadDatabase ():
             self.numEnvirons = numEnvirons
             
         def __repr__(self):
-            return "<Planets('%s','%s', '%s')>" % (self.id, self.race, 
+            return "<Planet('%s','%s', '%s')>" % (self.id, self.race, 
 					self.sloyalty, self.aloyalty, self.numEnvirons)
                     
-    class Possessions(Base):
-        __tablename__ = 'Possessions'
+    class Possession(Base):
+        __tablename__ = 'possessions'
         type = Column(String)                   #Type of possession.
         name = Column(String, primary_key=True) #Name of possession.
         gif = Column(String)                    #gif related to the possession.
@@ -299,12 +299,12 @@ def loadDatabase ():
             self.damaged = damaged
             
         def __repr__(self):
-            return "<Possessions('%s','%s', '%s')>" % (self.type, self.name, 
+            return "<Possession('%s','%s', '%s')>" % (self.type, self.name, 
                     self.gif, self.stat1, self.stat2, self.stat3, 
                     self.stat4, self.owner, self.damaged)
                     
-    class Races(Base):
-        __tablename__ = 'Races'
+    class Race(Base):
+        __tablename__ = 'races'
         name = Column(String, primary_key=True) #Races name.
         environ = Column(String)                #Environ they might be found in.
         combat = Column(Integer)                #Combat stat
@@ -319,7 +319,7 @@ def loadDatabase ():
             self.firefight = firefight
             
         def __repr__(self):
-            return "<Races('%s','%s', '%s')>" % (self.name, self.environ, 
+            return "<Race('%s','%s', '%s')>" % (self.name, self.environ, 
                     self.combat, self.endurance, self.firefight)
             
     Base.metadata.create_all(db)    #Create the database.
@@ -344,7 +344,7 @@ def loadDatabase ():
     session.commit()
     
     for list in charList:
-        temp = Characters(list[0], list[1], list[2], list[3], list[4], list[5], list[6], list[7], 
+        temp = Character(list[0], list[1], list[2], list[3], list[4], list[5], list[6], list[7], 
                           list[8], list[9], list[10], list[11], list[12], 0, False, False)
         session.add(temp)
     session.commit()
@@ -375,7 +375,7 @@ def loadDatabase ():
     session.commit()
     
     for list in planetList:
-        temp = Planets(list[0], list[1], list[2], list[3], list[4], list[5])
+        temp = Planet(list[0], list[1], list[2], list[3], list[4], list[5])
         session.add(temp)
     session.commit()
     
@@ -383,28 +383,29 @@ def loadDatabase ():
         if len(list) == 2:
             continue
         elif len(list) == 4:
-            temp = Possessions(list[0], list[1], list[2], list[3], " ", " ", " ", " ", False)
+            temp = Possession(list[0], list[1], list[2], list[3], " ", " ", " ", " ", False)
         elif len(list) == 5:
-            temp = Possessions(list[0], list[1], list[2], list[3], list[4], " ", " ", " ", False)
+            temp = Possession(list[0], list[1], list[2], list[3], list[4], " ", " ", " ", False)
         elif len(list) == 6:
-            temp = Possessions(list[0], list[1], list[2], list[3], list[4], list[5], " ", " ", False)
+            temp = Possession(list[0], list[1], list[2], list[3], list[4], list[5], " ", " ", False)
         elif len(list) == 7:
-            temp = Possessions(list[0], list[1], list[2], list[3], list[4], list[5], list[6], " ", False)
+            temp = Possession(list[0], list[1], list[2], list[3], list[4], list[5], list[6], " ", False)
         session.add(temp)
         
     for list in spaceshipList:
         if list[7] == "null":
-            temp = Possessions(list[0], list[1], list[2], list[3], list[4], list[5], list[6], " ", False)
+            temp = Possession(list[0], list[1], list[2], list[3], list[4], list[5], list[6], " ", False)
         else:
-            temp = Possessions(list[0], list[1], list[2], list[3], list[4], list[5], list[6], list[7], False)
+            temp = Possession(list[0], list[1], list[2], list[3], list[4], list[5], list[6], list[7], False)
         session.add(temp)
     session.commit()
 
     for list in raceList:
         if list[4] == '*':
-            temp = Races(list[0], list[1], list[2], list[3], False)
+            temp = Race(list[0], list[1], list[2], list[3], False)
         else:
-            temp = Races(list[0], list[1], list[2], list[3], True)
+            temp = Race(list[0], list[1], list[2], list[3], True)
         session.add(temp)
     session.commit()
 
+loadDatabase()

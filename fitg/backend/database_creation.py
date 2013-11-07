@@ -205,6 +205,8 @@ class Character(Base):
     wounds = Column(Integer)                    #Number of character's wounds.
     detected = Column(Boolean)                  #Whether or not the character is detected.
     possession = Column(Boolean)                #What the character has in their possession.
+    active = Column(Boolean)
+    captive = Column(Boolean)
     stack_id = Column(Integer, ForeignKey('stacks.id'))
     stack = relationship("Stack", backref=backref('characters', order_by=combat))
     
@@ -227,6 +229,8 @@ class Character(Base):
         self.wounds = wounds
         self.detected = detected
         self.possession = possession
+        self.active = True
+        self.captive = False
         
     def __repr__(self):
         return "<Character('%s','%s', '%s')>" % (self.name, self.gif, 

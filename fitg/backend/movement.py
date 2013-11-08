@@ -1,12 +1,18 @@
 from database_creation import *
 
+session = Session()
 
-def MoveStack(StackID, Location):
+def MoveEnviron(StackID, EnvironID):
 	session = Session()
 
-	newloc = session.query(Environ).filter_by(id = Location).first()
+	newloc = session.query(Environ).filter_by(id = EnvironID).first()
+
+	if newloc == None:
+		raise Exception("No environ with that ID found")
 	oldloc = session.query(Stack).filter_by(id = StackID).first().location
-	# test if possible move
+	
+	if (int(newloc.id) / 10) != (int(oldloc) / 10):
+		raise Exception("Cannot move to non-adjacent environs")
 
 	MovingStack = session.query(Stack).filter_by(id = StackID).first()
 	MovingStack.location = newloc.id
@@ -15,10 +21,6 @@ def MoveStack(StackID, Location):
 	session.commit()
 
 
+MoveEnviron(1,'3112')
+MoveEnviron(2,'3112')
 
-MoveStack(1,'1121')
-MoveStack(2,'1131')
-
-session = Session()
-
-print session.query(Stack).filter_by(id = 1).one().location

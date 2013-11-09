@@ -73,3 +73,9 @@ CharCombat(2,1)
 print "After:"
 for character in session.query(Stack).filter_by(id = 1).one().characters:
 	print character
+
+
+print session.query(Possession).filter_by(name = 'Star Cruiser').one()
+
+session.commit()
+

@@ -1,4 +1,5 @@
-from database_creation import *
+from database_creation import loadDatabase
+from orm import *
 
 
 def MoveEnviron(StackID, EnvironID):
@@ -19,6 +20,7 @@ def MoveEnviron(StackID, EnvironID):
 	session.add(MovingStack)
 	session.commit()
 
+loadDatabase()
 
 MoveEnviron(1,'3112')
 MoveEnviron(2,'3112')

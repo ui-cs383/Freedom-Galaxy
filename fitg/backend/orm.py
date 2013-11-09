@@ -208,4 +208,13 @@ class Stack(Base):
     def Size(self):
         return len(self.characters) + len(self.militaryunits)
 
+    def Spaceship(self):
+        for character in self.characters:
+            for possession in character.possessions:
+                if possession.type == 'spaceship':
+                    return possession
+
+        return None
+
     # function to add unit to stack, check if not already in another stack, if so, remove?
+ 

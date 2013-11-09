@@ -93,6 +93,7 @@ def loadDatabase():
     session.commit()
     
     for list in possessionList:
+        print list
         if len(list) == 2:
             continue
         elif len(list) == 4:
@@ -105,13 +106,14 @@ def loadDatabase():
             temp = Possession(list[0], list[1], list[2], list[3], list[4], list[5], list[6], " ")
         session.add(temp)
         
-    for list in spaceshipList:
-        if list[7] == "null":
-            temp = Possession(list[0], list[1], list[2], list[3], list[4], list[5], list[6], " ")
-        else:
-            temp = Possession(list[0], list[1], list[2], list[3], list[4], list[5], list[6], list[7])
-        session.add(temp)
-    session.commit()
+#   for list in spaceshipList:
+#       print list
+#       if list[7] == "null":
+#           temp = Possession(list[1], list[2], '', list[3], list[4], list[5], list[6], " ")
+#       else:
+#           temp = Possession(list[1], list[2], '', list[3], list[4], list[5], list[6], list[7])
+#       session.add(temp)
+#   session.commit()
 
     for list in raceList:
         if list[4] == '*':

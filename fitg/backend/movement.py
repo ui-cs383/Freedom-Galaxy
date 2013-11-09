@@ -1,6 +1,5 @@
 from database_creation import *
 
-session = Session()
 
 def MoveEnviron(StackID, EnvironID):
 	session = Session()

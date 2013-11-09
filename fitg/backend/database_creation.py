@@ -70,7 +70,7 @@ def loadDatabase():
     
     for list in charList:
         temp = Character(list[0], list[1], list[2], list[3], list[4], list[5], list[6], list[7], 
-                          list[8], list[9], list[10], list[11], list[12], 0, False, False)
+                          list[8], list[9], list[10], list[11], list[12])
         session.add(temp)
     session.commit()
     
@@ -78,17 +78,17 @@ def loadDatabase():
     for list in environList:
         if list[8] > 3:
             temp = Environ(list[0], list[1], list[2], list[3], list[4], 
-                           list[5], list[6], list[7], -1, list[8])
+                           list[5], list[6], list[7], -1, list[8],int(list[0])/10)
         else:
             temp = Environ(list[0], list[1], list[2], list[3], list[4], 
-                           list[5], list[6], list[7], list[8], -1)
+                           list[5], list[6], list[7], list[8], -1,int(list[0])/10)
         session.add(temp)
     session.commit()
     i = 1
     
     
     for list in planetList:
-        temp = Planet(list[0], list[1], list[2], list[3], list[4], list[5])
+        temp = Planet(list[0], list[1], list[2], list[3], list[5])
         session.add(temp)
     session.commit()
     
@@ -96,20 +96,20 @@ def loadDatabase():
         if len(list) == 2:
             continue
         elif len(list) == 4:
-            temp = Possession(list[0], list[1], list[2], list[3], " ", " ", " ", " ", False)
+            temp = Possession(list[0], list[1], list[2], list[3], " ", " ", " ", " ")
         elif len(list) == 5:
-            temp = Possession(list[0], list[1], list[2], list[3], list[4], " ", " ", " ", False)
+            temp = Possession(list[0], list[1], list[2], list[3], list[4], " ", " ", " ")
         elif len(list) == 6:
-            temp = Possession(list[0], list[1], list[2], list[3], list[4], list[5], " ", " ", False)
+            temp = Possession(list[0], list[1], list[2], list[3], list[4], list[5], " ", " ")
         elif len(list) == 7:
-            temp = Possession(list[0], list[1], list[2], list[3], list[4], list[5], list[6], " ", False)
+            temp = Possession(list[0], list[1], list[2], list[3], list[4], list[5], list[6], " ")
         session.add(temp)
         
     for list in spaceshipList:
         if list[7] == "null":
-            temp = Possession(list[0], list[1], list[2], list[3], list[4], list[5], list[6], " ", False)
+            temp = Possession(list[0], list[1], list[2], list[3], list[4], list[5], list[6], " ")
         else:
-            temp = Possession(list[0], list[1], list[2], list[3], list[4], list[5], list[6], list[7], False)
+            temp = Possession(list[0], list[1], list[2], list[3], list[4], list[5], list[6], list[7])
         session.add(temp)
     session.commit()
 

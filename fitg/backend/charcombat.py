@@ -2,8 +2,6 @@ from database_creation import loadDatabase
 from orm import *
 from random import randint
 
-# look at client github
-# 
 
 def CharCombat(AtkID, DefID):
 
@@ -37,9 +35,9 @@ def CharCombat(AtkID, DefID):
 
 def GetStackCombat(StackID, session):
 	CR = 0
-	for unit in session.query(Stack).filter_by(id = StackID).first().characters:
-		if unit.active == True:
-			CR += unit.combat - unit.wounds
+	for character in session.query(Stack).filter_by(id = StackID).one().characters:
+		if character.active == True:
+			CR += character.combat - character.wounds
 	return CR
 
 def CharTable(dice, CD, IsAttacker):

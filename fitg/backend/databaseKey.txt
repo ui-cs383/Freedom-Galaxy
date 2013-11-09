@@ -1,0 +1,25 @@
+The following is the database key to assist in interpreting the database created by Greg Donaldson.
+This is meant as a quick reference guide. For more information, please see database_creation.py
+
+Example:
+variable1, variable2, variable3, etc...
+
+Action:
+cardNumber, firstOpt, secondOpt, thirdOpt
+
+Characters:
+name, gif, title, race, side, combat, endurance, intelligence, leadership, diplomacy, navigation, homeworld, bonuses, wounds, detected, possession
+
+Zina Adora,izina.gif,Princess of Adare,Rhone,Rebel,1,2,3,2,2,1,Adare,RI
+
+Environ:
+id, type, size, race, starfaring, resources, starresources, monster, coup, sov
+
+Planets:
+id, name, race, sloyalty, aloyalty, numEnvirons
+
+Possesions:
+type, name, gif, stat1, stat2, stat3, stat4, owner, damaged
+
+Races:
+name, environ, combat, endurance, firefight

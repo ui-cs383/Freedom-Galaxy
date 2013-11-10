@@ -149,10 +149,10 @@ class Possession(Base):
     type = Column(String)                   #Type of possession.
     name = Column(String, primary_key=True) #Name of possession.
     gif = Column(String)                    #gif related to the possession.
-    stat1 = Column(String)                  #First stat.
-    stat2 = Column(String)                  #Second stat.
-    stat3 = Column(String)                  #Third stat.
-    stat4 = Column(String)                  #Fourth stat.
+    stat1 = Column(Integer)                  #First stat.
+    stat2 = Column(Integer)                  #Second stat.
+    stat3 = Column(Integer)                  #Third stat.
+    stat4 = Column(Integer)                  #Fourth stat.
     damaged = Column(Boolean)               #Whether the possession is damaged. This really only applies to starships.
     owner_name = Column(String, ForeignKey('characters.name'))
     owner = relationship("Character", backref=backref('possessions', order_by=name))   
@@ -210,8 +210,12 @@ class Stack(Base):
             for possession in character.possessions:
                 if possession.type == 'spaceship':
                     return possession
-
         return None
 
+    def stack_detection(self):                  #Check if any characters in the
+        for character in self.characters:       #stack are detected.
+            if character.detected == True:
+                return True
+        return None
     # function to add unit to stack, check if not already in another stack, if so, remove?
  

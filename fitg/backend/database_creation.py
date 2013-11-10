@@ -53,21 +53,19 @@ def loadDatabase():
     #varu.dat: Scenario
 
 
-    session = Session()  
+    session = Session()
     Base.metadata.create_all(db)    #Create the database.
-  
+
     i = 1
-    
+
     #The following for loops load up the database with relevant info pulled from the .dat files.
-    
-    
     for list in charList:
         temp = Character(list[0], list[1], list[2], list[3], list[4], list[5], list[6], list[7], 
                           list[8], list[9], list[10], list[11], list[12])
         session.add(temp)
     session.commit()
-    
-    
+
+
     for list in environList:
         if list[8] > 3:
             temp = Environ(list[0], list[1], list[2], list[3], list[4], 
@@ -78,8 +76,8 @@ def loadDatabase():
         session.add(temp)
     session.commit()
     i = 1
-    
-    
+
+
     for list in planetList:
         temp = Planet(list[0], list[1], list[2], list[3], list[5])
         session.add(temp)
@@ -87,8 +85,10 @@ def loadDatabase():
         temp = Environ(list[0]+'0', 'O', '50', None, '0', '0', '0', 'None', '0', '0', list[0])
         session.add(temp)
     session.commit()
-    
+
     for list in possessionList:
+
+>>>>>>> f54f7353fee143b7754b4e28d7597a65e777fac3
         if len(list) == 2:
             continue
         elif len(list) == 4:
@@ -115,6 +115,9 @@ def loadDatabase():
     temp = Stack(3111)
     temp.characters = [ session.query(Character).filter_by(name = 'Adam Starlight').one(),
                         session.query(Character).filter_by(name = 'Zina Adora').one()]
+    temp.characters[0].possessions = [ session.query(Possession).filter_by(name
+                                        = 'Star Cruiser').one()]
+    #temp.characters[0].detected = True
     session.add(temp)
     temp = Stack(3111)
     temp.characters = [ session.query(Character).filter_by(name = 'Senator Dermond').one()]

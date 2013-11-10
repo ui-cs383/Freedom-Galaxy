@@ -113,16 +113,22 @@ class Environ(Base):
 class MilitaryUnit(Base):
     __tablename__ = 'militaryunits'
     id = Column(Integer, primary_key=True)
-    type = Column(Integer)    
     side = Column(String)     
+    type = Column(String)    
+    environ_combat = Column(Integer)
+    space_combat = Column(Integer)
+    mobile = Column(Integer)
     wounds = Column(Integer)  
     stack_id = Column(Integer, ForeignKey('stacks.id'))
     stack = relationship("Stack", backref=backref('militaryunits', order_by=type))
     
-    def __init__(self,type,side):
+    def __init__(self, type, side, environ_combat, space_combat, mobile):
         self.type = type
         self.side = side
         self.wounds = 0
+        self.environ_combat = environ_combat
+        self.space_combat = space_combat
+        self.mobile = mobile
 
         
     def __repr__(self):
@@ -221,4 +227,4 @@ class Stack(Base):
                 return True
         return None
     # function to add unit to stack, check if not already in another stack, if so, remove?
- 
+

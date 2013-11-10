@@ -41,6 +41,7 @@ def loadDatabase():
     #helsinki.dat: Scenario
     #lookup.dat: Needed for Galactic Game.
     #milCombatList = commaOnly("milcomb.dat") Military Combat Chart is static
+    milunitsList = commaWithSpace("military_units.dat")
     #orlog.dat: Scenario
     #path.dat: Need key, no idea.
     planetList = commaOnly("planet.dat")
@@ -48,7 +49,7 @@ def loadDatabase():
     #possimg.dat: Discuss. Need to be stored for Client?
     raceList = raceSnag("races.dat")
     #sov_hnd.dat: Need key, not star system, used by Environ
-    spaceshipList = commaOnly("spacship.dat")
+    #spaceshipList = commaOnly("spacship.dat")
     #strategy.dat: Galactic Game
     #varu.dat: Scenario
 
@@ -65,14 +66,14 @@ def loadDatabase():
         session.add(temp)
         i += 1
     i = 1
-    session.commit()
+    #session.commit()
 
 
     for list in charList:
         temp = Character(list[0], list[1], list[2], list[3], list[4], list[5], list[6], list[7], 
                           list[8], list[9], list[10], list[11], list[12])
         session.add(temp)
-    session.commit()
+    #session.commit()
 
 
     for list in environList:
@@ -86,6 +87,11 @@ def loadDatabase():
     session.commit()
     i = 1
 
+    for list in milunitsList:
+        print list
+        temp = MilitaryUnit(list[0], list[1], list[2], list[3], list[4])
+        session.add(temp)
+    session.commit()
 
     for list in planetList:
         temp = Planet(list[0], list[1], list[2], list[3], list[5])

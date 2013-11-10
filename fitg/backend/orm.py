@@ -9,23 +9,6 @@ from sqlalchemy import *
 Base = declarative_base()           #Alright, set up the database.
 db = create_engine('sqlite:///Freedom.db')
 Session = sessionmaker(bind=db)     #Create a Session, binding it to the database.
-
-class Action(Base):
-    __tablename__ = 'actions'
-    cardNumber = Column(Integer, primary_key=True)  #This is the primary key. Its used to help 'randomly' draw a card.
-    firstOpt = Column(String)                       #This is the first option on the card.
-    secondOpt = Column(String)                      #This is the second option on the card.
-    thirdOpt = Column(String)                       #This is the third option ont he card.
-
-    
-    def __init__(self, cardNumber, firstOpt, secondOpt, thirdOpt):
-        self.cardNumber = cardNumber
-        self.firstOpt = firstOpt
-        self.secondOpt = secondOpt
-        self.thirdOpt = thirdOpt
-    
-    def __repr__(self):
-        return "<Action('%s','%s')>" % (self.cardNumber, self.firstOpt)
         
 
 class Character(Base):
@@ -74,7 +57,7 @@ class Character(Base):
         self.captive = False
         
     def __repr__(self):
-        return "<Character('%s','%s', '%s')>" % (self.name, self.title, self.side)                        
+        return "<Character('%s','%s', '%s')>" % (self.name, self.title, self.side)
 
                 
 class Environ(Base):
@@ -119,7 +102,8 @@ class MilitaryUnit(Base):
     stack_id = Column(Integer, ForeignKey('stacks.id'))
     stack = relationship("Stack", backref=backref('militaryunits', order_by=type))
     
-    def __init__(self,type,side):
+    def __init__(self, id, type, side, stack_id):
+        self.id = id
         self.type = type
         self.side = side
         self.wounds = 0
@@ -128,7 +112,20 @@ class MilitaryUnit(Base):
     def __repr__(self):
         return "<MilitaryUnit('%s','%s', '%s')>" % (self.id, self.type, self.side)
 
-                
+class Mission(Base):
+    __tablename__ = 'missions'
+    id = Column(Integer, primary_key=True)
+    type = Column(String)
+    stack_id = Column(Integer, ForeignKey('stacks.id'))
+    stack = relationship("Stack", backref=backref('mission', order_by=id))
+
+    def __init__(self, type, stack_id):
+        self.type = type
+        self.stack_id = stack_id
+
+    def __repr__(self):
+        return "<Mission('%s','%s', '%s')>" % (self.id, self.type, self.stack_id)
+
 class Planet(Base):
     __tablename__ = 'planets'
     id = Column(Integer, primary_key=True)  
@@ -196,11 +193,11 @@ class Stack(Base):
     __tablename__ = 'stacks'
 
     id = Column(Integer, primary_key=True)
-    location = Column(Integer)
+    location_id = Column(Integer, ForeignKey('environs.id'))
+    location = relationship("Environ", backref=backref('stacks', order_by=id))   
 
-    def __init__(self, id, location):
-        self.id = id
-        self.location = location
+    def __init__(self, location_id):
+        self.location_id = location_id
 
     def __repr__(self):
         return "<Stack('%i','%i')>" % (self.id, self.location)

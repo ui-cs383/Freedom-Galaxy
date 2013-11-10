@@ -26,7 +26,7 @@ def loadDatabase():
 
     #These are the lists returned by dataSnag's functions. Necessary for the database.
 
-    actionList = commaWithSpace("action.dat")
+    #actionList = commaWithSpace("action.dat")
     #arc.dat: Needed for Province Game
     #backdoor.dat: Scenario
     #ccList = commaOnly("cc_tab.dat") Character Combat Chart is static and not needing of DB
@@ -60,13 +60,6 @@ def loadDatabase():
     
     #The following for loops load up the database with relevant info pulled from the .dat files.
     
-    for list in actionList:
-        temp = Action(i, list[0], list[1], list[2])
-        session.add(temp)
-        i += 1
-    i = 1
-    session.commit()
-    
     
     for list in charList:
         temp = Character(list[0], list[1], list[2], list[3], list[4], list[5], list[6], list[7], 
@@ -90,10 +83,12 @@ def loadDatabase():
     for list in planetList:
         temp = Planet(list[0], list[1], list[2], list[3], list[5])
         session.add(temp)
+        # Implementing Orbit Boxes as Environ # 0 for each planet
+        temp = Environ(list[0]+'0', 'O', '50', None, '0', '0', '0', 'None', '0', '0', list[0])
+        session.add(temp)
     session.commit()
     
     for list in possessionList:
-        print list
         if len(list) == 2:
             continue
         elif len(list) == 4:
@@ -105,15 +100,7 @@ def loadDatabase():
         elif len(list) == 7:
             temp = Possession(list[0], list[1], list[2], list[3], list[4], list[5], list[6], " ")
         session.add(temp)
-        
-#   for list in spaceshipList:
-#       print list
-#       if list[7] == "null":
-#           temp = Possession(list[1], list[2], '', list[3], list[4], list[5], list[6], " ")
-#       else:
-#           temp = Possession(list[1], list[2], '', list[3], list[4], list[5], list[6], list[7])
-#       session.add(temp)
-#   session.commit()
+
 
     for list in raceList:
         if list[4] == '*':
@@ -125,11 +112,11 @@ def loadDatabase():
 
 # Test data for Stack manipulation and others
 
-    temp = Stack(1,3111)
+    temp = Stack(3111)
     temp.characters = [ session.query(Character).filter_by(name = 'Adam Starlight').one(),
                         session.query(Character).filter_by(name = 'Zina Adora').one()]
     session.add(temp)
-    temp = Stack(2,3111)
+    temp = Stack(3111)
     temp.characters = [ session.query(Character).filter_by(name = 'Senator Dermond').one()]
     session.add(temp)
     session.commit()

@@ -3,7 +3,7 @@ from orm import *
 from random import randint
 
 
-def CharCombat(AtkID, DefID):
+def CharCombat(AtkID, DefID, Options):
 
 	session = Session()
 
@@ -15,23 +15,35 @@ def CharCombat(AtkID, DefID):
 
 	CD = GetStackCombat(AtkID, session) - GetStackCombat(DefID, session)
 
+	if 'C' in Options:
+		CD -= 2
+
 	AtkResult = CharTable(randint(0,5),CD,True)
 	DefResult = CharTable(randint(0,5),CD,False)
 
-	if AtkResult[1] == 1:
-		CapturedChar = DefStack.characters[randint(0,len(DefStack.characters)-1)]
-		CapturedChar.stack_id = AtkID
-		CapturedChar.captive = True
-		CapturedChar.active = False
+	if 'F' in Options:
+		AtkResult[0] *= 2
+	if AtkStack.militaryunits:
+		AtkResult[0] *= 2
+		
+	if 'C' in Options:
+		if AtkResult[1] == 1:
+			CapturedChar = DefStack.characters[randint(0,len(DefStack.characters)-1)]
+			CapturedChar.stack_id = AtkID
+			CapturedChar.captive = True
+			CapturedChar.active = False
 
-	if DefResult[1] == 1:
-		CapturedChar = DefStack.characters[randint(0,len(DefStack.characters)-1)]
-		CapturedChar.stack_id = AtkID
-		CapturedChar.captive = True
-		CapturedChar.active = False
+		if DefResult[1] == 1:
+			CapturedChar = DefStack.characters[randint(0,len(DefStack.characters)-1)]
+			CapturedChar.stack_id = AtkID
+			CapturedChar.captive = True
+			CapturedChar.active = False
 
 	session.add(AtkStack, DefStack)
 	session.commit()
+
+def SufferWounds(character, num, session):
+	pass
 
 def GetStackCombat(StackID, session):
 	CR = 0
@@ -69,13 +81,11 @@ print session.query(Stack).filter_by(id = 1).one().characters
 print "Before:"
 for character in session.query(Stack).filter_by(id = 1).one().characters:
 	print character
-CharCombat(2,1)
+CharCombat(2,1,'C')
 print "After:"
 for character in session.query(Stack).filter_by(id = 1).one().characters:
 	print character
 
-
-print session.query(Possession).filter_by(name = 'Star Cruiser').one()
 
 session.commit()
 

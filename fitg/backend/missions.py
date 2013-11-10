@@ -55,12 +55,12 @@ def AWH(mission, session):
 		session.delete(character)
 
 
-
 #  CAoNA:	Creature Attacks or No Action                            
 #		(if a creature is not named in the environ ignore event)     
 #                                               
 def CAoNA(mission, session):
-	pass                     
+	environ = mission.stack_id
+	                     
 #  CAoxR:	Creature Attacks or One Sentry Robot                     
 #		(if a creature is named in the environ, look it up in the    
 #		Galatic guide to determine its attributes.  If no creature   

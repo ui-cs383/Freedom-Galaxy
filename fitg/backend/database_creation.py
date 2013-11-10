@@ -88,7 +88,6 @@ def loadDatabase():
 
     for list in possessionList:
 
->>>>>>> f54f7353fee143b7754b4e28d7597a65e777fac3
         if len(list) == 2:
             continue
         elif len(list) == 4:

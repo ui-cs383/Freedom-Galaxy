@@ -74,18 +74,20 @@ def CharTable(dice, CD, IsAttacker):
 	else:
 		return (DefenderWounds[dice][CD], DefenderCapture[dice][CD])
 
-loadDatabase()
 
-session = Session()
-print session.query(Stack).filter_by(id = 1).one().characters
-print "Before:"
-for character in session.query(Stack).filter_by(id = 1).one().characters:
-	print character
-CharCombat(2,1,'C')
-print "After:"
-for character in session.query(Stack).filter_by(id = 1).one().characters:
-	print character
+if __name__ == "__main__":
+    loadDatabase()
+
+    session = Session()
+    print session.query(Stack).filter_by(id = 1).one().characters
+    print "Before:"
+    for character in session.query(Stack).filter_by(id = 1).one().characters:
+            print character
+    CharCombat(2,1,'C')
+    print "After:"
+    for character in session.query(Stack).filter_by(id = 1).one().characters:
+            print character
 
 
-session.commit()
+    session.commit()
 

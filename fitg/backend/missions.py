@@ -244,12 +244,13 @@ def WSC(mission, session):
 	pass                                                      
 
 
-loadDatabase()
+if __name__ == "__main__":
+    loadDatabase()
 
-session = Session()
+    session = Session()
 
-MyMission = Mission('D',1)
-session.add(MyMission)
-session.commit()
+    MyMission = Mission('D',1)
+    session.add(MyMission)
+    session.commit()
 
 ResolveMission(3111)

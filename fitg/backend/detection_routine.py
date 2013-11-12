@@ -83,7 +83,7 @@ class Combat:
         print "The result is", result
         print
 
-        
-loadDatabase()
-test = Combat()
-test.detection_routine(1, 0)
+if __name__ == "__main__":
+    loadDatabase()
+    test = Combat()
+    test.detection_routine(1, 0)

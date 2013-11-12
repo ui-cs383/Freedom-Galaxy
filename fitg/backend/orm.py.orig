@@ -105,7 +105,12 @@ class MilitaryUnit(Base):
     stack_id = Column(Integer, ForeignKey('stacks.id'))
     stack = relationship("Stack", backref=backref('militaryunits', order_by=type))
     
+<<<<<<< HEAD
     def __init__(self, type, side, environ_combat, space_combat, mobile):
+=======
+    def __init__(self, id, type, side, stack_id):
+        self.id = id
+>>>>>>> 4e71f799c60f9aa77ee28ebdda0c0dcc7040315d
         self.type = type
         self.side = side
         self.wounds = 0
@@ -223,11 +228,4 @@ class Stack(Base):
                 return True
         return None
     # function to add unit to stack, check if not already in another stack, if so, remove?
-
-    def find_stack_leader(self):    #stack leader will be the character with
-        leadership_rating = 0       #the highest leadership rating
-        for character in self.characters:
-            if character.leadership > leadership_rating:
-                leadership_rating = character.leadership
-        return leadership_rating
 

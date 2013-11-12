@@ -30,24 +30,24 @@ def loadDatabase():
     #arc.dat: Needed for Province Game
     #backdoor.dat: Scenario
     #ccList = commaOnly("cc_tab.dat") Character Combat Chart is static and not needing of DB
-    charList = commaOnly("./dat_files/charactr.dat")
+    charList = commaOnly("charactr.dat")
     #detectList = commaOnly("detect.dat") Detection Chart is static
     #distance.dat: Needed for Province Game
     #egrix.dat: Scenario
-    environList = commaOnly("./dat_files/environ.dat")
+    environList = commaOnly("environ.dat")
     #galactic.dat: Scenario
     #galevent.dat: Needed for Galactic Game
     #guistar.dat: Scenario file. Necessary?
     #helsinki.dat: Scenario
     #lookup.dat: Needed for Galactic Game.
     #milCombatList = commaOnly("milcomb.dat") Military Combat Chart is static
-    milunitsList = commaWithSpace("./dat_files/military_units.dat")
+    milunitsList = commaWithSpace("military_units.dat")
     #orlog.dat: Scenario
     #path.dat: Need key, no idea.
-    planetList = commaOnly("./dat_files/planet.dat")
-    possessionList = commaWithSpace("./dat_files/possessn.dat")
+    planetList = commaOnly("planet.dat")
+    possessionList = commaWithSpace("possessn.dat")
     #possimg.dat: Discuss. Need to be stored for Client?
-    raceList = raceSnag("./dat_files/races.dat")
+    raceList = raceSnag("races.dat")
     #sov_hnd.dat: Need key, not star system, used by Environ
     #spaceshipList = commaOnly("spacship.dat")
     #strategy.dat: Galactic Game
@@ -60,6 +60,18 @@ def loadDatabase():
     i = 1
 
     #The following for loops load up the database with relevant info pulled from the .dat files.
+<<<<<<< HEAD
+
+    for list in actionList:
+        temp = Action(i, list[0], list[1], list[2])
+        session.add(temp)
+        i += 1
+    i = 1
+    #session.commit()
+
+
+=======
+>>>>>>> 4e71f799c60f9aa77ee28ebdda0c0dcc7040315d
     for list in charList:
         temp = Character(list[0], list[1], list[2], list[3], list[4], list[5], list[6], list[7], 
                           list[8], list[9], list[10], list[11], list[12])
@@ -79,6 +91,7 @@ def loadDatabase():
     i = 1
 
     for list in milunitsList:
+        print list
         temp = MilitaryUnit(list[0], list[1], list[2], list[3], list[4])
         session.add(temp)
     session.commit()
@@ -126,8 +139,4 @@ def loadDatabase():
     temp = Stack(3111)
     temp.characters = [ session.query(Character).filter_by(name = 'Senator Dermond').one()]
     session.add(temp)
-# More Test stacks.
-#    temp = Stack(3112)
-#    temp.militaryunits = [ session.query(MilitaryUnits).filter_by
-#                         (side = 'Imperial', type = 'Militia'
     session.commit()

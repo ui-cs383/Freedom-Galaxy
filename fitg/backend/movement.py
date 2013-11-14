@@ -3,29 +3,30 @@ from orm import *
 from random import randint
 
 
-def MoveEnviron(StackID, EnvironID):
+def move_environ(stack_id, environ_id):
 	session = Session()
 
-	newloc = session.query(Environ).filter_by(id = EnvironID).one()
+	newloc = session.query(Environ).filter_by(id = environ_id).one()
 
 	if newloc == None:
 		raise Exception("No environ with that ID found")
-	oldloc = session.query(Stack).filter_by(id = StackID).one().location
+	oldloc = session.query(Stack).filter_by(id = stack_id).one().location
 	
-	if (int(newloc.id) / 10) != (int(oldloc) / 10):
+	if (int(newloc.id) / 10) != (int(oldloc.id) / 10):
 		raise Exception("Cannot move to non-adjacent environs")
 
-	MovingStack = session.query(Stack).filter_by(id = StackID).one()
-	MovingStack.location = newloc.id
+	moving_stack = session.query(Stack).filter_by(id = stack_id).one()
+	moving_stack.location = newloc
 
-	session.add(MovingStack)
+	session.add(moving_stack)
 	session.commit()
 
-loadDatabase()
+if __name__ == "__main__":
+	loadDatabase()
 
-MoveEnviron(1,'3110')
-MoveEnviron(2,'3112')
+	move_environ(1,'3110')
+	move_environ(2,'3112')
 
-session = Session()
-print session.query(Stack).filter_by(id = 1).one().location
+	session = Session()
+	print session.query(Stack).filter_by(id = 1).one().location
 

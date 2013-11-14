@@ -207,10 +207,10 @@ class Stack(Base):
     def __repr__(self):
         return "<Stack('%i','%i')>" % (self.id, self.location)
 
-    def Size(self):
+    def size(self):
         return len(self.characters) + len(self.militaryunits)
 
-    def Spaceship(self):
+    def spaceship(self):
         for character in self.characters:
             for possession in character.possessions:
                 if possession.type == 'spaceship':

@@ -5,19 +5,19 @@ from database_creation import loadDatabase
 from random import randint
 
 
-def ResolveMission(environ_id):
+def resolves_mission(environ_id):
 	session = Session()
 	environ = session.query(Environ).filter_by(id = environ_id).one()
 	for stack in environ.stacks:
 		if stack.mission:
 			for x in range(environ.size):
-				if DrawAction(stack.mission[0], environ, session) == stack.mission[0].type:
+				if draw_action(stack.mission[0], environ, session) == stack.mission[0].type:
 					pass
 					#	Do mission result
 
 	session.commit()
 
-def DrawAction(mission, environ, session):
+def draw_action(mission, environ, session):
 	action_table = (
 		(('RH',CAoNA),('B',LR),('P',LSC)),(('D',CAoR),('CS',WD),('PI',CMA1aCD)),
 		(('PI',CAoR),('SC',CD),('RG',LR)),(('CJ',ILA),('BT',RCOaCD),('PG',WD)),
@@ -249,8 +249,8 @@ if __name__ == "__main__":
 
     session = Session()
 
-    MyMission = Mission('D',1)
-    session.add(MyMission)
+    my_mission = Mission('D',1)
+    session.add(my_mission)
     session.commit()
 
-ResolveMission(3111)
+resolves_mission(3111)

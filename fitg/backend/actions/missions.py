@@ -1,6 +1,7 @@
 # Author: Jeff Crocker
 
 from orm import *
+from combat import *
 from database_creation import loadDatabase
 from random import randint
 
@@ -37,29 +38,43 @@ def draw_action(mission, environ, session):
 	)
 
 	if environ.type == 'U':
-		result = action_table[randint(0,30)][0]
+		result = action_table[randint(0,29)][0]
 	elif environ.type == 'W':
-		result = action_table[randint(0,30)][2]
+		result = action_table[randint(0,29)][2]
 	else:
-		result = action_table[randint(0,30)][1]
+		result = action_table[randint(0,29)][1]
 
-	result[1](mission, session)
+	#result[1](mission, session)
+	CAoNA(mission, session)
 
 #  AWH:		Accidents Will Happen
 #		(especially in an unfamiliar environ.  Any one character
 #		performing a mission in the environ must receive a wound.) 
 def AWH(mission, session):
+	print mission.stack.characters
 	for character in mission.stack.characters:
 		character.wounds += 1
-	if character.wounds > character.endurance:
-		session.delete(character)
+		if character.wounds >= character.endurance:
+			session.delete(character)
+			session.commit()
+			if mission.stack.size() == 0:
+				session.delete(mission.stack)
+				session.delete(mission)
+	session.commit()
 
 
 #  CAoNA:	Creature Attacks or No Action                            
 #		(if a creature is not named in the environ ignore event)     
 #                                               
 def CAoNA(mission, session):
-	environ = mission.stack_id
+	# need to implement creature look-up function? lots of special cases....
+	#creature = mission.stack.location.monster
+	creature = ("Sentry Robot",4,2)
+	new_char = Character("Sentry Robot", '', '', '', "Creature", 4, 2, 1, 1, 1, '', '')
+	session.add(new_char)
+	# add stack including monster
+
+	
 	                     
 #  CAoxR:	Creature Attacks or One Sentry Robot                     
 #		(if a creature is named in the environ, look it up in the    
@@ -252,5 +267,4 @@ if __name__ == "__main__":
     my_mission = Mission('D',1)
     session.add(my_mission)
     session.commit()
-
-resolves_mission(3111)
+    resolves_mission(3111)

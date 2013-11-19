@@ -1,4 +1,5 @@
 import rpyc
+import actions
 
 class ClientService(rpyc.Service):
     """Handles service calls to the client.
@@ -56,10 +57,7 @@ class FreedomService(rpyc.Service):
         :returns:  bool -- True on game creation, false on error.
         :raises: AssertionError
         """
-        if ai = True: 
-            logger.info("Action: Creating a new game with AI")
-        else:
-            logger.info("Action: Creating a new game")
+        logger.info("Action: Creating a new game")
 
     def exposed_move(self, stack_id, location_id, validate_only=False):
         """Move a stack to a location.

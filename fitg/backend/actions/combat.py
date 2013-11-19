@@ -3,76 +3,120 @@ from orm import *
 from random import randint
 
 
-def char_combat(AtkID, DefID, Options):
+def char_combat(atk_id, def_id, options):
 
-	session = Session()
+    session = Session()
 
-	atk_stack = session.query(Stack).filter_by(id = AtkID).one()
-	def_stack = session.query(Stack).filter_by(id = DefID).one()
+    atk_stack = session.query(Stack).filter_by(id = atk_id).one()
+    def_stack = session.query(Stack).filter_by(id = def_id).one()
+    session.add(atk_stack, def_stack)
 
-	# still needs to include breakoff and capture modifiers
-	# also decision if firefight or hand-to-hand
+    # still needs to include breakoff
 
-	CD = stack_combat_rating(AtkID, session) - stack_combat_rating(DefID, session)
 
-	if 'C' in Options:
-		CD -= 2
+    CD = char_combat_rating(atk_stack, session) - char_combat_rating(def_stack, session)
 
-	atk_result = char_table(randint(0,5),CD,True)
-	def_result = char_table(randint(0,5),CD,False)
+    if 'C' in options:
+        CD -= 2
 
-	if 'F' in Options:
-		atk_result[0] *= 2
-	if atk_stack.militaryunits:
-		atk_result[0] *= 2
-		
-	if 'C' in Options:
-		if atk_result[1] == 1:
-			CapturedChar = def_stack.characters[randint(0,len(def_stack.characters)-1)]
-			CapturedChar.stack_id = AtkID
-			CapturedChar.captive = True
-			CapturedChar.active = False
+    atk_result = char_table(randint(0,5),CD,True)
+    def_result = char_table(randint(0,5),CD,False)
 
-		if def_result[1] == 1:
-			CapturedChar = def_stack.characters[randint(0,len(def_stack.characters)-1)]
-			CapturedChar.stack_id = AtkID
-			CapturedChar.captive = True
-			CapturedChar.active = False
 
-	session.add(atk_stack, def_stack)
-	session.commit()
+    if 'F' in options:
+        atk_result[0] *= 2
+        def_result[0] *= 2
 
-def suffer_wounds(character, num, session):
-	pass
+    elif atk_stack.militaryunits:
+        atk_result[0] *= 2
+        def_result[0] *= 2
 
-def stack_combat_rating(StackID, session):
-	CR = 0
-	for character in session.query(Stack).filter_by(id = StackID).one().characters:
-		if character.active == True:
-			CR += character.combat - character.wounds
-	return CR
+    char_wounds(atk_stack, atk_result[0], session)
+    char_wounds(def_stack, def_result[0], session)
+        
+    if 'C' in options:
+        if atk_result[1] == 1:
+            captured_char = def_stack.characters[randint(0,len(def_stack.characters)-1)]
+            captured_char.stack_id = atk_id
+            captured_char.captive = True
+            captured_char.active = False
 
-def char_table(dice, CD, IsAttacker):
-	AttackerWounds = (
-		(4,3,3,2,2,2,2,1,1,1),(4,3,2,2,2,1,1,1,1,0),(3,3,2,2,1,1,1,1,0,0),
-		(3,2,2,1,1,1,0,0,0,0),(2,2,1,1,0,0,0,0,0,0),(2,1,0,0,0,0,0,0,0,0))
+        if def_result[1] == 1:
+            captured_char = def_stack.characters[randint(0,len(def_stack.characters)-1)]
+            captured_char.stack_id = atk_id
+            captured_char.captive = True
+            captured_char.active = False
 
-	DefenderWounds = (
-		(0,0,0,0,0,0,0,1,1,2),(0,0,0,0,0,0,1,1,1,2),(0,0,0,0,0,1,1,1,2,3),
-		(0,0,0,1,1,1,1,2,3,3),(0,0,1,1,1,1,2,2,3,4),(1,1,1,1,2,2,2,3,3,4))
+    if atk_stack.size() == 0:
+        session.delete(atk_stack)
 
-	AttackerCapture = (
-		(0,0,0,0,0,1,0,0,0,0),(0,0,0,1,1,0,1,1,1,0),(0,1,0,0,0,0,0,0,0,0),
-		(0,0,1,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,1,0,0),(0,0,0,0,0,0,0,0,0,0))
+    if def_stack.size() == 0:
+        session.delete(def_stack)
 
-	DefenderCapture = (
-		(0,0,0,0,0,0,0,0,1,0),(0,0,0,0,0,0,0,0,0,0),(0,0,0,0,1,0,0,1,1,0),
-		(0,0,0,1,0,1,1,1,0,0),(0,0,0,0,0,0,1,0,1,0),(0,0,0,0,0,0,0,0,0,0))
+    session.commit()
 
-	if IsAttacker:
-		return (AttackerWounds[dice][CD], AttackerCapture[dice][CD])
-	else:
-		return (DefenderWounds[dice][CD], DefenderCapture[dice][CD])
+def char_wounds(stack, num_wounds, session):
+    while num_wounds > 0 and stack.characters:
+        victim = stack.characters[randint(0,len(stack.characters)-1)]
+        session.add(victim)
+        victim.wounds += 1
+        print victim.name, " suffers wound!"
+        if victim.wounds >= victim.endurance:
+            print victim.name, " has died! :("
+            session.delete(victim)
+        num_wounds -= 1
+
+    session.commit()
+
+def char_combat_rating(stack, session):
+    CR = 0
+    for character in stack.characters:
+        if character.active == True:
+            CR += character.combat - character.wounds
+    return CR
+
+def char_table(dice, CD, is_attacker):
+    attacker_wounds = (
+        (4,3,3,2,2,2,2,1,1,1),(4,3,2,2,2,1,1,1,1,0),(3,3,2,2,1,1,1,1,0,0),
+        (3,2,2,1,1,1,0,0,0,0),(2,2,1,1,0,0,0,0,0,0),(2,1,0,0,0,0,0,0,0,0))
+
+    defender_wounds = (
+        (0,0,0,0,0,0,0,1,1,2),(0,0,0,0,0,0,1,1,1,2),(0,0,0,0,0,1,1,1,2,3),
+        (0,0,0,1,1,1,1,2,3,3),(0,0,1,1,1,1,2,2,3,4),(1,1,1,1,2,2,2,3,3,4))
+
+    attacker_capture = (
+        (0,0,0,0,0,1,0,0,0,0),(0,0,0,1,1,0,1,1,1,0),(0,1,0,0,0,0,0,0,0,0),
+        (0,0,1,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,1,0,0),(0,0,0,0,0,0,0,0,0,0))
+
+    defender_capture = (
+        (0,0,0,0,0,0,0,0,1,0),(0,0,0,0,0,0,0,0,0,0),(0,0,0,0,1,0,0,1,1,0),
+        (0,0,0,1,0,1,1,1,0,0),(0,0,0,0,0,0,1,0,1,0),(0,0,0,0,0,0,0,0,0,0))
+
+    if CD <= -7:
+        CD = 0
+    elif CD >= -6 and CD <= -4:
+        CD = 1
+    elif CD >= -3 and CD <= -2:
+        CD = 2
+    elif CD == -1:
+        CD = 3
+    elif CD == 0:
+        CD = 4
+    elif CD == 1:
+        CD = 5
+    elif CD >= 2 and CD <= 3:
+        CD = 6
+    elif CD >= 4 and CD <= 6:
+        CD = 7
+    elif CD >= 7 and CD <= 10:
+        CD = 8
+    elif CD >= 11:
+        CD = 9
+
+    if is_attacker:
+        return (attacker_wounds[dice][CD], attacker_capture[dice][CD])
+    else:
+        return (defender_wounds[dice][CD], defender_capture[dice][CD])
 
 #Authored By Ben Cumber
 #military_units.dat info format
@@ -109,14 +153,8 @@ if __name__ == "__main__":
     loadDatabase()
 
     session = Session()
-    print session.query(Stack).filter_by(id = 1).one().characters
-    print "Before:"
-    for character in session.query(Stack).filter_by(id = 1).one().characters:
-            print character
-    char_combat(2,1,'C')
-    print "After:"
-    for character in session.query(Stack).filter_by(id = 1).one().characters:
-            print character
+
+    char_combat(1,2,'C')
 
 
     session.commit()

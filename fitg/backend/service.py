@@ -1,5 +1,6 @@
 import rpyc
 import actions
+from database_creation import loadDatabase
 
 class ClientService(rpyc.Service):
     """Handles service calls to the client.
@@ -9,15 +10,13 @@ class ClientService(rpyc.Service):
     """
     ALIASES = ["client"]
 
-    def exposed_state_change(self, action, response):
+    def exposed_state_change(self, response):
         """Returns the current turn state.
 
         Any time a state change is intitiated by a client other than the current client, state_change is called 
         on any other client that is attached to the game in question. This method must be implemented by the 
         client application, and will raise a NotImplementedError if called without overriding.
 
-        :param action: The called action that resulted in a state change.
-        :type action: dict.
         :param response: The response that was sent to the client that initiated the request.
         :type response: dict.
         :returns:  dict -- the current game state.
@@ -30,7 +29,7 @@ class FreedomService(rpyc.Service):
     ALIASES = ["fitg"]
 
     def on_connect(self):
-        pass
+        loadDatabase()
 
     def on_disconnect(self):
         pass
@@ -39,7 +38,7 @@ class FreedomService(rpyc.Service):
         """Returns the current turn state.
 
         :param validate_only: If true the move will only be validated.
-        :type validate_only: false.
+        :type validate_only: bool.
         :returns:  dict -- the current game state.
         :raises: AssertionError
         """
@@ -53,10 +52,13 @@ class FreedomService(rpyc.Service):
         Will this assert anything?
 
         :param validate_only: If true the move will only be validated.
-        :type validate_only: false.
+        :type validate_only: bool.
         :returns:  bool -- True on game creation, false on error.
         :raises: AssertionError
         """
+        assert isinstance(ai, bool)
+        assert isinstance(validate_only, bool)
+
         logger.info("Action: Creating a new game")
 
     def exposed_move(self, stack_id, location_id, validate_only=False):
@@ -67,11 +69,11 @@ class FreedomService(rpyc.Service):
         move is completed.
 
         :param stack_id: The stack_id of the stack to be moved.
-        :type name: int.
+        :type stack_id: int.
         :param location_id: Current state to be in.
         :type location_id: int.
         :param validate_only: If true the move will only be validated.
-        :type validate_only: false.
+        :type validate_only: bool.
         :returns:  dict -- a dictionary of updated stack locations.
         :raises: AssertionError
         """
@@ -147,6 +149,12 @@ class FreedomService(rpyc.Service):
 
         logger.info("Action: Merge stack " + str(merging_stack) + " into " + str(accepting_stack))
 
+        try:
+            actions.movement.merge_stack(accepting_stack, merging_stack)
+        except AssertionError:
+            logger.warn("AssertionError: Merge of " + str(merging_stack) + " into " + str(accepting_stack) + " attempt failed.")
+
+
     def exposed_show_mission(self, mission_id=None, validate_only=False):
         """Shows all missions or details of an existing mission.
 
@@ -165,6 +173,8 @@ class FreedomService(rpyc.Service):
         :returns:  dict -- a dictionary of stacks with a stack_id parameter.
         :raises: AssertionError
         """
+        assert isinstance(mission_id, int) or isinstance(mission_id, None)
+
         if mission_id is None: 
             logger.info("Action: Displaying mission information for all missions")
         else:

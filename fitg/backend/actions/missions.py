@@ -2,7 +2,7 @@
 
 from orm import *
 from combat import *
-from database_creation import loadDatabase
+#from database_creation import loadDatabase
 from random import randint
 
 

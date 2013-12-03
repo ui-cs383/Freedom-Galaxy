@@ -1,6 +1,21 @@
+import orm
 import rpyc
 import actions
-from database_creation import loadDatabase
+from contextlib import contextmanager
+
+@contextmanager
+def session_scope():
+    """Provide a transactional scope around a series of operations."""
+    session = Session()
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+
 
 class ClientService(rpyc.Service):
     """Handles service calls to the client.
@@ -28,11 +43,27 @@ class ClientService(rpyc.Service):
 class FreedomService(rpyc.Service):
     ALIASES = ["fitg"]
 
+    def __init__(self, conn):
+        super(FreedomService, self).__init__(conn)
+        self.logger = self._conn._config['logger']
+
     def on_connect(self):
-        loadDatabase()
+        pass
 
     def on_disconnect(self):
         pass
+
+    def response(self, called, parameters, success, result):
+        if 'self' in result: del result['self']
+
+        response = { 'request': dict(), 'response': dict() }
+
+        response['request']['call'] = called
+        response['request']['parameters'] = parameters
+        response['request']['success'] = success
+        response['response'] = result
+
+        return response
 
     def exposed_turn_state(self, validate_only=False):
         """Returns the current turn state.
@@ -42,9 +73,9 @@ class FreedomService(rpyc.Service):
         :returns:  dict -- the current game state.
         :raises: AssertionError
         """
-        logger.info("Action: Showing current turn state.")
+        self.logger.info("requested current turn state")
 
-    def exposed_start_game(self, ai=False, validate_only=False):
+    def exposed_start_game(self, name, player, scenario="demo", ai=False, validate_only=False):
         """Start a new game.
 
         Creates a new game.
@@ -56,10 +87,16 @@ class FreedomService(rpyc.Service):
         :returns:  bool -- True on game creation, false on error.
         :raises: AssertionError
         """
+        assert isinstance(name, str)
         assert isinstance(ai, bool)
         assert isinstance(validate_only, bool)
 
-        logger.info("Action: Creating a new game")
+        self.logger.info("creating a new game")
+
+        request = locals()
+        result = actions.game.start(name, player, scenario)
+
+        return self.response('start_game', request, result[0], result[1])
 
     def exposed_move(self, stack_id, location_id, validate_only=False):
         """Move a stack to a location.
@@ -77,10 +114,11 @@ class FreedomService(rpyc.Service):
         :returns:  dict -- a dictionary of updated stack locations.
         :raises: AssertionError
         """
+
         assert isinstance(stack_id, int)
         assert isinstance(location_id, int)
 
-        logger.info("Action: Move stack " + str(stack_id) + " to location " + str(location_id))
+        self.logger.info("requested stack " + str(stack_id) + " movement to location " + str(location_id))
 
     def exposed_combat(self, attacker_stack_id, defender_stack_id, options, validate_only=False):
         """Start combat between an attacker and a defender.
@@ -89,10 +127,12 @@ class FreedomService(rpyc.Service):
         is an adjacent enviorn, a environ based move is completed. If location_id is a different enviorn a space
         move is completed.
 
-        :param attacker_stack_id: 
-        :type name: int.
-        :param location_id: Current state to be in.
-        :type location_id: int.
+        :param attacker_stack_id: The unique id of the attacking stack.
+        :type attacker_stack_id: int.
+        :param defender_stack_id: The unique id of the defending stack.
+        :type defender_stack_id: int.
+        :param options: A tuple of flags as options for combat.
+        :type options: tuple.
         :param validate_only: If true the move will only be validated.
         :type validate_only: false.
         :returns:  dict -- the results of the combat
@@ -101,7 +141,7 @@ class FreedomService(rpyc.Service):
         assert isinstance(attacker_stack_id, int)
         assert isinstance(defender_stack_id, int)
 
-        logger.info("Action: Calculate combat outcome for attacker " + str(attacker_stack_id) + " and " + str(defender_stack_id))
+        self.logger.info("requested combat outcome for attacker " + str(attacker_stack_id) + " and " + str(defender_stack_id))
 
     def exposed_split_stack(self, stack_id, unit_id=None, character_id=None, validate_only=False):
         """Move a stack to a location.
@@ -124,7 +164,7 @@ class FreedomService(rpyc.Service):
         assert isinstance(stack_id, int)
         assert isinstance(character_id, int) or isinstance(unit_id, int)
 
-        logger.info("Action: Split unit " + str(unit_id) or str(character_id) + " from stack " + str(stack_id))
+        self.logger.info("requested split unit " + str(unit_id) or str(character_id) + " from stack " + str(stack_id))
 
     def exposed_merge_stack(self, accepting_stack, merging_stack, validate_only=False):
         """Merges merging_stack into accepting_stack.
@@ -147,12 +187,13 @@ class FreedomService(rpyc.Service):
         assert isinstance(accepting_stack, int)
         assert isinstance(merging_stack, int)
 
-        logger.info("Action: Merge stack " + str(merging_stack) + " into " + str(accepting_stack))
+        self.logger.info("requested stack merge of " + str(merging_stack) + " into " + str(accepting_stack))
 
         try:
-            actions.movement.merge_stack(accepting_stack, merging_stack)
+            #actions.movement.merge_stack(accepting_stack, merging_stack)
+            pass
         except AssertionError:
-            logger.warn("AssertionError: Merge of " + str(merging_stack) + " into " + str(accepting_stack) + " attempt failed.")
+            self.logger.warn("merge of " + str(merging_stack) + " into " + str(accepting_stack) + " failed")
 
 
     def exposed_show_mission(self, mission_id=None, validate_only=False):
@@ -173,12 +214,12 @@ class FreedomService(rpyc.Service):
         :returns:  dict -- a dictionary of stacks with a stack_id parameter.
         :raises: AssertionError
         """
-        assert isinstance(mission_id, int) or isinstance(mission_id, None)
+        assert isinstance(mission_id, int) or mission_id is None
 
         if mission_id is None: 
-            logger.info("Action: Displaying mission information for all missions")
+            self.logger.info("requested mission information for all missions")
         else:
-            logger.info("Action: Displaying mission information for mission " + str(mission_id))
+            self.logger.info("requested mission information for mission " + str(mission_id))
 
     def exposed_draw_mission(self, validate_only=False):
         """Draws mission card.
@@ -187,7 +228,7 @@ class FreedomService(rpyc.Service):
         :type validate_only: false.
         :returns:  dict -- the current game state.
         """
-        logger.info("Action: Drawing a mission card")
+        self.logger.info("requested a mission")
 
     def exposed_assign_mission(self, mission_id, character_id, validate_only=False):
         """Draws mission card.
@@ -200,10 +241,10 @@ class FreedomService(rpyc.Service):
 
         try:
             assert isinstance(character_id, int)
-            logger.info("Action: Assign mission " + str(mission_id) + " to character " + str(character_id))
+            self.logger.info("requested mission " + str(mission_id) + " assignment to character " + str(character_id))
         except AssertionError:
             assert isinstance(character_id, tuple)
-            logger.info("Action: Assign mission " + str(mission_id) + " to character " + str(character_id))
+            self.logger.info("requested mission " + str(mission_id) + " assignment to characters " + str(character_id))
 
 
 if __name__ == "__main__":
@@ -218,5 +259,4 @@ if __name__ == "__main__":
     logger.setLevel(logging.INFO)
 
     t = ThreadedServer(FreedomService, port = 18861)
-    logger.info('Starting server on ' + host + ':' + str(port))
     t.start()

@@ -1,8 +1,9 @@
-from database_creation import loadDatabase
+#from database_creation import loadDatabase
 from orm import *
 from random import randint
 
-
+session = Session()
+ 
 def char_combat(atk_id, def_id, options):
 
     session = Session()

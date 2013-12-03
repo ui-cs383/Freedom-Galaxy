@@ -1,4 +1,4 @@
-from database_creation import loadDatabase
+#from database_creation import loadDatabase
 from orm import *
 from random import randint
 

@@ -1,0 +1,198 @@
+###############################################################################
+#	The following comments define the action codes and mission letters    #
+#       that are contained in the action.dat file.  The way the file is       #
+#       formatted is: Mission Letters, Action Codes.  They are listed three   #
+#       to a line and each of the Mission Letters and Action Codes are for a  #
+# 	specific environ the order is:  Urban, Special, Wild.                 #
+###############################################################################
+#                                                                             #
+#                               MISSION LETTERS                               # 
+#                                                                             #
+###############################################################################
+#                                                                             #
+#	P:	Scavenge for Possessions                                      		  #
+#	I:	Gather Information                                            		  #
+#	Q:	Question Prisoner                                             		  #
+#	G:	Gain Characters                                               		  #
+#	B:	Start Rebel Camp                                              		  #
+#	J:	Spaceship Quest                                               		  #
+#	F:	Free Prisoners                                                		  #
+#	S:	Sabotage                                                      		  #
+#	E:	Summon Sovereign                                              		  #
+#	D:	Diplomacy                                                     		  #
+#	A:	Assassination                                                 		  #
+#	H:	Steal Enemy Resources                                         		  #
+#	C:	Coup                                                          		  #
+#	T:	Subvert Troops                                                		  #
+#	R:	Start Rebellion / Stop Rebellion                              		  #
+#                                                                             #
+###############################################################################
+#                                                                             #
+#                               ACTION CODES                                  #
+#                                                                             #
+###############################################################################
+#  AWH:		Accidents Will Happen                                         #
+#		(especially in an unfamiliar environ.  Any one character      #
+#		performing a mission in the environ must receive a wound.)    #
+#                                                                             #
+#  CAoNA:	Creature Attacks or No Action                                 #
+#		(if a creature is not named in the environ ignore event)      #
+#                                                                             #
+#  CAoxR:	Creature Attacks or One Sentry Robot                          #
+#		(if a creature is named in the environ, look it up in the     #
+#		Galatic guide to determine its attributes.  If no creature    #
+#		is named, the mission group is attacked by x (x will be 1     #
+#               or 2) sentry robot.)                                          #
+#		                                                              #
+#  CAPaAGO:	Commit Atrocity Planet and Advanced Game Only                 #
+#		(otherwise ignore event)                                      #
+#                                                                             #
+#  CAPaGGO:	Commit Attrocity Planet and Galatic Game Only                 #
+#		(the imperial player may commit an atrocity on this planet.   #
+#		Galatic Game only, otherwise ignore event.)                   #
+#                                                                             #
+#  CD:		Characters Detected                                           #
+#                                                                             #
+#  CDaCS:	Characters Detected and Conduct Search                        # 
+#		(Enemy player may conduct search for one mission group        #
+#		in environ.)                                                  #
+#                                                                             #
+#  CDRaNBD:	Characters Delayed Rumors and No Bonus Draws                  #
+#		(may be taken in this Environ this Mission Phase.)            #
+#                                                                             #
+#  CL: 		Confusing Local                                               #
+#		(protocal aborts a diplomacy mission.  If one is being        #
+#		performed in the Environ, shift the Loyalty marker one        #
+#		space in the Non-Phasing Player's favor.)                     #
+#	                                                                      #
+#  CMA1aCD:	Coup Mission Aborted 1 and Characters Detected                # 
+#		(Type 1: Roll the die. 1-3 no effect; 4 shift loyalty         #
+#		marker one space in non phasing player's favor; 5 or 6        #
+#		shift loyalty and entire Missions group captured.)	      #
+#                                                                             #
+#  CMA2aCD:	Coup Mission Aborted 2 and Characters Detected                #
+#		(Type 2.  Roll the die 1-4, no effect; 5, shift loyalty       #
+#		marker one space in non phasing player's favor; 6, shift      #
+#		Loyalty and entire mission group captured.)                   #
+#                                                                             #
+#  CMA3aCD:	Coup Mission Aborted 3 and Characters Detected                #
+#		(Type 3.  Roll the die 1, 2, no effect; 3-5, shift loyalty    #
+#		marker one space in non phasing player's favor; 5, 6 shift    #
+#		Loyalty and Mission group captured, one character killed.     #
+#		(Phasing Player's Choice))                                    #
+#                                                                             #
+#  CMA4aCD:	Coup Mission Aborted 4 and Characters Detected                #
+#		(Type 4.  Roll the die 1-3 no effect; 4,5, shift loyalty      #
+#		marker one space in non-Phasing Player's favor; 6, shift      #
+#		Loyalty and entire Mission Group Killed.)                     #
+#                                                                             #
+#  CMA5aCD:	Coup Mission Aborted 5 and Characters Detected                # 
+#		(Type 5.  Roll the die 1, 2, no effect; 3, 4, shift           #
+#		loyalty marker one space in non phasing player's favor;       #
+#		5, 6, shift Loyalty and mission group found by Enemy squad    #
+#		or characters. (Non Phasing Players Choice.)                  #
+#                                                                             #
+#  CMA6aCD:	Coup Mission Aborted 6 and Characters Detected                #
+# 		(Type 6.  Roll the die.  1-3, shift loyalty marker one        #
+#		space in Non-Phasing Players favor; 4-6 shift Loyalty and     #
+#		Mission Group found by Enemy Squad or characters. (Non-       #
+#		Phasing Players Choice))                                      #
+#                                                                             #
+#  CPM:		Controversial Political Matters                               #
+#		(argued.  If a Diplomacy mission is being performed, and      #
+#		no character in the Mission Group has a Diplomacy Rating      #
+#		of two or more, the mission is aborted.)                      #
+#	                                                                      #
+#  CW:		Civil War                                                     #
+#		(breaks out.  The populace blames the phasing player.  If     #
+#		the loyalty marker is currently at 1 or 2 in the player's     #
+#		favor, move the marker to Neutral.  If the Planet is in       #
+#		rebellion or not in the player's favor, ignore event.)        #
+#                                                                             #
+#  DFSaNBD:	Disagreeble Food Substance and No Bonus Draws                 #
+#		(hampers characters, and no bonus draws may be taken in       #
+#		this environ this mission phase.)                             #
+#                                                                             #
+#  ERMaCD:	Enemy Reveals Mission and Characters Detected                 #
+#		(The non phasing player randomly chooses one mission          #
+#		that the phasing player is currently performing in the        #
+#		environ; that mission is aborted.)                            #
+#                                                                             # 
+#  ILA:		Irate Locals Attack                                           #
+#		(one mission group. Refer to the irate locals chart to        #
+#		determine the mob's attributes.)                              #
+#                                                                             #
+#  LEM:		Local Expidite Missions                                       #
+#		(local connections expedite missions.  All missions receive   #
+#		one extra bonus draw in this environ in this mission phase.)  #
+#                                                                             #
+#  LR:		Locals Raid                                                   #
+#		(enemy forces.  Non phasing player must eliminate one of      #
+#		his military units in the environ or if he controls a PDB     #
+#		that is up one the planet, place it down, this is the         #
+#		non-phasing players choice.)                                  #
+#                                                                             #
+#  LSC:		Local Shelters Characters                                     #
+#		(from enemy.  No enemy searches may be conducted in this      #
+#		environ for the remainder of this mission phase.)             #
+#                                                                             #
+#  MGS:		Mission Group Stumbles                                        #
+#		(on enemy squad.  If the enemy player controls the planet     #
+#		and has military units in the environ character combat is     #
+#		initiated using the Squad Table to determine the Enemy's      #
+#		strength.)                                                    #
+#                                                                             #
+#  nCA:		not Creature Attacks                                          #
+#		(It's the off-season for the local creatures.  Ignore all     #
+#		"Creature Attacks" events in this Environ this Mission        #
+#		Phase.)                                                       #
+#                                                                             #
+#  PGW: 	Populace Goes Wild                                            #
+#		(If the planet is placed into rebellion during this           #
+#		phase, the Rebel Player receives double the resource          #
+#		value in this Environ.)                                       #
+#                                                                             #
+#  RCOaCD:	Rebels Chicken Out and Characters Detected                    #
+#		(start rebellion mission aborted.)                            #
+#                                                                             #
+#  WD:		Weather Disturbances                                          #
+#		(hamper enemy operations.  The non-Phasing player may         #
+#		conduct no searches in this environ this mission phase.)      #
+#                                                                             #
+#  WSC:		Wrong Soldier Contacted                                       #
+#		(If a subvert toops mission is being performed, it is         #
+#		aborted Mission group found by enemy squad.  If an enemy      #
+#		leader is stacked with the enemy military units, the entire   #
+#		Mission Group is captured.)                                   #
+#                                                                             #
+###############################################################################
+RH CAoNA, B LR, P LSC,
+D CAo1R, CS WD, PI CMA1aCD,
+PI CAo2R, SC CD, RG LR,
+CJ ILA, BT RCOaCD, PG WD,
+PG ILA, C CPM, DH CAPaGGO,
+D RCOaCD, GI WD, RS WSC,
+P ERMaCD, BH ILA, C CAoNA,
+FG CD, D PGW, AH CAo1R,
+A LSC, BE CAo1R, FB CMA2aCD,
+C WD, SE CMA3aCD, FI LEM,
+CS LEM, DG CMA4, FP CDRaNBD,
+SH LEM, GP CAo1R, B CW,
+RE LEM, FP CL, CS MGS,
+FI WSC, CT AWH, E CPM,
+G CW, RS WD, D PGW,
+DS LR, RQ CDaCS, F RCOaCD,
+FP LR, R CAo2R, SH CD,
+GI PGW, R CDaCS, SE CAo2R,
+FI CDaCS, AJ CDRaNBD, CT CDaCS,
+SC DFSaNBD, R CMA5aCD, FG CDaCS,
+T CDRaNBD, F MGS, BJ WD,
+CE CAPaAGO, P CW, R LEM,
+B CL, CH ERMaCD, GI CL,
+BE CPM, P LEM, RQ ILA,
+SG CMA4aCD, FI LEM, RT nCA,
+RB CMA5aCD, F CAPaGGO, SC CL,
+DQ CMA6aCD, FG DFSaNBD, BE PGW,
+RH CDaCS, FI PGW, B CAo2R,
+AT CDaCS, DE WSC, P DFSaNBD,
+F PGW, SH CAoNA, D ERMaCD,

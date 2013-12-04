@@ -1,27 +1,46 @@
 #from database_creation import loadDatabase
 from orm import *
+from sqlalchemy.orm import exc
 from random import randint
 
 
-def move_environ(stack_id, environ_id):
-    session = Session()
+def move(session, game_name, stack_id, environ_id):
+    # need to make sure stack_id and enviorn_id are in the same game
+    # this can be checked by ensuring stack.game_id = environ.planet.game_id
 
-    newloc = session.query(Environ).filter_by(id = environ_id).one()
+    try:
+        newloc = session.query(Environ).filter_by(id = environ_id).one()
+    except exc.NoResultFound:
+        success = False
+    else:
+        success = True
 
-    if newloc == None:
-        raise Exception("No environ with that ID found")
-    oldloc = session.query(Stack).filter_by(id = stack_id).one().location
-    
-    if (int(newloc.id) / 10) != (int(oldloc.id) / 10):
-        raise Exception("Cannot move to non-adjacent environs")
+    try:
+        oldloc = session.query(Stack).filter_by(id = stack_id).one().location
+    except exc.NoResultFound:
+        success = False
+    else:
+        success = True
+
+    if success:
+        if (int(newloc.id) / 10) != (int(oldloc.id) / 10):
+            success = False
 
     # if moving to Orbit (environ id ends in '0') then PDB routines ?
+    try:
+        moving_stack = session.query(Stack).filter_by(id = stack_id).one()
+    except exc.NoResultFound:
+        success = False
+    else:
+        success = True
+        moving_stack.location = newloc
+        session.add(moving_stack)
 
-    moving_stack = session.query(Stack).filter_by(id = stack_id).one()
-    moving_stack.location = newloc
-
-    session.add(moving_stack)
-    session.commit()
+    if success:
+        session.commit()
+        return success, moving_stack.__dict__
+    else:
+        return success, None
 
 def merge_stack(src_id, des_id):
     session = Session()

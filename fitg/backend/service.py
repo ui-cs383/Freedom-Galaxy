@@ -1,12 +1,10 @@
-import orm
 import rpyc
-import actions
 from contextlib import contextmanager
 
 @contextmanager
-def session_scope():
+def session_scope(orm):
     """Provide a transactional scope around a series of operations."""
-    session = Session()
+    session = orm.Session()
     try:
         yield session
         session.commit()
@@ -48,13 +46,18 @@ class FreedomService(rpyc.Service):
         self.logger = self._conn._config['logger']
 
     def on_connect(self):
-        pass
+        import orm
+        import actions
+
+        self.actions = actions
+        self.orm = orm
 
     def on_disconnect(self):
         pass
 
     def response(self, called, parameters, success, result):
-        if 'self' in result: del result['self']
+        if result is not None:
+            if 'self' in result: del result['self']
 
         response = { 'request': dict(), 'response': dict() }
 
@@ -91,14 +94,25 @@ class FreedomService(rpyc.Service):
         assert isinstance(ai, bool)
         assert isinstance(validate_only, bool)
 
-        self.logger.info("creating a new game")
+        with session_scope(self.orm) as session:
+            self.logger.info("creating a new game")
 
-        request = locals()
-        result = actions.game.start(name, player, scenario)
+            request = locals()
+            result = self.actions.game.start(session, name, player, scenario)
 
-        return self.response('start_game', request, result[0], result[1])
+            return self.response('start_game', request, result[0], result[1])
 
-    def exposed_move(self, stack_id, location_id, validate_only=False):
+    def exposed_list_games(self):
+        with session_scope(self.orm) as session:
+
+            self.logger.info("getting a list of available games")
+
+            request = locals()
+            result = self.actions.game.list(session)
+
+            return self.response('list_games', request, result[0], result[1])
+
+    def exposed_move(self, game_name, stack_id, location_id, validate_only=False):
         """Move a stack to a location.
 
         Move takes a stack_id and moves it to location_id. If stack_id is in an enviorn and location_id 
@@ -118,7 +132,13 @@ class FreedomService(rpyc.Service):
         assert isinstance(stack_id, int)
         assert isinstance(location_id, int)
 
-        self.logger.info("requested stack " + str(stack_id) + " movement to location " + str(location_id))
+        with session_scope(self.orm) as session:
+            self.logger.info("requested stack " + str(stack_id) + " movement to location " + str(location_id))
+
+            request = locals()
+            result = self.actions.movement.move(session, game_name, stack_id, location_id)
+
+            return self.response('move', request, result[0], result[1])
 
     def exposed_combat(self, attacker_stack_id, defender_stack_id, options, validate_only=False):
         """Start combat between an attacker and a defender.

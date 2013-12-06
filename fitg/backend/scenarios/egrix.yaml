@@ -1,4 +1,11 @@
 --- 
+scenarioinfo:
+  -
+    name: 'Flight to Egrix'
+    type: 'Star System'
+    goal: 'Start Rebellion'
+    victory points: 12
+    game turns: 6
 stars:
   -
     Egrix
@@ -127,7 +134,7 @@ environs:
     star_faring: 1
     resources: 6
     star_resources: 1
-    monster: Snow Giants
+    monster: 'Snow Giants'
     sov: 0
   -
     id: 1
@@ -149,7 +156,7 @@ environs:
     star_faring: 1
     resources: 7
     star_resources: 1
-    monster: Drants
+    monster: 'Frost Mist'
     sov: 0
   -
     id: 2
@@ -189,8 +196,45 @@ races:
     firefight: false
 monsters:
   -
-    name: Charkhans_W
-    environ_id: 2232
-    combat: 5
+    name: 'Snow Giants'
+    environ_id: 2211
+    combat: 6
     endurance: 4
     firefight: false
+  -
+    name: Laboroids
+    environ_id: 2221
+    combat: 3
+    endurance: 3
+    firefight: false
+  -
+    name: 'Frost Mist'
+    environ_id: 2231
+    combat: 5
+    endurance: 5
+    firefight: false
+  -
+    name: Mish
+    environ_id: 2232
+    combat: 6
+    endurance: 3
+    firefight: false
+militaryunits:
+  -
+    name: Line
+    side: Imperial
+    combat: 3
+    endurance: 2
+    number: 1
+  -
+    name: Militia
+    side: Imperial
+    combat: 1
+    endurance: 0
+    number: 3
+  -
+    name: Patrol
+    side: Imperial
+    combat: 2
+    endurance: 1
+    number: 3 

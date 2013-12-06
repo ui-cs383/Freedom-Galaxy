@@ -4,8 +4,12 @@
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import *
+import pyconfig
 
-engine = create_engine('sqlite:///data/Freedom.db')
+db = pyconfig.get('database')
+path = pyconfig.get('database_path')
+
+engine = create_engine(db + '://' + path)
 Base = declarative_base(bind=engine)
 Session = scoped_session(sessionmaker(engine))
 

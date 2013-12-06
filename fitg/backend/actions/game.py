@@ -2,12 +2,8 @@ import yaml
 import orm
 from sqlalchemy import or_
 
-session = orm.Session()
-
-def start(name, player, scenario="demo"):
+def start(session, name, player, scenario="demo"):
 	game = orm.Game(name = name, player1 = player, player2 = None, scenario = scenario)
-
-	response = dict()
 
 	try: 
 		session.add(game)
@@ -19,8 +15,8 @@ def start(name, player, scenario="demo"):
 	return success, { 'game': game.__dict__ }
 	
 
-def join(name, player):
-	game = session.query(Game).filter_by(name = name).filter(_or(player1 = None, player2 = None)).one()
+def join(session, name, player):
+	game = session.query(orm.Game).filter_by(name = name).filter(or_(player1 = None, player2 = None)).one()
 	session.add(game)
 
 	if game.player1 is None:
@@ -28,15 +24,15 @@ def join(name, player):
 	elif game.player2 is None:
 		game.player2 = player
 	else:
-		print("lawl")
+		return False, { 'game': game.__dict__ }
 
 	session.add(game)
 	session.commit()
 
-	retur
+	return True, { 'game': game.__dict__ }
 
-def list():
-	games = session.query(Game).filter(_or(player1 = None, player2=None))
+def list(session):
+	games = session.query(orm.Game).filter((orm.Game.player1 == None) | (orm.Game.player2 == None)).all()
+	glist = [ x.__dict__ for x in games ]
 
-	session.add(games)
-	print(games)
+	return True, { 'games': glist }

@@ -3,76 +3,125 @@ from orm import *
 from random import randint
 
 
-def char_combat(AtkID, DefID, Options):
+def char_combat(atk_id, def_id, options):
 
-	session = Session()
+    session = Session()
 
-	atk_stack = session.query(Stack).filter_by(id = AtkID).one()
-	def_stack = session.query(Stack).filter_by(id = DefID).one()
+    atk_stack = session.query(Stack).filter_by(id = atk_id).one()
+    def_stack = session.query(Stack).filter_by(id = def_id).one()
+    session.add(atk_stack, def_stack)
 
-	# still needs to include breakoff and capture modifiers
-	# also decision if firefight or hand-to-hand
+    # still needs to include breakoff
 
-	CD = char_combat_rating(AtkID, session) - char_combat_rating(DefID, session)
 
-	if 'C' in Options:
-		CD -= 2
+    CD = char_combat_rating(atk_stack, session) - char_combat_rating(def_stack, session)
 
-	atk_result = char_table(randint(0,5),CD,True)
-	def_result = char_table(randint(0,5),CD,False)
+    if 'C' in options:
+        CD -= 2
 
-	if 'F' in Options:
-		atk_result[0] *= 2
-	if atk_stack.militaryunits:
-		atk_result[0] *= 2
-		
-	if 'C' in Options:
-		if atk_result[1] == 1:
-			CapturedChar = def_stack.characters[randint(0,len(def_stack.characters)-1)]
-			CapturedChar.stack_id = AtkID
-			CapturedChar.captive = True
-			CapturedChar.active = False
+    atk_result = char_table(randint(0,5),CD,True)
+    def_result = char_table(randint(0,5),CD,False)
 
-		if def_result[1] == 1:
-			CapturedChar = def_stack.characters[randint(0,len(def_stack.characters)-1)]
-			CapturedChar.stack_id = AtkID
-			CapturedChar.captive = True
-			CapturedChar.active = False
+    if 'F' in options:
+        atk_result[0] *= 2
+        def_result[0] *= 2
 
-	session.add(atk_stack, def_stack)
-	session.commit()
+    elif atk_stack.militaryunits:
+        atk_result[0] *= 2
+        def_result[0] *= 2
 
-def suffer_wounds(character, num, session):
-	pass
+    char_wounds(atk_stack, atk_result[0], session)
+    char_wounds(def_stack, def_result[0], session)
+        
+    if 'C' in options:
+        if atk_result[1] == 1:
+            captured_char = def_stack.characters[randint(0,len(def_stack.characters)-1)]
+            captured_char.stack_id = atk_id
+            captured_char.captive = True
+            captured_char.active = False
+
+        if def_result[1] == 1:
+            captured_char = def_stack.characters[randint(0,len(def_stack.characters)-1)]
+            captured_char.stack_id = atk_id
+            captured_char.captive = True
+            captured_char.active = False
+
+    if atk_stack.size() == 0:
+        session.delete(atk_stack)
+
+    if def_stack.size() == 0:
+        session.delete(def_stack)
 
 def char_combat_rating(StackID, session):
-	CR = 0
-	for character in session.query(Stack).filter_by(id = StackID).one().characters:
-		if character.active == True:
-			CR += character.combat - character.wounds
-	return CR
+    CR = 0
+    for character in session.query(Stack).filter_by(id = StackID).one().characters:
+        if character.active == True:
+            CR += character.combat - character.wounds
+    return CR
+    session.commit()
 
-def char_table(dice, CD, IsAttacker):
-	AttackerWounds = (
-		(4,3,3,2,2,2,2,1,1,1),(4,3,2,2,2,1,1,1,1,0),(3,3,2,2,1,1,1,1,0,0),
-		(3,2,2,1,1,1,0,0,0,0),(2,2,1,1,0,0,0,0,0,0),(2,1,0,0,0,0,0,0,0,0))
+def char_wounds(stack, num_wounds, session):
+    while num_wounds > 0 and stack.characters:
+        victim = stack.characters[randint(0,len(stack.characters)-1)]
+        session.add(victim)
+        victim.wounds += 1
+        print victim.name, " suffers wound!"
+        if victim.wounds >= victim.endurance:
+            print victim.name, " has died! :("
+            session.delete(victim)
+        num_wounds -= 1
 
-	DefenderWounds = (
-		(0,0,0,0,0,0,0,1,1,2),(0,0,0,0,0,0,1,1,1,2),(0,0,0,0,0,1,1,1,2,3),
-		(0,0,0,1,1,1,1,2,3,3),(0,0,1,1,1,1,2,2,3,4),(1,1,1,1,2,2,2,3,3,4))
+    session.commit()
 
-	AttackerCapture = (
-		(0,0,0,0,0,1,0,0,0,0),(0,0,0,1,1,0,1,1,1,0),(0,1,0,0,0,0,0,0,0,0),
-		(0,0,1,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,1,0,0),(0,0,0,0,0,0,0,0,0,0))
+def char_combat_rating(stack, session):
+    CR = 0
+    for character in stack.characters:
+        if character.active == True:
+            CR += character.combat - character.wounds
+    return CR
 
-	DefenderCapture = (
-		(0,0,0,0,0,0,0,0,1,0),(0,0,0,0,0,0,0,0,0,0),(0,0,0,0,1,0,0,1,1,0),
-		(0,0,0,1,0,1,1,1,0,0),(0,0,0,0,0,0,1,0,1,0),(0,0,0,0,0,0,0,0,0,0))
+def char_table(dice, CD, is_attacker):
+    attacker_wounds = (
+        (4,3,3,2,2,2,2,1,1,1),(4,3,2,2,2,1,1,1,1,0),(3,3,2,2,1,1,1,1,0,0),
+        (3,2,2,1,1,1,0,0,0,0),(2,2,1,1,0,0,0,0,0,0),(2,1,0,0,0,0,0,0,0,0))
 
-	if IsAttacker:
-		return (AttackerWounds[dice][CD], AttackerCapture[dice][CD])
-	else:
-		return (DefenderWounds[dice][CD], DefenderCapture[dice][CD])
+    defender_wounds = (
+        (0,0,0,0,0,0,0,1,1,2),(0,0,0,0,0,0,1,1,1,2),(0,0,0,0,0,1,1,1,2,3),
+        (0,0,0,1,1,1,1,2,3,3),(0,0,1,1,1,1,2,2,3,4),(1,1,1,1,2,2,2,3,3,4))
+
+    attacker_capture = (
+        (0,0,0,0,0,1,0,0,0,0),(0,0,0,1,1,0,1,1,1,0),(0,1,0,0,0,0,0,0,0,0),
+        (0,0,1,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,1,0,0),(0,0,0,0,0,0,0,0,0,0))
+
+    defender_capture = (
+        (0,0,0,0,0,0,0,0,1,0),(0,0,0,0,0,0,0,0,0,0),(0,0,0,0,1,0,0,1,1,0),
+        (0,0,0,1,0,1,1,1,0,0),(0,0,0,0,0,0,1,0,1,0),(0,0,0,0,0,0,0,0,0,0))
+
+    if CD <= -7:
+        CD = 0
+    elif CD >= -6 and CD <= -4:
+        CD = 1
+    elif CD >= -3 and CD <= -2:
+        CD = 2
+    elif CD == -1:
+        CD = 3
+    elif CD == 0:
+        CD = 4
+    elif CD == 1:
+        CD = 5
+    elif CD >= 2 and CD <= 3:
+        CD = 6
+    elif CD >= 4 and CD <= 6:
+        CD = 7
+    elif CD >= 7 and CD <= 10:
+        CD = 8
+    elif CD >= 11:
+        CD = 9
+
+    if is_attacker:
+        return (attacker_wounds[dice][CD], attacker_capture[dice][CD])
+    else:
+        return (defender_wounds[dice][CD], defender_capture[dice][CD])
 
 #Authored By Ben Cumber
 #military_units.dat info format
@@ -88,27 +137,88 @@ def mil_combat(atk_id, def_id):
     atk_combat_rating = stack_combat_rating(atk_stack)
     def_combat_rating = stack_combat_rating(def_stack)
     
-    column = stack_combat_ratio(atk_combat_rating, def_combat_rating)
     print "Attacker Combat Rating: ", atk_combat_rating
     print "Defender Combat Rating: ", def_combat_rating
 
+    column = stack_combat_ratio(atk_combat_rating, def_combat_rating)
     
+    print "Column: ", column
+
+    atk_result = mil_combat_table(randint(0,5), column, True)
+    def_result = mil_combat_table(randint(0,5), column, False)
+
+    print "Attackers Eliminated: ", atk_result
+    print "Defenders Eliminated: ", def_result
+
     #atk_result = mil_combat_table(randint(0, 5), combat_ratio, True)
     #def_result = mil_combat_table(randint(0, 5), combat_ratio, False)
 
 def stack_combat_ratio(atk_rating, def_rating):     #Always round in the
     ratio = 0                                       #defenders favor
-    if(atk_rating > def_rating):
+    column = 1
+    #columns 0 and 10 are only accessible through a modifier shift.
+
+    if(atk_rating > def_rating):#columns 6-9
         ratio =  atk_rating / def_rating
-    elif(atk_rating < def_rating):
+        if(ratio == 1):
+            column = 5
+        elif(ratio == 2):
+            column = 6
+        elif(ratio == 3):
+            column = 7
+        elif(ratio == 4):
+            column = 8
+        else:
+            column = 9
+    elif(atk_rating < def_rating):#columns 1-4
         ratio = def_rating / atk_rating
         ratio += 1
+        if(ratio >= 5):
+            column = 1
+        elif(ratio == 4):
+            column = 2
+        elif(ratio == 3):
+            column = 3
+        else:
+            column = 4
     else:
         #they are equal, the ratio is 1:1, column 5
-        ratio = 5
-    print "Ratio = ", ratio
-    return ratio
+        column = 5
+    return column
 
+def mil_combat_modifiers(atk_obj, def_obj):
+    modifier = 0
+    atk_leader = atk_obj.find_stack_leader()
+    def_leader = def_obj.find_stack_leader()
+    leadership = abs(atk_leader - def_leader)
+    if(atk_leader > def_leader):
+        modifier += leadership
+    elif(def_leader > atk_leader):
+        modifier -= leadership
+    #leadership modifier done
+
+    #now for Rebel unit environ type modifier
+    #Step 1:
+        #Determine which stack is rebel.
+    #Step 2:
+        #Determine what type of environ combat is occuring in.
+    #Step 3:
+        #Check if rebel units are of same environ type.
+    #Step 4:
+        #if yes: Shift in their favor.
+        #if no: do nothing
+
+    #now for special environ modifier (Rebels favor only)
+    #occurs only if combat is in liquid, subterranean, air, or fire environ.
+    #and only if there is not an imperial leader present.
+    #Step 1:
+        #Is it a special environ?
+    #Step 2:
+        #Do the imperials have a leader?
+    #Step 3:
+        #If 1 is true and 2 is false shift 1 in rebels favor.
+        #Else, Do nothing.
+    return modifier
 
 def stack_combat_rating(stack_obj):
     combat_rating = 0
@@ -129,7 +239,7 @@ def stack_combat_rating(stack_obj):
     return combat_rating
 
 def mil_combat_table(die_roll, combat_odds, is_attacker):
-    defender_wounds = (
+    attacker_wounds = (
             (8, 7, 6, 5, 5, 4, 3, 3, 2, 2, 1),
             (7, 6, 5, 5, 4, 3, 2, 2, 1, 1, 1),
             (7, 5, 5, 4, 3, 2, 2, 2, 1, 1, 1),
@@ -137,13 +247,14 @@ def mil_combat_table(die_roll, combat_odds, is_attacker):
             (5, 4, 4, 3, 2, 1, 1, 0, 0, 0, 0),
             (4, 4, 3, 3, 1, 0, 0, 0, 0, 0, 0))
 
-    attacker_wounds = (
+    defender_wounds = (
             (0, 0, 0, 0, 0, 0, 1, 2, 2, 3, 4),
             (0, 0, 0, 0, 0, 1, 2, 3, 3, 4, 5),
             (0, 0, 0, 0, 1, 1, 2, 3, 4, 4, 5),
             (0, 0, 1, 1, 1, 2, 3, 3, 4, 5, 6),
             (1, 1, 1, 1, 2, 2, 3, 4, 5, 6, 7),
             (1, 1, 1, 2, 2, 3, 4, 5, 6, 7, 8))
+    print "Die Roll", die_roll+1
     if is_attacker:
         return (attacker_wounds[die_roll][combat_odds])
     else:
@@ -171,5 +282,9 @@ if __name__ == "__main__":
     print "Combat Ratings should be 4 and 2"
     mil_combat(3, 4)
     stack_combat_ratio(15, 5)
+
+    #char_combat(1,2,'C')
+
+
     session.commit()
 

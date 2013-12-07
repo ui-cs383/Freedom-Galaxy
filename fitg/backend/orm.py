@@ -1,19 +1,40 @@
 #Author: Jeff Crocker
 #Purpose: The Object Relational Mapping for the Freedom.db
 
-
-from sqlalchemy.orm import sessionmaker, relationship, backref
+from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import *
+import pyconfig
 
-Base = declarative_base()           #Alright, set up the database.
-db = create_engine('sqlite:///Freedom.db')
-Session = sessionmaker(bind=db)     #Create a Session, binding it to the database.
-        
+db = pyconfig.get('database')
+path = pyconfig.get('database_path')
+
+engine = create_engine(db + '://' + path)
+Base = declarative_base(bind=engine)
+Session = scoped_session(sessionmaker(engine))
+
+class Game(Base):
+    __tablename__ = 'games'
+    name = Column(String, primary_key=True)
+    player1 = Column(String)
+    player2 = Column(String)
+    scenario = Column(String) # this should eventually be tied to a scenario table?
+    stacks = relationship("Stack", backref=backref("game", uselist=False))
+    planets = relationship("Planet", backref=backref("game", uselist=False))
+
+    def __init__(self, name, player1, player2, scenario):
+        self.name = name
+        self.player1 = player1
+        self.player2 = player2
+        self.scenario = scenario
+
+    def __repr__(self):
+        return "<Game('%s','%s', '%s', '%s')>" % (self.name, self.player1, self.player2, self.scenario)
 
 class Character(Base):
     __tablename__ = 'characters'
-    name = Column(String, primary_key=True)     #Unique name of every character
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String)                       #name of every character
     gif = Column(String)                        #Does the DB need this?
     title = Column(String)                      #Long title of character
     race = Column(String)                       #Character's Race
@@ -32,7 +53,6 @@ class Character(Base):
     active = Column(Boolean)
     captive = Column(Boolean)
     stack_id = Column(Integer, ForeignKey('stacks.id'))
-    stack = relationship("Stack", backref=backref('characters', order_by=combat))
     
     def __init__(self, name, gif, title, race, side, 
                 combat, endurance, intelligence, leadership, diplomacy, 
@@ -65,37 +85,36 @@ class Environ(Base):
     id = Column(String, primary_key=True) 
     type = Column(String)                   
     size = Column(Integer)                  
-    starfaring = Column(Integer)            
+    star_faring = Column(Integer)            
     resources = Column(Integer)             
-    starresources = Column(Integer)         
+    star_resources = Column(Integer)         
     monster = Column(String)                
     coup = Column(Integer)                  
     sov = Column(Integer)                   
     planet_id = Column(Integer, ForeignKey('planets.id'))
-    planet = relationship("Planet", backref=backref('environs', order_by=id))
     race_name = Column(String, ForeignKey('races.name'))
-    race = relationship("Race", backref=backref('environs', order_by=id))      
-    
-    def __init__(self, id, type, size, race_name, starfaring, resources, 
-                starresources, monster, coup, sov, planet_id) :
+    race = relationship("Race", backref=backref("races", uselist=False))
+    stacks = relationship("Stack", backref=backref("environ", uselist=False))
+
+    def __init__(self, id, type, size, race_name, star_faring, resources, 
+                star_resources, monster, coup, sov) :
         self.id = id
         self.type = type
         self.size = size
         self.race_name = race_name
-        self.starfaring = starfaring
+        self.star_faring = star_faring
         self.resources = resources
-        self.starresources = starresources
+        self.star_resources = star_resources
         self.monster = monster
         self.coup = coup
         self.sov = sov
-        self.planet_id = planet_id
       
     def __repr__(self):
         return "<Environ('%s','%s', '%s')>" % (self.id, self.type, self.size)
 
-class MilitaryUnit(Base):
-    __tablename__ = 'militaryunits'
-    id = Column(Integer, primary_key=True)
+class Unit(Base):
+    __tablename__ = 'units'
+    id = Column(Integer, primary_key=True, autoincrement=True)
     side = Column(String)     
     type = Column(String)    
     environ_combat = Column(Integer)
@@ -103,7 +122,6 @@ class MilitaryUnit(Base):
     mobile = Column(Integer)
     wounds = Column(Integer)  
     stack_id = Column(Integer, ForeignKey('stacks.id'))
-    stack = relationship("Stack", backref=backref('militaryunits', order_by=type))
     
     def __init__(self, type, side, environ_combat, space_combat, mobile):
         self.type = type
@@ -115,7 +133,7 @@ class MilitaryUnit(Base):
 
         
     def __repr__(self):
-        return "<MilitaryUnit('%s','%s', '%s')>" % (self.id, self.type, self.side)
+        return "<Unit('%s','%s', '%s')>" % (self.id, self.type, self.side)
 
 class Mission(Base):
     __tablename__ = 'missions'
@@ -133,22 +151,25 @@ class Mission(Base):
 
 class Planet(Base):
     __tablename__ = 'planets'
-    id = Column(Integer, primary_key=True)  
-    name = Column(String)                   
-    race = Column(String)                   
-    loyalty = Column(Integer)               
-    numEnvirons = Column(Integer)           
+    id = Column(Integer, primary_key=True, autoincrement=True)  
+    location = Column(Integer)
+    name = Column(String)
+    race = Column(String)               
+    loyalty = Column(Integer)         
+    environ_count = Column(Integer)
+    game_id = Column(String, ForeignKey('games.name'))
+    environs = relationship("Environ", backref="planet")        
 
-    def __init__(self, id, name, race, loyalty, numEnvirons):
-        self.id = id
+    def __init__(self, location, name, race, loyalty, environ_count):
+        self.location = location
         self.name = name
         self.race = race
         self.loyalty = loyalty
-        self.numEnvirons = numEnvirons
+        self.environ_count = environ_count
         
     def __repr__(self):
-        return "<Planet('%s','%s', '%s')>" % (self.id, self.race, self.numEnvirons)
-                
+        return "<Planet('%s','%s', '%s')>" % (self.id, self.race, self.environs)
+
 class Possession(Base):
     __tablename__ = 'possessions'
     type = Column(String)                   #Type of possession.
@@ -197,18 +218,20 @@ class Race(Base):
 class Stack(Base):
     __tablename__ = 'stacks'
 
-    id = Column(Integer, primary_key=True)
-    location_id = Column(Integer, ForeignKey('environs.id'))
-    location = relationship("Environ", backref=backref('stacks', order_by=id))   
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    environ_id = Column(Integer, ForeignKey('environs.id'))
+    game_id = Column(String, ForeignKey('games.name'))
+    characters = relationship('Character', backref='stack')
+    units = relationship('Unit', backref='stack')
 
-    def __init__(self, location_id):
-        self.location_id = location_id
+    def __init__(self):
+        pass
 
     def __repr__(self):
         return "<Stack('%i','%i')>" % (self.id, self.location)
 
     def size(self):
-        return len(self.characters) + len(self.militaryunits)
+        return len(self.characters) + len(self.units)
 
     def spaceship(self):
         for character in self.characters:
@@ -230,4 +253,6 @@ class Stack(Base):
             if character.leadership > leadership_rating:
                 leadership_rating = character.leadership
         return leadership_rating
+
+Base.metadata.create_all(engine)
 

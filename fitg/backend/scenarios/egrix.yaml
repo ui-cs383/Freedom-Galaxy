@@ -1,0 +1,240 @@
+--- 
+scenarioinfo:
+  -
+    name: 'Flight to Egrix'
+    type: 'Star System'
+    goal: 'Start Rebellion'
+    victory points: 12
+    game turns: 6
+stars:
+  -
+    Egrix
+characters: 
+  - 
+    name: "Boccanegra"
+    img: ibocca.gif
+    title: ""
+    side: Rebel
+    location: Piorad
+    combat: 5
+    endurance: 5
+    intelligence: 2
+    leadership: 2
+    diplomacy: 0
+    navigation: 4
+    homeworld: Ayod
+    bonuses: "Nh*"
+  - 
+    name: "Doctor Sontag"
+    img: idocson.gif
+    title: ""
+    side: Rebel
+    race: Rhone
+    combat: 2
+    endurance: 2
+    intelligence: 4
+    leadership: 1
+    diplomacy: 3
+    navigation: 0
+    homeworld: Orlog
+    bonuses: "NIId"
+  - 
+    name: "Frun Sentel"
+    img: ifrun.gif
+    title: "Prince of Xan"
+    side: Rebel
+    race: Xanthon
+    combat: 5
+    endurance: 5
+    intelligence: 1
+    leadership: 1
+    diplomacy: 1
+    navigation: 3
+    homeworld: Xan
+    bonuses: "RBAA"
+  - 
+    name: "Jon Kidu"
+    img: ijon.gif
+    title: "Governer of Chim"
+    side: Imperial
+    race: Saurian
+    combat: 3
+    endurance: 4
+    intelligence: 3
+    leadership: 3
+    diplomacy: 1
+    navigation: 1
+    homeworld: Chim
+    bonuses: "RAACC"
+  - 
+    name: "Saytar"
+    img: isaytar.gif
+    title: ""
+    side: Imperial
+    race: Charkhan
+    combat: 4
+    endurance: 4
+    intelligence: 2
+    leadership: 2
+    diplomacy: 1
+    navigation: 3
+    homeworld: Charkhan
+    bonuses: "R"
+possesions:
+  - 
+    type: spaceship
+    name: "Planetary Privateer"
+    img: 'iship.gif'
+    cannons: 3
+    shields: 2
+    maneuver: 3
+    maxpassengers: 6
+    owner_name: "Boccanegra"
+  - 
+    type: spaceship
+    name: "Imperial Spaceship"
+    img: 'iship.gif'
+    cannons: 1
+    shields: 1
+    maneuver: 2
+    maxpassengers: 4
+    owner_name: "Saytar"
+planets:
+  -
+    id: 221
+    name: Quibron
+    pdblevel: 1
+    pdbstate: "Up"
+    planetcontrol: "Imperial"
+    loyalty: -1
+    environs: 1
+  -
+    id: 222
+    name: Angoff
+    pdblevel: 2
+    pdbstate: "Up"
+    planetcontrol: "Imperial"
+    loyalty: 0  
+    environs: 1
+  -
+    id: 223
+    name: Charkhan
+    pdblevel: 0
+    pdbstate: "Up"
+    planetcontrol: "Imperial"
+    loyalty: -2
+    environs: 2
+environs:
+  -
+    id: 1
+    planet_id: 221
+    type: W
+    size: 4
+    race_name: Saurians
+    star_faring: 1
+    resources: 6
+    star_resources: 1
+    monster: 'Snow Giants'
+    sov: 0
+  -
+    id: 1
+    planet_id: 222
+    type: U
+    size: 6
+    race_name: Yesters
+    star_faring: 1
+    resources: 9
+    star_resources: 1
+    monster: Laboroids
+    sov: 3
+  -
+    id: 1
+    planet_id: 223
+    type: A
+    size: 5
+    race_name: Yesters
+    star_faring: 1
+    resources: 7
+    star_resources: 1
+    monster: 'Frost Mist'
+    sov: 0
+  -
+    id: 2
+    planet_id: 223
+    type: W
+    size: 3
+    race_name: Charkhans
+    star_faring: 0
+    resources: 5
+    star_resources: 1
+    monster: Mish
+    sov: 0
+races:
+  -
+    name: Saurians_W
+    environ_id: 2211
+    combat: 5
+    endurance: 4
+    firefight: false
+  -
+    name: Yesters_U
+    environ_id: 2221
+    combat: 6
+    endurance: 2
+    firefight: false
+  -
+    name: Yesters_A
+    environ_id: 2231
+    combat: 6
+    endurance: 4
+    firefight: false
+  -
+    name: Charkhans_W
+    environ_id: 2232
+    combat: 5
+    endurance: 4
+    firefight: false
+monsters:
+  -
+    name: 'Snow Giants'
+    environ_id: 2211
+    combat: 6
+    endurance: 4
+    firefight: false
+  -
+    name: Laboroids
+    environ_id: 2221
+    combat: 3
+    endurance: 3
+    firefight: false
+  -
+    name: 'Frost Mist'
+    environ_id: 2231
+    combat: 5
+    endurance: 5
+    firefight: false
+  -
+    name: Mish
+    environ_id: 2232
+    combat: 6
+    endurance: 3
+    firefight: false
+militaryunits:
+  -
+    name: Line
+    side: Imperial
+    combat: 3
+    endurance: 2
+    number: 1
+  -
+    name: Militia
+    side: Imperial
+    combat: 1
+    endurance: 0
+    number: 3
+  -
+    name: Patrol
+    side: Imperial
+    combat: 2
+    endurance: 1
+    number: 3 

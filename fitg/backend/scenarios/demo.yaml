@@ -1,0 +1,74 @@
+--- 
+characters: 
+  - 
+    bonuses: RI
+    diplomacy: 3
+    homeworld: Adare
+    img: izina.gif
+    intelligence: 1
+    leadership: 2
+    name: "Zina Adora"
+    navigation: 2
+    race: Rhone
+    side: Rebel
+    title: "Princess of Adare"
+  - 
+    bonuses: "N"
+    diplomacy: 2
+    homeworld: Liomax
+    img: iadam.gif
+    intelligence: 3
+    leadership: 4
+    name: "Adam Starlight"
+    navigation: 1
+    race: Rhone
+    side: Rebel
+    title: ""
+  - 
+    bonuses: RBS
+    diplomacy: 3
+    homeworld: Liomax
+    img: iels.gif
+    intelligence: 4
+    leadership: 5
+    name: "Els Taroff"
+    navigation: 1
+    race: Rhone
+    side: Imperial
+    title: "Knight of the Empire"
+possesions:
+  - 
+    type: spaceship
+    name: 'Star Cruiser'
+    img: 'iship.gif'
+    stat1: 1
+    stat2: 2
+    stat3: 3
+    stat4: 10
+    owner_name: "Zina Adora"
+planets:
+  -
+  	id: 1
+    name: Mimulus
+    race: Kayns
+    loyalty: -2
+    environs: 1
+environs:
+  -
+	id: 111
+	planet_id: 1
+	type: W
+	size: 4
+	race_name: Kayns
+	star_faring: 1
+    resources: 4
+    star_resources: 0
+    monster: Prox
+    sov: 0
+races:
+  -
+  	name: Kayns_W
+  	environ: "Test"
+  	combat: 7
+  	endurance: 6
+  	firefight: false

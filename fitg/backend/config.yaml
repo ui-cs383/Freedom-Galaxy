@@ -1,0 +1,5 @@
+---
+host: localhost
+port: 55889
+database: sqlite
+database_path: /data/Freedom.db

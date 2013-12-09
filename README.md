@@ -4,6 +4,9 @@
 
 This repository is just for general information, issue tracking and discussions.  Please see the issues tab!
 
+## Wiki
+The [wiki](https://github.com/ui-cs383/Freedom-Galaxy/wiki) is now up!  Please read it!
+
 ## Current Issues
  1.  Homework 3
 

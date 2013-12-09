@@ -43,14 +43,15 @@ class FreedomService(rpyc.Service):
 
     def __init__(self, conn):
         super(FreedomService, self).__init__(conn)
-        self.logger = self._conn._config['logger']
-
-    def on_connect(self):
         import orm
         import actions
 
         self.actions = actions
         self.orm = orm
+        self.logger = self._conn._config['logger']
+
+    def on_connect(self):
+        pass
 
     def on_disconnect(self):
         pass
@@ -112,7 +113,7 @@ class FreedomService(rpyc.Service):
 
             return self.response('list_games', request, result[0], result[1])
 
-    def exposed_move(self, game_name, stack_id, location_id, validate_only=False):
+    def exposed_move(self, stack_id, location_id, validate_only=False):
         """Move a stack to a location.
 
         Move takes a stack_id and moves it to location_id. If stack_id is in an enviorn and location_id 
@@ -129,6 +130,7 @@ class FreedomService(rpyc.Service):
         :raises: AssertionError
         """
 
+        assert isinstance(game_name, str)
         assert isinstance(stack_id, int)
         assert isinstance(location_id, int)
 
@@ -186,7 +188,7 @@ class FreedomService(rpyc.Service):
 
         self.logger.info("requested split unit " + str(unit_id) or str(character_id) + " from stack " + str(stack_id))
 
-    def exposed_merge_stack(self, accepting_stack, merging_stack, validate_only=False):
+    def exposed_merge_stack(self, source_stack, destination_stack, validate_only=False):
         """Merges merging_stack into accepting_stack.
 
         Move takes a stack_id and moves it to location_id. If stack_id is in an enviorn and location_id 
@@ -210,8 +212,7 @@ class FreedomService(rpyc.Service):
         self.logger.info("requested stack merge of " + str(merging_stack) + " into " + str(accepting_stack))
 
         try:
-            #actions.movement.merge_stack(accepting_stack, merging_stack)
-            pass
+            actions.movement.merge_stack(session, source_stack, destination_stack):
         except AssertionError:
             self.logger.warn("merge of " + str(merging_stack) + " into " + str(accepting_stack) + " failed")
 

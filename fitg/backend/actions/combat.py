@@ -4,6 +4,8 @@ from random import randint
 
 session = Session()
  
+#Start Character Combat
+#Authored By Jeff Crocker
 def char_combat(atk_id, def_id, options):
 
     session = Session()
@@ -123,10 +125,10 @@ def char_table(dice, CD, is_attacker):
         return (attacker_wounds[dice][CD], attacker_capture[dice][CD])
     else:
         return (defender_wounds[dice][CD], defender_capture[dice][CD])
+#End Character Combat
 
+#Start Military Combat
 #Authored By Ben Cumber
-#military_units.dat info format
-#side, type, mobility, environ combat, space combat
 def mil_combat(atk_id, def_id):
     session = Session()
 
@@ -142,8 +144,14 @@ def mil_combat(atk_id, def_id):
     print "Defender Combat Rating: ", def_combat_rating
 
     column = stack_combat_ratio(atk_combat_rating, def_combat_rating)
-    
+    column += mil_combat_modifiers(atk_stack, def_stack)
+
     print "Column: ", column
+
+    if(column > 10):
+        column = 10
+    if(column < 0):
+        column = 0
 
     atk_result = mil_combat_table(randint(0,5), column, True)
     def_result = mil_combat_table(randint(0,5), column, False)
@@ -202,12 +210,20 @@ def mil_combat_modifiers(atk_obj, def_obj):
     #Step 1:
         #Determine which stack is rebel.
     #Step 2:
-        #Determine what type of environ combat is occuring in.
+        #Determine what type of environ, combat is occuring in.
     #Step 3:
         #Check if rebel units are of same environ type.
     #Step 4:
         #if yes: Shift in their favor.
         #if no: do nothing
+
+#trouble referencing the environ that the stack is in.
+#    if atk_obj.is_rebel_stack():
+#        if atk_obj.check_rebel_environ():
+#            modifier += 1
+#    else:
+#        if def_obj.check_rebel_environ():
+#            modifier -= 1
 
     #now for special environ modifier (Rebels favor only)
     #occurs only if combat is in liquid, subterranean, air, or fire environ.
@@ -260,10 +276,9 @@ def mil_combat_table(die_roll, combat_odds, is_attacker):
         return (attacker_wounds[die_roll][combat_odds])
     else:
         return (defender_wounds[die_roll][combat_odds])
-
+#end Military Combat
 
 if __name__ == "__main__":
-    loadDatabase()
 
     session = Session()
     #Character Combat Tests

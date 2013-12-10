@@ -1,9 +1,8 @@
 language: python
 python:
+<<<<<<< HEAD
     - "2.6"
-    - "2.7"
-    - "3.2"
-    - "3.3"
+    - "2.7
 # command to install dependencies
 install:
     - "pip install pylint --use-mirrors"

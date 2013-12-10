@@ -48,27 +48,27 @@ possesions:
     owner_name: "Zina Adora"
 planets:
   -
-  	id: 1
+    id: 1
     name: Mimulus
     race: Kayns
     loyalty: -2
     environs: 1
 environs:
   -
-	id: 111
-	planet_id: 1
-	type: W
-	size: 4
-	race_name: Kayns
-	star_faring: 1
+  id: 111
+  planet_id: 1
+  type: W
+  size: 4
+  race_name: Kayns
+  star_faring: 1
     resources: 4
     star_resources: 0
     monster: Prox
     sov: 0
 races:
   -
-  	name: Kayns_W
-  	environ: "Test"
-  	combat: 7
-  	endurance: 6
-  	firefight: false
+    name: Kayns_W
+    environ: "Test"
+    combat: 7
+    endurance: 6
+    firefight: false

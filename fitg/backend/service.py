@@ -43,7 +43,7 @@ class FreedomService(rpyc.Service):
 
     def __init__(self, conn):
         super(FreedomService, self).__init__(conn)
-        import actions.orm as orm
+        import orm
         import actions
 
         self.actions = actions

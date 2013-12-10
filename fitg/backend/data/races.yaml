@@ -1,0 +1,238 @@
+---
+races:
+  -
+    name: Anons_A
+    combat: 4
+    endurance: 2
+    firefight: True
+  -
+    name: Ardorats_W
+    combat: 4
+    endurance: 4
+    firefight: False
+  -
+    name: Borks_W
+    combat: 8
+    endurance: 2
+    firefight: False
+  -
+    name: Calmas_S
+    combat: 5
+    endurance: 5
+    firefight: False
+  -
+    name: Charkhans_W
+    combat: 5
+    endurance: 4
+    firefight: False
+  -
+    name: Cavalkus_A
+    combat: 4
+    endurance: 3
+    firefight: True
+  -
+    name: Deaxins_W
+    combat: 5
+    endurance: 5
+    firefight: True
+  -
+    name: Henones_L
+    combat: 6
+    endurance: 6
+    firefight: False
+  -
+    name: Illias_W
+    combat: 4
+    endurance: 4
+    firefight: False
+  -
+    name: Jopers_U
+    combat: 6
+    endurance: 2
+    firefight: False
+  -
+    name: Kayns_W
+    combat: 7
+    endurance: 6
+    firefight: False
+  -
+    name: Kayns_S
+    combat: 6
+    endurance: 4
+    firefight: False
+  -
+    name: Kirts_W
+    combat: 5
+    endurance: 4
+    firefight: False
+  -
+    name: Leonids_W
+    combat: 6
+    endurance: 4
+    firefight: False
+  -
+    name: Moghas_W
+    combat: 7
+    endurance: 3
+    firefight: True
+  -
+    name: Mowevs_W
+    combat: 4
+    endurance: 4
+    firefight: False
+  -
+    name: Mutant_A
+    combat: 8
+    endurance: 8
+    firefight: True
+  -
+    name: Mutant_S
+    combat: 8
+    endurance: 8
+    firefight: True
+  -
+    name: Mutant_U
+    combat: 8
+    endurance: 8
+    firefight: True
+  -
+    name: Mutant_W
+    combat: 8
+    endurance: 8
+    firefight: True
+  -
+    name: Mutant_F
+    combat: 8
+    endurance: 8
+    firefight: True
+  -
+    name: Mutant_L
+    combat: 8
+    endurance: 8
+    firefight: True
+  -
+    name: Ornotins_U
+    combat: 6
+    endurance: 4
+    firefight: False
+  -
+    name: Phans_L
+    combat: 4
+    endurance: 4
+    firefight: False
+  -
+    name: Piorads_U
+    combat: 4
+    endurance: 4
+    firefight: False
+  -
+    name: Piorads_S
+    combat: 6
+    endurance: 6
+    firefight: False
+  -
+    name: Rhones_U
+    combat: 5
+    endurance: 4
+    firefight: False
+  -
+    name: Rhones_W
+    combat: 4
+    endurance: 4
+    firefight: False
+  -
+    name: Rhones_S
+    combat: 4
+    endurance: 4
+    firefight: False
+  -
+    name: Rylians_S
+    combat: 8
+    endurance: 2
+    firefight: True
+  -
+    name: Saurians_U
+    combat: 5
+    endurance: 6
+    firefight: False
+  -
+    name: Saurians_W
+    combat: 5
+    endurance: 4
+    firefight: False
+  -
+    name: Saurians_S
+    combat: 5
+    endurance: 2
+    firefight: False
+  -
+    name: Saurians_L
+    combat: 5
+    endurance: 2
+    firefight: False
+  -
+    name: Segundens_U
+    combat: 5
+    endurance: 6
+    firefight: False
+  -
+    name: Segundens_L
+    combat: 5
+    endurance: 2
+    firefight: False
+  -
+    name: Susperans_U
+    combat: 4
+    endurance: 4
+    firefight: False
+  -
+    name: Suvans_U
+    combat: 6
+    endurance: 2
+    firefight: False
+  -
+    name: Suvans_L
+    combat: 7
+    endurance: 4
+    firefight: False
+  -
+    name: Theshians_W
+    combat: 4
+    endurance: 2
+    firefight: False
+  -
+    name: Thoks_W
+    combat: 6
+    endurance: 5
+    firefight: True
+  -
+    name: Ultraks_U
+    combat: 4
+    endurance: 4
+    firefight: False
+  -
+    name: Urgaks_W
+    combat: 6
+    endurance: 4
+    firefight: False
+  -
+    name: Ursi_W
+    combat: 7
+    endurance: 6
+    firefight: True
+  -
+    name: Xanthons_F
+    combat: 8
+    endurance: 6
+    firefight: False
+  -
+    name: Yesters_U
+    combat: 6
+    endurance: 2
+    firefight: False
+  -
+    name: Yesters_A
+    combat: 6
+    endurance: 4
+    firefight: False
+

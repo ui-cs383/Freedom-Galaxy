@@ -1,9 +1,9 @@
 import rpyc
-import service
+from service import ClientService
 import json
 from pprint import pprint
 
-client = rpyc.connect("localhost", 55889, service.ClientService)
+client = rpyc.connect("localhost", 55889, ClientService)
 
 # Adding validate_only=True to any call will only validate if it's possible.
 # You need to catch an IntegrityError when calling this since name is unique
@@ -18,7 +18,7 @@ print("Listing all games")
 pprint(glist)
 
 print("Trying a move")
-move = client.root.move(stack_id=1, location_id=1)
+move = client.root.move(stack_id=1, location_id=1, game_name="test")
 pprint(move)
 
 

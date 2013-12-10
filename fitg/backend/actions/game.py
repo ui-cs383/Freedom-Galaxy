@@ -21,8 +21,7 @@ def start(session, name, player, scenario="egrix"):
 
 	game.stacks.append(stack)
 
-
-	try: 
+	try:
 		session.add(game)
 	except:
 		success = False
@@ -31,7 +30,6 @@ def start(session, name, player, scenario="egrix"):
 
 	return success, { 'game': game.__dict__ }
 	
-
 def join(session, name, player):
 	game = session.query(orm.Game).filter_by(name = name).filter(or_(player1 = None, player2 = None)).one()
 	session.add(game)

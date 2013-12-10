@@ -169,31 +169,6 @@ environs:
     star_resources: 1
     monster: Mish
     sov: 0
-races:
-  -
-    name: Saurians_W
-    environ_id: 2211
-    combat: 5
-    endurance: 4
-    firefight: false
-  -
-    name: Yesters_U
-    environ_id: 2221
-    combat: 6
-    endurance: 2
-    firefight: false
-  -
-    name: Yesters_A
-    environ_id: 2231
-    combat: 6
-    endurance: 4
-    firefight: false
-  -
-    name: Charkhans_W
-    environ_id: 2232
-    combat: 5
-    endurance: 4
-    firefight: false
 monsters:
   -
     name: 'Snow Giants'

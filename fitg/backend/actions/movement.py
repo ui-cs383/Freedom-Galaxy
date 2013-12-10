@@ -4,7 +4,7 @@ from sqlalchemy.orm import exc
 from random import randint
 
 
-def move(session, stack_id, environ_id):
+def move(session, game_name, stack_id, environ_id):
     # need to make sure stack_id and enviorn_id are in the same game
     # this can be checked by ensuring stack.game_id = environ.planet.game_id
 

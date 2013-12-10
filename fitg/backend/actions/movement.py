@@ -4,7 +4,7 @@ from sqlalchemy.orm import exc
 from random import randint
 
 
-def move(session, game_name, stack_id, environ_id):
+def move(session, stack_id, environ_id):
     # need to make sure stack_id and enviorn_id are in the same game
     # this can be checked by ensuring stack.game_id = environ.planet.game_id
 
@@ -27,7 +27,7 @@ def move(session, game_name, stack_id, environ_id):
     # if moving to Orbit (environ id ends in '0') then PDB routines ?
     try:
         moving_stack = session.query(Stack).filter_by(id = stack_id).one()
-    except exc.NoResultFound:
+    except:
         success = False
     else:
         success = True

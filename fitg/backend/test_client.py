@@ -18,7 +18,7 @@ print("Listing all games")
 pprint(glist)
 
 print("Trying a move")
-move = client.root.move(stack_id=1, location_id=1, game_name="test")
+move = client.root.move(stack_id=1, location_id=1)
 pprint(move)
 
 

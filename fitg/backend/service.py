@@ -133,7 +133,7 @@ class FreedomService(rpyc.Service):
 
             return self.response('list_games', request, result[0], result[1])
 
-    def exposed_move(self, stack_id, location_id, game_name, validate_only=False):
+    def exposed_move(self, stack_id, location_id, validate_only=False):
         """Move a stack to a location.
 
         Move takes a stack_id and moves it to location_id. If stack_id is in an enviorn and location_id 

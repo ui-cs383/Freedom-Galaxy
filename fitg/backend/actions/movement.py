@@ -8,21 +8,26 @@ def move(session, stack_id, environ_id):
     # need to make sure stack_id and enviorn_id are in the same game
     # this can be checked by ensuring stack.game_id = environ.planet.game_id
 
+    # See if new location can be grabbed
     try:
         newloc = session.query(Environ).filter_by(id = environ_id).one()
     except exc.NoResultFound:
-        newloc = False
+        newloc = None
 
-
+    # See if old location can be grabbed
     try:
         oldloc = session.query(Stack).filter_by(id = stack_id).one().environ
     except exc.NoResultFound:
-        oldloc = False
+        oldloc = None
 
-    if newloc and oldloc:
-
+    # Check if either are None
+    if newloc is not None and oldloc is not None:
+        # Check if they aren't adjacent
         if (int(newloc.id) / 10) != (int(oldloc.id) / 10):
             return False, None
+    else:
+        # One is None, exit
+        return False, None
 
     # if moving to Orbit (environ id ends in '0') then PDB routines ?
     try:

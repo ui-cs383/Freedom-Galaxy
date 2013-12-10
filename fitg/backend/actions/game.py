@@ -3,9 +3,9 @@ import orm
 from sqlalchemy import or_
 
 def start(session, name, player, scenario="demo"):
-	game = orm.Game(name = name, player1 = player, player2 = None, scenario = scenario)
+	game = orm.Game(name,player,None,scenario)
 
-	try: 
+	try:
 		session.add(game)
 	except:
 		success = False
@@ -14,7 +14,6 @@ def start(session, name, player, scenario="demo"):
 
 	return success, { 'game': game.__dict__ }
 	
-
 def join(session, name, player):
 	game = session.query(orm.Game).filter_by(name = name).filter(or_(player1 = None, player2 = None)).one()
 	session.add(game)

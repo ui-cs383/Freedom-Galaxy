@@ -35,7 +35,7 @@ class Character(Base):
     __tablename__ = 'characters'
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String)                       #name of every character
-    gif = Column(String)                        #Does the DB need this?
+    img = Column(String)                        #Does the DB need this?
     title = Column(String)                      #Long title of character
     race = Column(String)                       #Character's Race
     side = Column(String)                       #Team: 'Rebel' or 'Emperial'
@@ -54,11 +54,11 @@ class Character(Base):
     captive = Column(Boolean)
     stack_id = Column(Integer, ForeignKey('stacks.id'))
     
-    def __init__(self, name, gif, title, race, side, 
+    def __init__(self, name, img, title, race, side, 
                 combat, endurance, intelligence, leadership, diplomacy, 
                 navigation, homeworld, bonuses) :
         self.name = name
-        self.gif = gif
+        self.img = img
         self.title = title
         self.race = race
         self.side = side
@@ -228,7 +228,7 @@ class Stack(Base):
         pass
 
     def __repr__(self):
-        return "<Stack('%i','%i')>" % (self.id, self.location)
+        return "<Stack('%i','%i')>" % (self.id, self.environ_id)
 
     def size(self):
         return len(self.characters) + len(self.units)
@@ -244,7 +244,7 @@ class Stack(Base):
         for character in self.characters:       #stack are detected.
             if character.detected == True:
                 return True
-        return None
+        return False
     # function to add unit to stack, check if not already in another stack, if so, remove?
 
     def find_stack_leader(self):    #stack leader will be the character with

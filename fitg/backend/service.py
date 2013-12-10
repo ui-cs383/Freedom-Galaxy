@@ -69,6 +69,26 @@ class FreedomService(rpyc.Service):
 
         return response
 
+    def exposed_get_state(self, object_type, object_id=None):
+        """Get the state of an object
+
+        :param object_type: The type of object to get state on ("environ", "planet" etc)
+        :type object_type: str.
+        :param name: Optional name of the object.
+        :type object_type: str.
+        """
+        if object_id is None:
+            self.logger.info("requested state of " + object_type)
+        else:
+            self.logger.info("requested state of " + object_type + ", id # " + str(object_id))
+
+        with session_scope(self.orm) as session:
+            request = locals()
+
+            result = self.actions.game.get_object(session, object_type, object_id)
+
+            return self.response('get_state', request, result[0], result[1])
+
     def exposed_turn_state(self, validate_only=False):
         """Returns the current turn state.
 
@@ -79,7 +99,7 @@ class FreedomService(rpyc.Service):
         """
         self.logger.info("requested current turn state")
 
-    def exposed_start_game(self, name, player, scenario="demo", ai=False, validate_only=False):
+    def exposed_start_game(self, name, player, scenario="egrix", ai=False, validate_only=False):
         """Start a new game.
 
         Creates a new game.
@@ -130,7 +150,6 @@ class FreedomService(rpyc.Service):
         :raises: AssertionError
         """
 
-        assert isinstance(game_name, str)
         assert isinstance(stack_id, int)
         assert isinstance(location_id, int)
 
@@ -138,7 +157,7 @@ class FreedomService(rpyc.Service):
             self.logger.info("requested stack " + str(stack_id) + " movement to location " + str(location_id))
 
             request = locals()
-            result = self.actions.movement.move(session, game_name, stack_id, location_id)
+            result = self.actions.movement.move(session, stack_id, location_id)
 
             return self.response('move', request, result[0], result[1])
 
@@ -212,7 +231,7 @@ class FreedomService(rpyc.Service):
         self.logger.info("requested stack merge of " + str(merging_stack) + " into " + str(accepting_stack))
 
         try:
-            actions.movement.merge_stack(session, source_stack, destination_stack):
+            actions.movement.merge_stack(session, source_stack, destination_stack)
         except AssertionError:
             self.logger.warn("merge of " + str(merging_stack) + " into " + str(accepting_stack) + " failed")
 

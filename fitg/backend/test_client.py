@@ -10,7 +10,7 @@ client = rpyc.connect("localhost", 55889, service.ClientService)
 response = client.root.start_game(name="test", player="bob")
 
 print("Starting game test with player bob")
-pprint(response)
+#pprint(response)
 
 glist = client.root.list_games()
 
@@ -21,6 +21,9 @@ print("Trying a move")
 move = client.root.move(stack_id=1, location_id=1)
 pprint(move)
 
+
+print("Getting state of planets")
+planet = client.root.get_state(object_id=1, object_type="Planet")
 
 #client.root.combat(attacker_stack_id=1, defender_stack_id=2, options=tuple('2'))
 #client.root.split_stack(stack_id=1, unit_id=1, character_id=None)

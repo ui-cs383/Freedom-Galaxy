@@ -15,7 +15,7 @@ characters:
     img: ibocca.gif
     title: ""
     side: Rebel
-    location: Piorad
+    race: Piorad
     combat: 5
     endurance: 5
     intelligence: 2
@@ -219,7 +219,7 @@ monsters:
     combat: 6
     endurance: 3
     firefight: false
-militaryunits:
+units:
   -
     name: Line
     side: Imperial

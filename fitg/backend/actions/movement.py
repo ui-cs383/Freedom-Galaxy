@@ -11,20 +11,18 @@ def move(session, stack_id, environ_id):
     try:
         newloc = session.query(Environ).filter_by(id = environ_id).one()
     except exc.NoResultFound:
-        success = False
-    else:
-        success = True
+        newloc = False
+
 
     try:
-        oldloc = session.query(Stack).filter_by(id = stack_id).one().location
+        oldloc = session.query(Stack).filter_by(id = stack_id).one().environ
     except exc.NoResultFound:
-        success = False
-    else:
-        success = True
+        oldloc = False
 
-    if success:
+    if newloc and oldloc:
+
         if (int(newloc.id) / 10) != (int(oldloc.id) / 10):
-            success = False
+            return False, None
 
     # if moving to Orbit (environ id ends in '0') then PDB routines ?
     try:
@@ -33,7 +31,7 @@ def move(session, stack_id, environ_id):
         success = False
     else:
         success = True
-        moving_stack.location = newloc
+        moving_stack.environ = newloc
         session.add(moving_stack)
 
     if success:

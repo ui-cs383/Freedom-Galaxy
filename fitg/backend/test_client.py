@@ -3,7 +3,7 @@ from service import ClientService
 import json
 from pprint import pprint
 
-client = rpyc.connect("localhost", 55889, ClientService)
+client = rpyc.connect("localhost", 55889, ClientService, config = {"allow_public_attrs" : True})
 
 # Adding validate_only=True to any call will only validate if it's possible.
 # You need to catch an IntegrityError when calling this since name is unique

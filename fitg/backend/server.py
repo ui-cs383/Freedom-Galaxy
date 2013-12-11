@@ -24,5 +24,6 @@ for key, value in config.items():
 import service
 from rpyc.utils.server import ThreadedServer
 
-t = ThreadedServer(service.FreedomService, hostname = config['host'], port = config['port'], logger=logger)
+t = ThreadedServer(service.FreedomService, hostname = config['host'], port = config['port'], 
+	logger=logger, protocol_config = {"allow_public_attrs" : True})
 t.start()

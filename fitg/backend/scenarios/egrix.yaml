@@ -12,7 +12,7 @@ stars:
 characters: 
   - 
     name: "Boccanegra"
-    img: ibocca.gif
+    img: ibocca.png
     title: ""
     side: Rebel
     race: Piorad
@@ -26,7 +26,7 @@ characters:
     bonuses: "Nh*"
   - 
     name: "Doctor Sontag"
-    img: idocson.gif
+    img: idocson.png
     title: ""
     side: Rebel
     race: Rhone
@@ -40,7 +40,7 @@ characters:
     bonuses: "NIId"
   - 
     name: "Frun Sentel"
-    img: ifrun.gif
+    img: ifrun.png
     title: "Prince of Xan"
     side: Rebel
     race: Xanthon
@@ -54,7 +54,7 @@ characters:
     bonuses: "RBAA"
   - 
     name: "Jon Kidu"
-    img: ijon.gif
+    img: ijon.png
     title: "Governer of Chim"
     side: Imperial
     race: Saurian
@@ -68,7 +68,7 @@ characters:
     bonuses: "RAACC"
   - 
     name: "Saytar"
-    img: isaytar.gif
+    img: isaytar.png
     title: ""
     side: Imperial
     race: Charkhan
@@ -84,7 +84,7 @@ possessions:
   - 
     type: spaceship
     name: "Planetary Privateer"
-    img: 'iship.gif'
+    img: 'iship.png'
     stat1: 3
     stat2: 2
     stat3: 3
@@ -93,7 +93,7 @@ possessions:
   - 
     type: spaceship
     name: "Imperial Spaceship"
-    img: 'iship.gif'
+    img: 'iship.png'
     stat1: 1
     stat2: 1
     stat3: 2

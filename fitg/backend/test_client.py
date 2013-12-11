@@ -7,7 +7,7 @@ client = rpyc.connect("localhost", 55889, ClientService, config = {"allow_public
 
 # Adding validate_only=True to any call will only validate if it's possible.
 # You need to catch an IntegrityError when calling this since name is unique
-response = client.root.start_game(name="test", player="bob")
+response = client.root.start_game(id="test", player="bob")
 
 print("Starting game test with player bob")
 #pprint(response)

@@ -137,7 +137,8 @@ class Unit(Base):
 
 class Mission(Base):
     __tablename__ = 'missions'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    side = Column(String)     
     type = Column(String)
     stack_id = Column(Integer, ForeignKey('stacks.id'))
     stack = relationship("Stack", backref=backref('mission', order_by=id))

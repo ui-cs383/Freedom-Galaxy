@@ -99,7 +99,7 @@ class FreedomService(rpyc.Service):
         """
         self.logger.info("requested current turn state")
 
-    def exposed_start_game(self, name, player, scenario="egrix", ai=False, validate_only=False):
+    def exposed_start_game(self, id, player, scenario="egrix", ai=False, validate_only=False):
         """Start a new game.
 
         Creates a new game.
@@ -111,7 +111,7 @@ class FreedomService(rpyc.Service):
         :returns:  bool -- True on game creation, false on error.
         :raises: AssertionError
         """
-        assert isinstance(name, str)
+        assert isinstance(id, str)
         assert isinstance(ai, bool)
         assert isinstance(validate_only, bool)
 
@@ -119,7 +119,7 @@ class FreedomService(rpyc.Service):
             self.logger.info("creating a new game")
 
             request = locals()
-            result = self.actions.game.start(session, name, player, scenario)
+            result = self.actions.game.start(session, id, player, scenario)
 
             return self.response('start_game', request, result[0], result[1])
 

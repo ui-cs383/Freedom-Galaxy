@@ -2,7 +2,7 @@ import yaml
 import orm
 from sqlalchemy import or_
 
-def start(session, name, player, scenario="egrix"):
+def start(session, id, player, scenario="egrix"):
     f = 'scenarios/' + scenario + '.yaml'
 
     with open (f, "r") as scenario_file:
@@ -10,7 +10,7 @@ def start(session, name, player, scenario="egrix"):
 
     game_data = yaml.load(game_data)
 
-    game = orm.Game(id = name, player1 = player, player2 = None, scenario = scenario)
+    game = orm.Game(id = id, player1 = player, player2 = None, scenario = scenario)
     stack = orm.Stack()
 
     for objects, values in game_data.items():
@@ -65,8 +65,8 @@ def start(session, name, player, scenario="egrix"):
 
     return success, { 'game': game.__dict__ }
     
-def join(session, name, player):
-    game = session.query(orm.Game).filter_by(name = name).filter(or_(player1 = None, player2 = None)).one()
+def join(session, id, player):
+    game = session.query(orm.Game).filter_by(id = id).filter(or_(player1 = None, player2 = None)).one()
     session.add(game)
 
     if game.player1 is None:

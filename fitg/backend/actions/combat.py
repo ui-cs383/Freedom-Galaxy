@@ -1,14 +1,10 @@
 #from database_creation import loadDatabase
 from orm import *
 from random import randint
-
-session = Session()
  
 #Start Character Combat
 #Authored By Jeff Crocker
-def char_combat(atk_id, def_id, options):
-
-    session = Session()
+def char_combat(session, atk_id, def_id, options):
 
     atk_stack = session.query(Stack).filter_by(id = atk_id).one()
     def_stack = session.query(Stack).filter_by(id = def_id).one()
@@ -57,32 +53,28 @@ def char_combat(atk_id, def_id, options):
 
 def char_combat_rating(StackID, session):
     CR = 0
+    # for each character in the stack, sum effective combat strength
     for character in session.query(Stack).filter_by(id = StackID).one().characters:
         if character.active == True:
             CR += character.combat - character.wounds
     return CR
-    session.commit()
 
 def char_wounds(stack, num_wounds, session):
+    # while there are still wounds to assign and characters alive
     while num_wounds > 0 and stack.characters:
+        # select random victim from stack
         victim = stack.characters[randint(0,len(stack.characters)-1)]
         session.add(victim)
         victim.wounds += 1
-        print victim.name, " suffers wound!"
+        #print victim.name, " suffers wound!"
         if victim.wounds >= victim.endurance:
-            print victim.name, " has died! :("
+            #print victim.name, " has died! :("
             session.delete(victim)
         num_wounds -= 1
 
     session.commit()
 
-def char_combat_rating(stack, session):
-    CR = 0
-    for character in stack.characters:
-        if character.active == True:
-            CR += character.combat - character.wounds
-    return CR
-
+# Simply a direct transfer of character combat table
 def char_table(dice, CD, is_attacker):
     attacker_wounds = (
         (4,3,3,2,2,2,2,1,1,1),(4,3,2,2,2,1,1,1,1,0),(3,3,2,2,1,1,1,1,0,0),
@@ -100,6 +92,7 @@ def char_table(dice, CD, is_attacker):
         (0,0,0,0,0,0,0,0,1,0),(0,0,0,0,0,0,0,0,0,0),(0,0,0,0,1,0,0,1,1,0),
         (0,0,0,1,0,1,1,1,0,0),(0,0,0,0,0,0,1,0,1,0),(0,0,0,0,0,0,0,0,0,0))
 
+    # A ridiculous way of translating Combat Differentials to appropriate columns
     if CD <= -7:
         CD = 0
     elif CD >= -6 and CD <= -4:
@@ -129,8 +122,7 @@ def char_table(dice, CD, is_attacker):
 
 #Start Military Combat
 #Authored By Ben Cumber
-def mil_combat(atk_id, def_id):
-    session = Session()
+def mil_combat(session, atk_id, def_id):
 
     atk_stack = session.query(Stack).filter_by(id = atk_id).one()
     def_stack = session.query(Stack).filter_by(id = def_id).one()
@@ -140,13 +132,13 @@ def mil_combat(atk_id, def_id):
     atk_combat_rating = stack_combat_rating(atk_stack)
     def_combat_rating = stack_combat_rating(def_stack)
     
-    print "Attacker Combat Rating: ", atk_combat_rating
-    print "Defender Combat Rating: ", def_combat_rating
+    #print "Attacker Combat Rating: ", atk_combat_rating
+    #print "Defender Combat Rating: ", def_combat_rating
 
     column = stack_combat_ratio(atk_combat_rating, def_combat_rating)
     column += mil_combat_modifiers(atk_stack, def_stack)
 
-    print "Column: ", column
+    #print "Column: ", column
 
     if(column > 10):
         column = 10
@@ -156,8 +148,8 @@ def mil_combat(atk_id, def_id):
     atk_result = mil_combat_table(randint(0,5), column, True)
     def_result = mil_combat_table(randint(0,5), column, False)
 
-    print "Attackers Eliminated: ", atk_result
-    print "Defenders Eliminated: ", def_result
+    #print "Attackers Eliminated: ", atk_result
+    #print "Defenders Eliminated: ", def_result
 
     #atk_result = mil_combat_table(randint(0, 5), combat_ratio, True)
     #def_result = mil_combat_table(randint(0, 5), combat_ratio, False)
@@ -271,36 +263,9 @@ def mil_combat_table(die_roll, combat_odds, is_attacker):
             (0, 0, 1, 1, 1, 2, 3, 3, 4, 5, 6),
             (1, 1, 1, 1, 2, 2, 3, 4, 5, 6, 7),
             (1, 1, 1, 2, 2, 3, 4, 5, 6, 7, 8))
-    print "Die Roll", die_roll+1
+    #print "Die Roll", die_roll+1
     if is_attacker:
         return (attacker_wounds[die_roll][combat_odds])
     else:
         return (defender_wounds[die_roll][combat_odds])
 #end Military Combat
-
-if __name__ == "__main__":
-
-    session = Session()
-    #Character Combat Tests
-    #print session.query(Stack).filter_by(id = 1).one().characters
-    #print "Before:"
-    #for character in session.query(Stack).filter_by(id = 1).one().characters:
-    #        print character
-    #char_combat(2,1,'C')
-    #print "After:"
-    #for character in session.query(Stack).filter_by(id = 1).one().characters:
-    #        print character
-
-
-    #Military Combat Tests
-    print session.query(Stack).filter_by(id = 3).one().militaryunits
-    print session.query(Stack).filter_by(id = 4).one().militaryunits
-    print "Combat Ratings should be 4 and 2"
-    mil_combat(3, 4)
-    stack_combat_ratio(15, 5)
-
-    #char_combat(1,2,'C')
-
-
-    session.commit()
-

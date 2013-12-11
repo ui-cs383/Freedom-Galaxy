@@ -2,12 +2,12 @@
 
 from orm import *
 from combat import *
-#from database_creation import loadDatabase
 from random import randint
 
-
-def resolves_mission(environ_id):
-    session = Session()
+def add_mission(session, stack, missiontype):
+    pass
+    
+def resolves_mission(session, environ_id):
     environ = session.query(Environ).filter_by(id = environ_id).one()
     for stack in environ.stacks:
         if stack.mission:
@@ -273,13 +273,3 @@ def WD(mission, session):
 def WSC(mission, session):
     pass                                                      
 
-
-if __name__ == "__main__":
-    loadDatabase()
-
-    session = Session()
-
-    my_mission = Mission('D',1)
-    session.add(my_mission)
-    session.commit()
-    resolves_mission(3111)

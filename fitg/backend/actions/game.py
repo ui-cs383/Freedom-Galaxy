@@ -10,6 +10,13 @@ def start(session, id, player, scenario="egrix"):
 
     game_data = yaml.load(game_data)
 
+    try:
+        session.query(Game).filter_by(id = id).one()
+    except exc.NoResultFound:
+        pass
+    else:
+        return False, "FATAL: A game with that id already exists."
+
     game = orm.Game(id = id, player1 = player, player2 = None, scenario = scenario)
     stack = orm.Stack()
 

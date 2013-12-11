@@ -81,7 +81,8 @@ class Character(Base):
                 
 class Environ(Base):
     __tablename__ = 'environs'
-    id = Column(String, primary_key=True) 
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    location = Column(Integer) 
     type = Column(String)                   
     size = Column(Integer)                  
     star_faring = Column(Integer)            
@@ -95,9 +96,9 @@ class Environ(Base):
     race = relationship("Race", backref=backref("races", uselist=False))
     stacks = relationship("Stack", backref=backref("environ", uselist=False))
 
-    def __init__(self, id, type, size, race_name, star_faring, resources, 
+    def __init__(self, location, type, size, race_name, star_faring, resources, 
                 star_resources, monster, sov) :
-        self.id = id
+        self.location = location
         self.type = type
         self.size = size
         self.race_name = race_name

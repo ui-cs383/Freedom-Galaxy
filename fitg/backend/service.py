@@ -235,32 +235,6 @@ class FreedomService(rpyc.Service):
         except AssertionError:
             self.logger.warn("merge of " + str(merging_stack) + " into " + str(accepting_stack) + " failed")
 
-
-    def exposed_show_mission(self, mission_id=None, validate_only=False):
-        """Shows all missions or details of an existing mission.
-
-        Move takes a stack_id and moves it to location_id. If stack_id is in an enviorn and location_id 
-        is an adjacent enviorn, a environ based move is completed. If location_id is a different enviorn a space
-        move is completed.
-
-        :param stack_id: The stack_id of the stack to be moved.
-        :type name: int.
-        :param unit_id: A tuple of unit_id's to assign to a new stack.
-        :type unit_id: tuple or None.
-        :param character_id: A tuple of character_id's to assign to a new stack.
-        :type character_id: tuple or None.
-        :param validate_only: If true the move will only be validated.
-        :type validate_only: false.
-        :returns:  dict -- a dictionary of stacks with a stack_id parameter.
-        :raises: AssertionError
-        """
-        assert isinstance(mission_id, int) or mission_id is None
-
-        if mission_id is None: 
-            self.logger.info("requested mission information for all missions")
-        else:
-            self.logger.info("requested mission information for mission " + str(mission_id))
-
     def exposed_draw_mission(self, validate_only=False):
         """Draws mission card.
 

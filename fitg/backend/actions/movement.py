@@ -45,6 +45,13 @@ def move(session, stack_id, environ_id):
     else:
         return success, "FATAL: Unable to find stack!"
 
+def split_stack(session, stack_id, unit_id, is_character=False):
+    stack = session.query(Stack).filter_by(id = stack_id).one()
+
+    if is_character:
+        unit = session.query(Stack).filter_by
+
+
 def merge_stack(session, src_id, des_id):
 
     src_stack = session.query(Stack).filter_by(id = src_id).one()

@@ -62,9 +62,9 @@ def start(session, id, player, scenario="egrix"):
                 for environ_attribute, environ in enumerate(environs):
                     if 'planet_location' in environ:
                         location = environ['planet_location']
-                        environ.pop('planet_location', None)
 
                         if planet.location == location:
+                            environ.pop('planet_location', None)
                             area = orm.Environ(**environ)
                             planet.environs.append(area)
 
@@ -112,11 +112,10 @@ def get_object(session, table, id=None):
     orm_name = getattr(orm, table)
 
     if id is None:
+        print("Getting all of the stuff")
         items = session.query(orm_name).all()
         items = [ x.__dict__ for x in items ]
     else:
         items = session.query(orm_name).filter_by(id=id).one()
-
-    print(items)
 
     return True, { table: items }

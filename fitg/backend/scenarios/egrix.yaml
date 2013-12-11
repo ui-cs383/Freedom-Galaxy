@@ -126,7 +126,7 @@ planets:
     environ_count: 2
 environs:
   -
-    id: 1
+    location: 1
     planet_location: 221
     type: W
     size: 4
@@ -137,7 +137,7 @@ environs:
     monster: 'Snow Giants'
     sov: 0
   -
-    id: 1
+    location: 1
     planet_location: 222
     type: U
     size: 6
@@ -148,7 +148,7 @@ environs:
     monster: Laboroids
     sov: 3
   -
-    id: 1
+    location: 1
     planet_location: 223
     type: A
     size: 5
@@ -159,7 +159,7 @@ environs:
     monster: 'Frost Mist'
     sov: 0
   -
-    id: 2
+    location: 2
     planet_location: 223
     type: W
     size: 3

@@ -19,7 +19,8 @@ def start(session, id, player, scenario="egrix"):
     game_data = yaml.load(game_data)
 
     game = orm.Game(id = id, player1 = player, player2 = None, scenario = scenario)
-    stack = orm.Stack()
+    rebel = orm.Stack()
+    imperial = orm.Stack()
 
     for objects, values in game_data.items():
         if objects == 'characters':
@@ -33,7 +34,10 @@ def start(session, id, player, scenario="egrix"):
                         item = orm.Possession(**possession)
                         character.possessions.append(item)
 
-                stack.characters.append(character)
+                if attributes['side'] == 'Rebel':
+                    rebel.characters.append(character)
+                else:
+                    imperial.characters.append(character)
 
         elif objects == 'units':
             for attributes in values:
@@ -42,7 +46,12 @@ def start(session, id, player, scenario="egrix"):
 
                 for x in range(0, count):
                     unit = orm.Unit(**attributes)
-                    stack.units.append(unit)
+                    #stack.units.append(unit)
+
+                if attributes['side'] == 'Rebel':
+                    rebel.units.append(unit)
+                else:
+                    imperial.units.append(unit)
 
         elif objects == 'planets':
             for attributes in values:
@@ -62,7 +71,8 @@ def start(session, id, player, scenario="egrix"):
                 game.planets.append(planet)
 
 
-    game.stacks.append(stack)
+    game.stacks.append(rebel)
+    game.stacks.append(imperial)
 
     try:
         session.add(game)
@@ -106,5 +116,7 @@ def get_object(session, table, id=None):
         items = [ x.__dict__ for x in items ]
     else:
         items = session.query(orm_name).filter_by(id=id).one()
+
+    print(items)
 
     return True, { table: items }

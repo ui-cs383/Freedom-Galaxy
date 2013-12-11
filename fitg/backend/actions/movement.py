@@ -23,7 +23,7 @@ def move(session, stack_id, environ_id):
     # Check if either are None
     if newloc is not None and oldloc is not None:
         # Check if they aren't adjacent
-        if (int(newloc.id) / 10) != (int(oldloc.id) / 10):
+        if oldloc.planet == newloc.planet and (newloc.location - 1 == oldloc or newloc.location + 1 == oldloc.location):
             return False, "Invalid Move"
     else:
         # One is None, exit
@@ -44,6 +44,13 @@ def move(session, stack_id, environ_id):
         return success, moving_stack.__dict__
     else:
         return success, "FATAL: Unable to find stack!"
+
+def split_stack(session, stack_id, unit_id, is_character=False):
+    stack = session.query(Stack).filter_by(id = stack_id).one()
+
+    if is_character:
+        unit = session.query(Stack).filter_by
+
 
 def merge_stack(session, src_id, des_id):
 

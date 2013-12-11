@@ -23,7 +23,8 @@ pprint(move)
 
 
 print("Getting state of planets")
-planet = client.root.get_state(object_id=1, object_type="Planet")
+planet = client.root.get_state(object_type="Environ")
+pprint(planet)
 
 #client.root.combat(attacker_stack_id=1, defender_stack_id=2, options=tuple('2'))
 #client.root.split_stack(stack_id=1, unit_id=1, character_id=None)

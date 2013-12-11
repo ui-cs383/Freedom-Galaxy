@@ -1,21 +1,22 @@
 import yaml
 import orm
+from sqlalchemy.orm import exc
 from sqlalchemy import or_
 
 def start(session, id, player, scenario="egrix"):
+    try:
+        session.query(orm.Game).filter_by(id = id).one()
+    except exc.NoResultFound:
+        pass
+    else:
+        return False, "FATAL: A game with that id already exists."
+
     f = 'scenarios/' + scenario + '.yaml'
 
     with open (f, "r") as scenario_file:
         game_data = scenario_file.read()
 
     game_data = yaml.load(game_data)
-
-    try:
-        session.query(Game).filter_by(id = id).one()
-    except exc.NoResultFound:
-        pass
-    else:
-        return False, "FATAL: A game with that id already exists."
 
     game = orm.Game(id = id, player1 = player, player2 = None, scenario = scenario)
     stack = orm.Stack()

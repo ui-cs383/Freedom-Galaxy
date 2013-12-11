@@ -24,10 +24,10 @@ def move(session, stack_id, environ_id):
     if newloc is not None and oldloc is not None:
         # Check if they aren't adjacent
         if (int(newloc.id) / 10) != (int(oldloc.id) / 10):
-            return False, None
+            return False, "Invalid Move"
     else:
         # One is None, exit
-        return False, None
+        return False, "Invalid Move"
 
     # if moving to Orbit (environ id ends in '0') then PDB routines ?
     try:
@@ -43,7 +43,7 @@ def move(session, stack_id, environ_id):
         session.commit()
         return success, moving_stack.__dict__
     else:
-        return success, None
+        return success, "FATAL: Unable to find stack!"
 
 def merge_stack(session, src_id, des_id):
 

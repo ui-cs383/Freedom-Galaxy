@@ -1,11 +1,11 @@
 --- 
-scenarioinfo:
+info:
   -
     name: 'Flight to Egrix'
     type: 'Star System'
     goal: 'Start Rebellion'
-    victory points: 12
-    game turns: 6
+    victory_points: 12
+    game_turns: 6
 stars:
   -
     Egrix
@@ -80,54 +80,54 @@ characters:
     navigation: 3
     homeworld: Charkhan
     bonuses: "R"
-possesions:
+possessions:
   - 
     type: spaceship
     name: "Planetary Privateer"
     img: 'iship.gif'
-    cannons: 3
-    shields: 2
-    maneuver: 3
-    maxpassengers: 6
+    stat1: 3
+    stat2: 2
+    stat3: 3
+    stat4: 6
     owner_name: "Boccanegra"
   - 
     type: spaceship
     name: "Imperial Spaceship"
     img: 'iship.gif'
-    cannons: 1
-    shields: 1
-    maneuver: 2
-    maxpassengers: 4
+    stat1: 1
+    stat2: 1
+    stat3: 2
+    stat4: 4
     owner_name: "Saytar"
 planets:
   -
-    id: 221
+    location: 221
     name: Quibron
-    pdblevel: 1
-    pdbstate: "Up"
-    planetcontrol: "Imperial"
+    pdb_level: 1
+    pdb_state: 1
+    control: "Imperial"
     loyalty: -1
-    environs: 1
+    environ_count: 1
   -
-    id: 222
+    location: 222
     name: Angoff
-    pdblevel: 2
-    pdbstate: "Up"
-    planetcontrol: "Imperial"
+    pdb_level: 2
+    pdb_state: 1
+    control: "Imperial"
     loyalty: 0  
-    environs: 1
+    environ_count: 1
   -
-    id: 223
+    location: 223
     name: Charkhan
-    pdblevel: 0
-    pdbstate: "Up"
-    planetcontrol: "Imperial"
+    pdb_level: 0
+    pdb_state: 1
+    control: "Imperial"
     loyalty: -2
-    environs: 2
+    environ_count: 2
 environs:
   -
     id: 1
-    planet_id: 221
+    planet_location: 221
     type: W
     size: 4
     race_name: Saurians
@@ -138,7 +138,7 @@ environs:
     sov: 0
   -
     id: 1
-    planet_id: 222
+    planet_location: 222
     type: U
     size: 6
     race_name: Yesters
@@ -149,7 +149,7 @@ environs:
     sov: 3
   -
     id: 1
-    planet_id: 223
+    planet_location: 223
     type: A
     size: 5
     race_name: Yesters
@@ -160,7 +160,7 @@ environs:
     sov: 0
   -
     id: 2
-    planet_id: 223
+    planet_location: 223
     type: W
     size: 3
     race_name: Charkhans
@@ -196,20 +196,26 @@ monsters:
     firefight: false
 units:
   -
-    name: Line
+    type: Line
     side: Imperial
-    combat: 3
+    environ_combat: 3
+    space_combat: None
     endurance: 2
-    number: 1
+    mobile: False
+    count: 1
   -
-    name: Militia
+    type: Militia
     side: Imperial
-    combat: 1
+    environ_combat: 1
+    space_combat: None
     endurance: 0
-    number: 3
+    mobile: False
+    count: 3
   -
-    name: Patrol
+    type: Patrol
     side: Imperial
-    combat: 2
+    environ_combat: 2
+    space_combat: None
     endurance: 1
-    number: 3 
+    mobile: False
+    count: 3 

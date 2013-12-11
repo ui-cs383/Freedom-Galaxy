@@ -10,14 +10,51 @@ def start(session, name, player, scenario="egrix"):
 
 	game_data = yaml.load(game_data)
 
-	game = orm.Game(name = name, player1 = player, player2 = None, scenario = scenario)
+	game = orm.Game(id = name, player1 = player, player2 = None, scenario = scenario)
 	stack = orm.Stack()
 
 	for objects, values in game_data.items():
 		if objects == 'characters':
 			for attributes in values:
 				character = orm.Character(**attributes)
+
+				possessions = game_data['possessions']
+
+				for possession_attribute, possession in enumerate(possessions):
+					if character.name == possession['owner_name']:
+						item = orm.Possession(**possession)
+						character.possessions.append(item)
+
 				stack.characters.append(character)
+
+		elif objects == 'units':
+			for attributes in values:
+				count = attributes['count']
+				attributes.pop('count', None)
+
+				for x in range(0, count):
+					unit = orm.Unit(**attributes)
+					stack.units.append(unit)
+		elif objects == 'planets':
+
+			for attributes in values:
+				planet = orm.Planet(**attributes)
+
+				environs = game_data['environs']
+
+				print(environs)
+
+				for environ_attribute, environ in enumerate(environs):
+					if 'planet_location' in environ:
+						location = environ['planet_location']
+						environ.pop('planet_location', None)
+
+						if planet.location == location:
+							area = orm.Environ(**environ)
+							planet.environs.append(area)
+
+				game.planets.append(planet)
+
 
 	game.stacks.append(stack)
 

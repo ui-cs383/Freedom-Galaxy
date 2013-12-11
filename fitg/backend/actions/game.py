@@ -118,4 +118,4 @@ def get_object(session, table, id=None):
     else:
         items = session.query(orm_name).filter_by(id=id).one()
 
-    return True, { table: items }
+    return True, { table.lower(): items }

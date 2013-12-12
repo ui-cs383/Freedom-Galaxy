@@ -393,6 +393,7 @@ def squad_combat(session, atk_obj, def_id):
     new_id = session.query(Character).filter_by(name = "squad").one().stack_id
     result = char_combat(session, new_id, def_id, None)
     session.delete(squad, new_stack)
+    session.commit()
     return result
 
 def squad_table(strength):

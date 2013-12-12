@@ -255,6 +255,7 @@ class FreedomService(rpyc.Service):
             for stack in target_list:
                 if stack.stack_detection():
                     result = self.actions.combat.search(session, stack_id, location_id)
+                    break
 
             return self.response('move', request, result[0], result[1])
 

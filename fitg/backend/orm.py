@@ -228,7 +228,6 @@ class Stack(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     environ_id = Column(Integer, ForeignKey('environs.id'))
     game_id = Column(String, ForeignKey('games.id'))
-    environ = relationship('Environ', backref='stack')
     characters = relationship('Character', backref='stack')
     units = relationship('Unit', backref='stack')
 

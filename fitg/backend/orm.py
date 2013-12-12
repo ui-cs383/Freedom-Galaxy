@@ -141,15 +141,21 @@ class Unit(Base):
 
 class Mission(Base):
 	__tablename__ = 'missions'
-	id = Column(Integer, primary_key=True, autoincrement=True)
+	id = Column(String, primary_key=True)
 	side = Column(String)     
 	type = Column(String)
+	draws = Column(String)
 	stack_id = Column(Integer, ForeignKey('stacks.id'))
-	stack = relationship("Stack", backref=backref('mission', order_by=id))
+	stack = relationship("Stack", backref=backref('mission', order_by=id, uselist=False))
 
-	def __init__(self, type, stack_id):
+	def __init__(self, id, type, side, brief, detail, result, draws):
+		self.id = id
 		self.type = type
-		self.stack_id = stack_id
+		self.side = side
+		self.brief = brief
+		self.detail = detail
+		self.result = result
+		self.draws = draws
 
 	def __repr__(self):
 		return "<Mission('%s','%s', '%s')>" % (self.id, self.type, self.stack_id)
@@ -220,15 +226,13 @@ class Possession(Base):
 class Race(Base):
 	__tablename__ = 'races'
 	id = Column(Integer, primary_key=True, autoincrement=True)
-	name = Column(String, primary_key=True)
-	environ = Column(String)               
+	name = Column(String)            
 	combat = Column(Integer)               
 	endurance = Column(Integer)            
 	firefight = Column(Boolean)            
 
-	def __init__(self, name, environ, combat, endurance, firefight):
+	def __init__(self, name, combat, endurance, firefight):
 		self.name = name
-		self.environ = environ
 		self.combat = combat
 		self.endurance = endurance
 		self.firefight = firefight

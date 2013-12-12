@@ -1,4 +1,5 @@
 import rpyc
+import yaml
 from contextlib import contextmanager
 
 @contextmanager
@@ -14,6 +15,53 @@ def session_scope(orm):
     finally:
         session.close()
 
+def load_races(orm):
+    with session_scope(orm) as session:
+
+        if session.query(orm.Race).all().count(orm.Race.id) > 0:
+            return True
+
+        f = 'data/races.yaml'
+
+        with open (f, "r") as races:
+            race = races.read()
+
+        race = yaml.load(race)
+
+
+        for objects, values in enumerate(race['races']):
+            race = orm.Race(**values)
+            session.add(race)
+
+        session.commit()
+
+    return True
+
+def load_missions(orm):
+    with session_scope(orm) as session:
+
+        print("========================")
+        print(session.query(orm.Mission).all())
+        print("========================")
+
+        if session.query(orm.Mission).all().count(orm.Mission.id) > 0:
+            return True
+
+        f = 'data/missions.yaml'
+
+        with open (f, "r") as missions:
+            mission = missions.read()
+
+        mission = yaml.load(mission)
+
+
+        for objects, values in enumerate(mission['missions']):
+            mission = orm.Mission(**values)
+            session.add(mission)
+
+        #session.commit()
+
+    return True
 
 class ClientService(rpyc.Service):
     """Handles service calls to the client.
@@ -49,6 +97,10 @@ class FreedomService(rpyc.Service):
         self.actions = actions
         self.orm = orm
         self.logger = self._conn._config['logger']
+
+        #create mission
+        load_races(orm)
+        load_missions(orm)
 
     def on_connect(self):
         pass

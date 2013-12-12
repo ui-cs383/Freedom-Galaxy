@@ -31,7 +31,7 @@ def char_combat(session, atk_id, def_id, options):
 
     char_wounds(atk_stack, atk_result[0], session)
     char_wounds(def_stack, def_result[0], session)
-        
+'''        
     if 'C' in options:
         if atk_result[1] == 1:
             captured_char = def_stack.characters[randint(0,len(def_stack.characters)-1)]
@@ -44,7 +44,7 @@ def char_combat(session, atk_id, def_id, options):
             captured_char.stack_id = atk_id
             captured_char.captive = True
             captured_char.active = False
-
+'''
     if atk_stack.size() == 0:
         session.delete(atk_stack)
 

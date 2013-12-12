@@ -260,7 +260,10 @@ class Stack(Base):
         return len(self.characters) + len(self.units)
 
     def side(self):
-        return self.characters[0].side
+        if self.characters:
+            return self.characters[0].side
+        else:
+            return self.units[0].side
 
     def spaceship(self):
         for character in self.characters:

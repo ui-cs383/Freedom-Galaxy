@@ -56,7 +56,7 @@ def merge_stack(session, src_id, des_id):
     # check if stacks are same team? same location?
 
     try:
-        assert src_stack.location == des_stack.location
+        assert src_stack.environ_id == des_stack.environ_id
         assert src_stack.side() == des_stack.side()
     except:
         success = False

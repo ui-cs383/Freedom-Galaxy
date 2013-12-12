@@ -10,20 +10,20 @@ def assign_mission(session, stack_id, mission_type):
     if mission.stack == None:
         mission.stack_id = stack_id
         session.commit()
-        return True
+        return True, mission.__dict__
     else:
-        return False
+        return False, mission.__dict__
     
 def attempt_mission(session, environ_id):
     environ = session.query(Environ).filter_by(id = environ_id).one()
     for stack in environ.stacks:
         for mission in stack.mission:
             successes = 0
-            for x in range(environ.size + (mission.draws)()):
+            for x in range(environ.size): """+ (mission.draws)()"""
                 if draw_action(mission, environ, session) == mission.type:
                     successes += 1
                     #   Do mission result
-            resolve_mission(session, mission, successes)
+            return resolve_mission(session, mission, successes)
 
 def resolve_mission(session, mission, successes):
     session.add(mission)
@@ -40,19 +40,23 @@ def resolve_mission(session, mission, successes):
         'S' : s_mission,
         'T' : t_mission
     }
+    result = mission_table['mission.type'](session, mission, successes)
     session.commit()
 
-    return True
+    return True, result
 
 def a_mission(session, mission, successes):
     if successes > 0:
-        target_stacks = session.query(Stack).filter_by(environ = mission.environ).all()
+        target_stacks = session.query(Stack).filter_by(environ = mission.stack.environ_id).all()
         for stack in target_stacks:
             if stack.side() != mission.stack.side():
                 if stack.characters:
                     victim = stack.characters[randint(0,stack.size()-1)]
+                    session.add(mission)
                     session.delete(victim)
+                    mission.stack = None
                     session.commit()
+                    return stack.__dict__
 
 def b_mission(session, mission, successes):
     pass
@@ -73,7 +77,14 @@ def c_mission(session, mission, successes):
                     loyalty + 1
     session.commit()
 def d_mission(session, mission, successes):
-    mission.environ.planet
+    session.add(mission)
+    if successes > 0:
+        mission.environ.planet.loyalty += 1
+    if successes > 1:
+        mission.environ.planet.loyalty += 1
+
+    session.commit()
+    return mission.stack.__dict__
 
 def f_mission(session, mission, successes):
     pass

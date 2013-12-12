@@ -20,21 +20,22 @@ class AI:
 		self.client = rpyc.connect("localhost", 55889, service.ClientService)
 		self.response = None
 		self.connection_options = connection_options
+		c = self.client.root
 
 	def start_game(self):
 		# Eventually get the config options and use them to define the game
 
-		game_list = self.client.root.list_games()
+		game_list = c.list_games()
 		print("Listing all games")
 		pprint(glist)
 
-		environ_list = self.client.root.get_state(gameid, "environ")# = all environs in this scenario
+		environ_list = c.get_state(gameid, "environ")# = all environs in this scenario
 
 		# Adding validate_only=True to any call will only validate if 
 		# it's possible.
 		# You need to catch an IntegrityError when calling this since 
 		# name is unique
-		self.response = self.client.root.start_game(name="test", 
+		self.response = c.start_game(name="test", 
 											   player="bob")
 		print("Starting game test with player bob")
 		pprint(response)
@@ -45,7 +46,7 @@ class AI:
 		# ASSASSINATION: A
 		# STOP REBELLION: R
 		# GAIN CHARACTERS: G
-		environ_list = self.client.root.get_state(gameid, "Environ")# = all environs in this scenario
+		environ_list = c.get_state(gameid, "Environ")# = all environs in this scenario
 		# when it's our turn
 		while(True):
 			reactionMove = False
@@ -55,8 +56,8 @@ class AI:
 				their_unit_stack_list = []
 				our_characters = []
 				their_characters = []
-				global_stack_list = self.client.root.get_state(gameid, "Stack") #get our stacks
-				character_stack_list = self.client.root.get_state(gameid, "Character")
+				global_stack_list = c.get_state(gameid, "Stack") #get our stacks
+				character_stack_list = c.get_state(gameid, "Character")
 				for stack in global_stack_list.units:
 					if stack.side == "Imperial":
 						our_unit_stack_list.append(stack)
@@ -75,7 +76,7 @@ class AI:
 				if planet is not None:
 					tmpEnviron
 					# this is NOT for combat 
-					self.client.root.move(our_characters, planet.location)
+					c.move(our_characters, planet.location)
 					
 					#need to grab an environ for the planet
 					#grab the last environ just to get something
@@ -87,8 +88,8 @@ class AI:
 							# don't know what my options are
 							# probably no options because we want 
 							# all the characters to be available for missions
-							self.client.root.combat(combined_stack, enemy_stack)
-					self.client.root.assign_mission("R", character_stack)
+							c.combat(combined_stack, enemy_stack)
+					c.assign_mission("R", character_stack)
 				else:
 					#operations (movement/combat)
 					for enemy_stack in enemy_stack_list:
@@ -99,21 +100,21 @@ class AI:
 							for stack in stack_list:
 								#tell them to move even if we can't
 								#leaders for the future
-								self.client.root.move(stack,
+								c.move(stack,
 													  game_name='test', 
 													  enemy_stack.location)
 							# need to combine the stacks for combat
 							# combined_stack is the stack at the location 
 							# we're moving to.
 							# need to add options (leaders)
-							self.client.root.combat(combined_stack,
+							c.combat(combined_stack,
 													enemy_stack)
 						else:
 							for stack in stack_list:
 								if random() < 0.20:
 									for environ in environ_list:
 										if random() < 0.50:
-											self.client.root.move(
+											c.move(
 														stack,
 														game_name="test",
 														environ)
@@ -126,19 +127,19 @@ class AI:
 						tmp = random() % 4;
 						if tmp == 0:
 							# Diplomacy
-							self.client.root.assign_mission("D",
+							c.assign_mission("D",
 															character_stack)
 						elif tmp == 1:
 							# coup
-							self.client.root.assign_mission("C",
+							c.assign_mission("C",
 															character_stack)
 						elif tmp == 2:
 							#assassination
-							self.client.root.assign_mission("A",
+							c.assign_mission("A",
 															character_stack)
 						else:
 							#gain character
-							self.client.root.assign_mission("G",
+							c.assign_mission("G",
 															character_stack)
 				ourTurn = False
 			else:
@@ -148,9 +149,9 @@ class AI:
 					for stack in our_unit_stack_list:
 						if stack.environ_id != enemy_stack.environ_id 
 											 and not reactionMove:
-							unit = self.client.root.split_stack(stack.id)
+							unit = c.split_stack(stack.id)
 
-							self.client.root.move(unit.stack_id,
+							c.move(unit.stack_id,
 												  game_name="test",
 												  enemy_stack.location)
 							reactionMove = True
@@ -168,7 +169,7 @@ class AI:
 			time.sleep(10)
 
 def move_strongest_units(environid):
-	environ = self.client.root.get_state(gameid, "environ", environid)
+	environ = c.get_state(gameid, "environ", environid)
 	stack_list # = get all stacks
 	num_units = 0 #want to make sure that we don't send too many units over
 	new_location_stack #need a new location stack to append to
@@ -184,17 +185,17 @@ def move_strongest_units(environid):
 					best_unit = unit
 					best_stack = stack
 		if best_attack != 0:
-			moving_stack = self.client.root.split_stack(session, best_stack.id, best_unit.id, False)
-			self.client.root.move(session, moving_stack, environ.id)
+			moving_stack = c.split_stack(session, best_stack.id, best_unit.id, False)
+			c.move(session, moving_stack, environ.id)
 			if(num_units == 0):
 				new_location_stack = moving_stack
 			else:
-				self.client.root.merge_stack(session, moving_stack, new_location_stack)
+				c.merge_stack(session, moving_stack, new_location_stack)
 
 		num_units += 1
 
 def planet_in_rebellion():
-	list_of_planets = self.client.root.get_state(gameid, "Planet")
+	list_of_planets = c.get_state(gameid, "Planet")
 	for planet in list_of_planets:
 		if planet.in_rebellion:
 			return planet

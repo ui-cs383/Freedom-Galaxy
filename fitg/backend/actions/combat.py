@@ -25,7 +25,7 @@ def char_combat(session, atk_id, def_id, options):
         atk_result[0] *= 2
         def_result[0] *= 2
 
-    elif atk_stack.militaryunits:
+    if atk_stack.units:
         atk_result[0] *= 2
         def_result[0] *= 2
 
@@ -50,6 +50,8 @@ def char_combat(session, atk_id, def_id, options):
 
     if def_stack.size() == 0:
         session.delete(def_stack)
+
+    return True, atk_stack.__dict__, def_stack.__dict__
 
 def char_combat_rating(StackID, session):
     CR = 0
@@ -127,8 +129,8 @@ def mil_combat(session, atk_id, def_id):
     atk_stack = session.query(Stack).filter_by(id = atk_id).one()
     def_stack = session.query(Stack).filter_by(id = def_id).one()
 
-    #atk_mil_units = atk_stack.militaryunits
-    #def_mil_units = def_stack.militaryunits
+    #atk_mil_units = atk_stack.units
+    #def_mil_units = def_stack.units
     atk_combat_rating = stack_combat_rating(atk_stack)
     def_combat_rating = stack_combat_rating(def_stack)
     
@@ -148,12 +150,32 @@ def mil_combat(session, atk_id, def_id):
     atk_result = mil_combat_table(randint(0,5), column, True)
     def_result = mil_combat_table(randint(0,5), column, False)
 
+    apply_result(atk_result, atk_stack)
+    apply_result(def_result, def_stack)
     #print "Attackers Eliminated: ", atk_result
     #print "Defenders Eliminated: ", def_result
 
     #atk_result = mil_combat_table(randint(0, 5), combat_ratio, True)
     #def_result = mil_combat_table(randint(0, 5), combat_ratio, False)
 
+    return True, atk_stack.__dict__, def_stack.__dict__
+
+def apply_result(dmg, stack_obj):
+    unit_list = list()
+    if (stack_obj.location_id % 10 == 0):           #if true, space combat.
+        for unit in stack_obj.units:
+            if(unit.space_combat < dmg):
+                dmg = dmg - unit.space_combat
+                #session.add(unit)
+                session.delete(unit)
+    else:                                           #otherwise, environ combat
+        for militaryunit in stack_obj.units:
+            if(unit.environ_combat < dmg):
+                dmg = dmg - unit.environ_combat
+                #session.add(unit)
+                session.delete(unit)
+
+    session.commit
 def stack_combat_ratio(atk_rating, def_rating):     #Always round in the
     ratio = 0                                       #defenders favor
     column = 1
@@ -233,17 +255,11 @@ def stack_combat_rating(stack_obj):
     combat_rating = 0
 
     if (stack_obj.location_id % 10 == 0):           #if true, space combat.
-        for militaryunit in stack_obj.militaryunits:
+        for militaryunit in stack_obj.units:
             combat_rating += militaryunit.space_combat
     else:                                           #otherwise, environ combat
-        for militaryunit in stack_obj.militaryunits:
-            #print "Side: ", militaryunit.side
-            #print "Type: ", militaryunit.type
-            #print "Mobility: ", militaryunit.mobile
-            #print "Environ Combat: ", militaryunit.environ_combat
-            #print "Space Combat: ", militaryunit.space_combat
+        for militaryunit in stack_obj.units:
             combat_rating += militaryunit.environ_combat
-            #print combat_rating
 
     return combat_rating
 
@@ -269,3 +285,28 @@ def mil_combat_table(die_roll, combat_odds, is_attacker):
     else:
         return (defender_wounds[die_roll][combat_odds])
 #end Military Combat
+
+#start Search
+#Authored by Ben Cumber
+def search(session, atk_obj, def_obj):
+    if(atk.obj.characters):
+        if(atk_obj.units):
+            #characters and military units
+            leadership_rating = atk_obj.find_stack_leader()
+            for unit in atk_obj.units:
+                military_rating += unit.environ_combat
+            search_value = leadership_rating + military_rating
+        else:
+            #characters only
+            for character in atk_obj.characters:
+                search_value += character.intelligence
+                character.detected = True
+    else:
+        #military units only
+        for unit in atk_obj.units:
+            search_value += unit.environ_combat
+    
+    for unit in def_obj.units:
+
+
+    new_stack = Stack()

@@ -27,13 +27,15 @@ def load_races(orm):
             race = races.read()
 
         race = yaml.load(race)
+        print race
 
 
         for objects, values in enumerate(race['races']):
             race = orm.Race(**values)
+            print race
             session.add(race)
 
-        session.commit()
+        #session.commit()
 
     return True
 
@@ -99,8 +101,8 @@ class FreedomService(rpyc.Service):
         self.logger = self._conn._config['logger']
 
         #create mission
-        load_races(orm)
-        load_missions(orm)
+        #load_races(orm)
+        #load_missions(orm)
 
     def on_connect(self):
         pass
@@ -171,7 +173,7 @@ class FreedomService(rpyc.Service):
         assert isinstance(validate_only, bool)
 
         with session_scope(self.orm) as session:
-            self.logger.info("creating a new game" + id)
+            self.logger.info("creating a new game " + id)
 
             request = locals()
             result = self.actions.game.start(session, id, player, scenario)
@@ -227,17 +229,17 @@ class FreedomService(rpyc.Service):
 
             return self.response('move', request, result[0], result[1])
 
-    def exposed_combat(self, attacker_stack_id, defender_stack_id, options, validate_only=False):
+    def exposed_combat(self, atk_id, def_id, options, validate_only=False):
         """Start combat between an attacker and a defender.
 
         Move takes a stack_id and moves it to location_id. If stack_id is in an enviorn and location_id 
         is an adjacent enviorn, a environ based move is completed. If location_id is a different enviorn a space
         move is completed.
 
-        :param attacker_stack_id: The unique id of the attacking stack.
-        :type attacker_stack_id: int.
-        :param defender_stack_id: The unique id of the defending stack.
-        :type defender_stack_id: int.
+        :param atk_id: The unique id of the attacking stack.
+        :type atk_id: int.
+        :param def_id: The unique id of the defending stack.
+        :type def_id: int.
         :param options: A tuple of flags as options for combat.
         :type options: tuple.
         :param validate_only: If true the move will only be validated.
@@ -245,10 +247,23 @@ class FreedomService(rpyc.Service):
         :returns:  dict -- the results of the combat
         :raises: AssertionError
         """
-        assert isinstance(attacker_stack_id, int)
-        assert isinstance(defender_stack_id, int)
+        assert isinstance(atk_id, int)
+        assert isinstance(def_id, int)
+        with session_scope(self.orm) as session:
+            self.logger.info("requested combat outcome for attacker " + str(atk_id) + " and " + str(def_id))
+            request = locals()
+            atk_stack = session.query(Stack).filter_by(id = atk_id).one()
+            def_stack = session.query(Stack).filter_by(id = def_id).one()
+            try:
+                if not def_stack.units:
+                    result = self.actions.combat.char_combat(session, atk_id, def_id, options)
+                else:
+                    if atk_stack.units
+                        result = self.actions.combat.mil_combat(session, atk_id, def_id)
+            except AssertionError:
+                self.logger.warn("combat of " + str(atk_id) + " attacking " + str(def_if) + " failed"
 
-        self.logger.info("requested combat outcome for attacker " + str(attacker_stack_id) + " and " + str(defender_stack_id))
+            return self.response('combat ', request, result[0], result[1])
 
     def exposed_split_stack(self, stack_id, unit_id=None, character_id=None, validate_only=False):
         """Move a stack to a location.
@@ -269,12 +284,22 @@ class FreedomService(rpyc.Service):
         :raises: AssertionError
         """
         assert isinstance(stack_id, int)
-        assert isinstance(character_id, int) or isinstance(unit_id, int)
+        assert isinstance(unit_id, int) or isinstance(character_id, int)
+        with session_scope(self.orm) as session:
+            self.logger.info("requested split unit " + str(unit_id) + " or " + str(character_id) + " from " + str(stack_id))
+            request = locals()
+            try:
+                if unit_id:
+                    result = self.actions.movement.split_stack(session, stack_id, unit_id, False)
+                else:
+                    result = self.actions.movement.split_stack(session, stack_id, character_id, True)
+            except AssertionError:
+                self.logger.warn("splitting " + str(unit_id) + " or " + str(character_id) + " from " + str(stack_id) + " failed")
 
-        self.logger.info("requested split unit " + str(unit_id) or str(character_id) + " from stack " + str(stack_id))
+            return self.response('split_stack', request, result[0], result[1])
 
     def exposed_merge_stack(self, source_stack, destination_stack, validate_only=False):
-        """Merges merging_stack into accepting_stack.
+        """Merges source_stack into destination_stack.
 
         Move takes a stack_id and moves it to location_id. If stack_id is in an enviorn and location_id 
         is an adjacent enviorn, a environ based move is completed. If location_id is a different enviorn a space
@@ -291,15 +316,17 @@ class FreedomService(rpyc.Service):
         :returns:  dict -- a dictionary of stacks with a stack_id parameter.
         :raises: AssertionError
         """
-        assert isinstance(accepting_stack, int)
-        assert isinstance(merging_stack, int)
+        assert isinstance(source_stack, int)
+        assert isinstance(destination_stack, int)
+        with session_scope(self.orm) as session:
+            self.logger.info("requested stack merge of " + str(source_stack) + " into " + str(destination_stack))
+            request = locals()
+            try:
+                result = self.actions.movement.merge_stack(session, source_stack, destination_stack)
+            except AssertionError:
+                self.logger.warn("merge of " + str(source_stack) + " into " + str(destination_stack) + " failed")
 
-        self.logger.info("requested stack merge of " + str(merging_stack) + " into " + str(accepting_stack))
-
-        try:
-            actions.movement.merge_stack(session, source_stack, destination_stack)
-        except AssertionError:
-            self.logger.warn("merge of " + str(merging_stack) + " into " + str(accepting_stack) + " failed")
+            return self.response('merge_stack', request, result[0], result[1])
 
     def exposed_draw_mission(self, validate_only=False):
         """Draws mission card.

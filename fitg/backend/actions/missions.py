@@ -58,8 +58,20 @@ def b_mission(session, mission, successes):
     pass
 
 def c_mission(session, mission, successes):
-    pass
-
+    if(successes > 0):
+        target_stacks = session.query(Stack).filter_by(environ =
+                mission.stack.environ_id).all()
+        session.add(target_stacks[0])
+        loyalty = target_stacks[0].environ.planet.loyalty
+        if(target_stacks[0].side() == 'Rebel'):
+            for x in range(0,successes):
+                if(loyalty > -2):
+                    loyalty - 1
+        else:
+            for x in range(0, successes):
+                if(loyalty < 2):
+                    loyalty + 1
+    session.commit()
 def d_mission(session, mission, successes):
     mission.environ.planet
 

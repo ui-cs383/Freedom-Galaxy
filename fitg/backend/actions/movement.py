@@ -2,6 +2,7 @@
 from orm import *
 from sqlalchemy.orm import exc
 from random import randint
+from detection_routine import *
 
 
 def move(session, stack_id, environ_id):

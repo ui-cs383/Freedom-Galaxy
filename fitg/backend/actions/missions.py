@@ -4,7 +4,7 @@ from orm import *
 from combat import *
 from random import randint
 
-def add_mission(session, stack_id, mission_type):
+def assign_mission(session, stack_id, mission_type):
 	mission = session.query(Mission).filter_by(type = mission_type).one()
 	session.add(mission)
 	if mission.stack == None:

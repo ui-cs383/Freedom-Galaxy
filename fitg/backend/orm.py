@@ -183,6 +183,13 @@ class Planet(Base):
 	def __repr__(self):
 		return "<Planet('%s','%s', '%s')>" % (self.id, self.name, self.environs)
 
+	def pdb_change(self, val):
+		self.pdb_level += val
+		if self.pdb_level < 0:
+			self.pdb_level = 0
+		elif self.pdb_level > 2:
+			self.pdb_level = 2:
+
 class Possession(Base):
 	__tablename__ = 'possessions'
 	id = Column(Integer, primary_key=True, autoincrement=True)
@@ -246,6 +253,9 @@ class Stack(Base):
 
 	def size(self):
 		return len(self.characters) + len(self.units)
+
+	def side(self):
+		return self.characters[0].side
 
 	def spaceship(self):
 		for character in self.characters:

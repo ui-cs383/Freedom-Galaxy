@@ -1,6 +1,6 @@
 """
 Authored by Ben Cumber
-Currently just the Detection Routine in the Combat Class.
+Currently just the Detection Routine.
 """
 import random
 from orm import *

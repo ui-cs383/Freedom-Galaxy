@@ -116,12 +116,23 @@ class FreedomService(rpyc.Service):
         assert isinstance(validate_only, bool)
 
         with session_scope(self.orm) as session:
-            self.logger.info("creating a new game")
+            self.logger.info("creating a new game" + id)
 
             request = locals()
             result = self.actions.game.start(session, id, player, scenario)
 
             return self.response('start_game', request, result[0], result[1])
+
+    def exposed_delete_game(self, id):
+        assert isinstance(id, str)
+
+        with session_scope(self.orm) as session:
+            self.logger.info("deleting game " + id)
+
+            request = locals()
+            result = self.actions.game.delete(session, id)
+
+            return self.response('delete_game', request, result[0], result[1])
 
     def exposed_list_games(self):
         with session_scope(self.orm) as session:

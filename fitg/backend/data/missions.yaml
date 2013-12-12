@@ -1,0 +1,98 @@
+---
+missions:
+ -
+    name: "Assassination"
+    side: None
+    type: 'A'
+    brief: "Kill a character."
+    detail: "May attempt to assassinate any one detected Enemy character in Environ.\nMay only be performed in an Environ occupied by at least one detected Enemy character (who must be named before drawing Action Cards)."
+    result: "Named enemy is removed from play. If it does not come up, roll the die. On a roll of 4 or 5, all characters on the mission are captured; on a 6, all characters on the mission are killed."
+    bonusdraw: intelligence
+ -
+    name: "Start Rebel Camp"
+    side: Rebel
+    type: 'B'
+    brief: "Start Rebel Camp"
+    detail: "May attempt to establish a band of locals dedicated to the Rebel cause. May be performed only on a planet that is currently Patriotic or Loyal."
+    result: "Place Rebel Camp"
+    bonusdraws: leadership
+ -
+    name: "Coup"
+    side: None
+    type: 'C'
+    brief: "Take over a planet."
+    detail: "May attempt to place a small group favourable to the Player's cause in control of an Environ. May be performed only in an Environ with a Coup rating and if at least one character in the Mission Group has an Intelligence rating greater than one."
+    result: "Shift Loyalty per Letter."
+    bonusdraws: leadership+sov
+ -
+    name: "Diplomacy"
+    side: None
+    type: 'D'
+    brief: "Shift Loyalty."
+    detail: "May attempt to shift planet Loyalty in Player's favour through negotiation with delegates of local populace."
+    result: "Shift Loyalty per Letter to max of 2."
+    bonusdraws: diplomacy+loyalty+stacksize-1
+ -
+    name: "Free Prisoners"
+    side: None
+    type: 'F'
+    brief: "Free a captured character."
+    detail: "May attempt to free Friendly captured characters in the same Environ."
+    result: "Free captured character per Letter."
+    bonusdraws: None
+ -
+    name: "Gain Characters"
+    side: None
+    type: 'G'
+    brief: "Gain some worthwhile help."
+    detail: "May attempt to find new friend of worth to the Player's cause.\nIn the Star System and Province Games, the Imperial Player may perform this mission only if his current number of characters is equal to or less than the number of characters he started the scenario with."
+    result: "Draw a Character."
+    bonusdraws: None
+ -
+    name: "Gather Information"
+    side: None
+    type: 'I'
+    brief: "Learn Locations of enemy units."
+    detail: "May attempt to learn details of Enemy deployment or strategic plans.\nMay not be performed on a planet that is controlled by the Phasing Player if there are no Enemy units in the Environ."
+    result: "Enemy Units Detected if one Letter. Two or more Earns the player a Victory Point."
+    bonusdraws: intelligence
+ -
+    name: "Scavenge for Possessions"
+    side: Rebel
+    type: 'P'
+    brief: "Get nifty stuff."
+    detail: "Rebel Player only: May attempt to find object of personal use."
+    result: "Gain one possession."
+    bonusdraws: None
+ -
+    name: "Question Prisoner"
+    side: None
+    type: 'Q'
+    brief: "Learn useful information."
+    detail: "May attempt to learn Enemy secrets by questioning a captured Enemy character. The Imperial Player may choose to torture a cpatured Rebel character.\nMay be performed by only one character stacked with a captured Enemy character."
+    result: "If rebel: Reveal the name of up to two planets that don't have a Rebel Base. If imperial: All imperial units in the star system are revealed.
+    bonusdraws: "3+intelligence-(prisoners intelligence)"
+ -
+    name: "Start/Stop Rebellion"
+    side: None
+    type: 'R'
+    brief: "Start or End a Rebellion."
+    detail: "Rebel Player: May attempt to start full scale rebellion if planet Loyalty at Unrest.\nImperial Player: May attempt to halt rebellion by non-military means on planet in Rebellion."
+    result: "Rebel: Flip Loyalty Marker. Imperial: Two letters, flip Loyalty Marker."
+    bonusdraws: None
+ -
+    name: "Sabotage"
+    side: None
+    type: 'S'
+    brief: "Affect enemy military."
+    detail: "May attempt to damage Enemy PDB or military units by undercover activity.\nMay only be attempted in Environ occupied by Enemy military units and/or if Enemy PDB is on planet."
+    result: "One Letter: Remove a 1-0 military unit or change PDB State to Down. Two Letter: Remove any military unit or reduce Enemy PDB Level by 1 and change PDB State to down."
+    bonusdraws: None
+ -
+    name: "Subvert Troops"
+    side: Rebel
+    type: 'T'
+    brief: "Convince the enemy to fight for you."
+    detail: "May attempt to subvert Imperial Militia, Patrol, or Line Military units to the Rebel Cause.\nMay be performed only in an Environ occupied by an Imperial military unit(s)."
+    result: "One Letter: Remove Imperial Militia, replace with Rebel 1-0 unit. Two Letters: Two Imperial Militia, one Imperial Patrol, one Line Unit, replace with Rebel 2-1 unit."
+    bonusdraws: None

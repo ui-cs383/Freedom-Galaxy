@@ -23,8 +23,9 @@ def move(session, stack_id, environ_id):
     # Check if either are None
     if newloc is not None:
         # Check if they aren't adjacent
-        if oldloc.planet != newloc.planet:
-            return False, "Invalid Move"
+        if oldloc != None:
+            if oldloc.planet != newloc.planet:
+                return False, "Invalid Move"
     else:
         # One is None, exit
         return False, "Invalid Move"

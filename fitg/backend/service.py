@@ -69,7 +69,7 @@ class FreedomService(rpyc.Service):
 
         return response
 
-    def exposed_get_state(self, object_type, object_id=None):
+    def exposed_get_state(self, game_id, object_type, object_id=None):
         """Get the state of an object
 
         :param object_type: The type of object to get state on ("environ", "planet" etc)
@@ -85,7 +85,7 @@ class FreedomService(rpyc.Service):
         with session_scope(self.orm) as session:
             request = locals()
 
-            result = self.actions.game.get_object(session, object_type, object_id)
+            result = self.actions.game.get_object(session, game_id, object_type, object_id)
 
             return self.response('get_state', request, result[0], result[1])
 
@@ -99,7 +99,7 @@ class FreedomService(rpyc.Service):
         """
         self.logger.info("requested current turn state")
 
-    def exposed_start_game(self, name, player, scenario="egrix", ai=False, validate_only=False):
+    def exposed_start_game(self, id, player, scenario="egrix", ai=False, validate_only=False):
         """Start a new game.
 
         Creates a new game.
@@ -111,17 +111,28 @@ class FreedomService(rpyc.Service):
         :returns:  bool -- True on game creation, false on error.
         :raises: AssertionError
         """
-        assert isinstance(name, str)
+        assert isinstance(id, str)
         assert isinstance(ai, bool)
         assert isinstance(validate_only, bool)
 
         with session_scope(self.orm) as session:
-            self.logger.info("creating a new game")
+            self.logger.info("creating a new game" + id)
 
             request = locals()
-            result = self.actions.game.start(session, name, player, scenario)
+            result = self.actions.game.start(session, id, player, scenario)
 
             return self.response('start_game', request, result[0], result[1])
+
+    def exposed_delete_game(self, id):
+        assert isinstance(id, str)
+
+        with session_scope(self.orm) as session:
+            self.logger.info("deleting game " + id)
+
+            request = locals()
+            result = self.actions.game.delete(session, id)
+
+            return self.response('delete_game', request, result[0], result[1])
 
     def exposed_list_games(self):
         with session_scope(self.orm) as session:
@@ -234,32 +245,6 @@ class FreedomService(rpyc.Service):
             actions.movement.merge_stack(session, source_stack, destination_stack)
         except AssertionError:
             self.logger.warn("merge of " + str(merging_stack) + " into " + str(accepting_stack) + " failed")
-
-
-    def exposed_show_mission(self, mission_id=None, validate_only=False):
-        """Shows all missions or details of an existing mission.
-
-        Move takes a stack_id and moves it to location_id. If stack_id is in an enviorn and location_id 
-        is an adjacent enviorn, a environ based move is completed. If location_id is a different enviorn a space
-        move is completed.
-
-        :param stack_id: The stack_id of the stack to be moved.
-        :type name: int.
-        :param unit_id: A tuple of unit_id's to assign to a new stack.
-        :type unit_id: tuple or None.
-        :param character_id: A tuple of character_id's to assign to a new stack.
-        :type character_id: tuple or None.
-        :param validate_only: If true the move will only be validated.
-        :type validate_only: false.
-        :returns:  dict -- a dictionary of stacks with a stack_id parameter.
-        :raises: AssertionError
-        """
-        assert isinstance(mission_id, int) or mission_id is None
-
-        if mission_id is None: 
-            self.logger.info("requested mission information for all missions")
-        else:
-            self.logger.info("requested mission information for mission " + str(mission_id))
 
     def exposed_draw_mission(self, validate_only=False):
         """Draws mission card.

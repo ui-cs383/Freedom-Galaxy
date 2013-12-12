@@ -249,7 +249,7 @@ class Stack(Base):
     characters = relationship('Character', backref='stack')
     units = relationship('Unit', backref='stack')
 
-    def __init__(self, environ_id, game_id):
+    def __init__(self, environ_id=None, game_id=None):
         self.environ_id = environ_id
         self.game_id = game_id
 

@@ -26,6 +26,10 @@ print("Getting state of planets")
 planet = client.root.get_state(game_id="test", object_type="Planet")
 pprint(planet)
 
+print("Getting state of environs")
+planet = client.root.get_state(game_id="test", object_type="Environ")
+pprint(planet)
+
 print("deleting game")
 delete = client.root.delete_game(id="test")
 #client.root.combat(attacker_stack_id=1, defender_stack_id=2, options=tuple('2'))

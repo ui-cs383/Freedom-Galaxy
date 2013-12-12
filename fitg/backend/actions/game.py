@@ -130,6 +130,6 @@ def get_object(session, game_id, table, id=None):
         items = session.query(orm_name).join(*join_condition).filter(orm.Game.id == game_id).all()
         items = [ x.__dict__ for x in items ]
     else:
-        items = session.query(orm_name).join(orm.Game).filter_by(id=id).one()
+        items = session.query(orm_name).join(*join_condition).filter_by(id=id).one()
 
     return True, { table.lower(): items }

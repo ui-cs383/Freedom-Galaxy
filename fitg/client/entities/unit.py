@@ -69,6 +69,7 @@ class Unit(pygame.sprite.DirtySprite):
         sprite.set_stack_id(self.stack_id)
         self.stack_list.extend(sprite.stack_list)
         sprite.stack_list = list()
+        self.set_stack_id(self.stack_id)
         for sprite in self.stack_list:
             sprite.image = sprite.prev_image
 

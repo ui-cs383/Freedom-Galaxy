@@ -18,22 +18,23 @@ class System():
         blue = Planet(self, planetlist[2], environlist, "right", "blue_planet.png")
         self.planet_list = pygame.sprite.LayeredUpdates((purple, earth, blue))
         #planet_locs = dict(planetlist[0]["id"]: planetlist[0]["location"], planetlist[1]["id"]: planetlist[1]["location"], planetlist[2]["id"]: planetlist[2]["location"])
-        print planetlist
-        planet_locs = dict()
-        environ_locs = dict()
+        #print planetlist
+        self.planet_locs = dict()
+        self.environ_locs = dict()
         for planet in planetlist:
-            planet_locs[str(planet["id"])] = int(planet["location"])*10
-        print planet_locs
+            self.planet_locs[str(planet["id"])] = int(planet["location"])*10
+        #print self.planet_locs
         for environ in environlist:
-            print environ["planet_id"]
-            environ_locs[environ["id"]] = planet_locs[str(environ["planet_id"])]+environ["location"]
-        print environ_locs
+            #print environ["planet_id"]
+            self.environ_locs[environ["id"]] = self.planet_locs[str(environ["planet_id"])]+environ["location"]
+        #print self.environ_locs
             
         #=======================================================================
         # Unit Population
         #=======================================================================
         
         self.unit_list = pygame.sprite.LayeredDirty()
+        print "Starting length: " + str(len(self.unit_list.sprites()))
         for character in characterlist:
             #print character
             self.addunit(True, character)
@@ -45,23 +46,31 @@ class System():
         for stack in stacklist:
             for unit in self.unit_list:
                 if unit.stack_id == stack["id"]:
-                    unit.set_loc_id(environ_locs[stack["environ_id"]])
+                    unit.set_loc_id(self.environ_locs[stack["environ_id"]])
 
     def addunit (self, charflag, unitdict):
         newunit = Unit(charflag, unitdict)
-        self.unit_list.add(newunit)
-        
-        if len(self.unit_list) == 0:
+        createnewstack = True
+        #self.unit_list.add(newunit)
+        #print "Length: " + str(len(self.unit_list.sprites()) )
+        if len(self.unit_list.sprites()) == 0:
+            print "First unit"
             self.unit_list.add(newunit)
         else:
             for unit in self.unit_list:
+                print "unit's stack id: " + str(unit.stack_id)
+                print "new unit's stack id: " + str(newunit.stack_id)
                 if newunit.stack_id == unit.stack_id:
-                    #print "Adding to stack"
+                    print "Adding unit "+ str(newunit.id) + " to stack " + str(unit.stack_id) + "char?: " + str(charflag)
+                    print "---"
                     unit.add_unit(newunit)
+                    createnewstack = False
                     break
-                else:
-                    #print "New stack"
-                    self.unit_list.add(newunit)
+            if createnewstack:
+                print "New stack for "+ str(unit.id) + " for stack " + str(unit.stack_id) + "char?: " + str(charflag)
+                print "---"
+                self.unit_list.add(newunit)
+                    
         
         
     def update(self):

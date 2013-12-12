@@ -136,8 +136,13 @@ def left_mouse_unselect_check(client, mouse, selected_unit, star_system):
         for planet in star_system.planet_list:
             new_location_id = planet.location * 10
             if planet.collide_rect.colliderect(selected_unit.rect):
-                #moveresponse = client.root.move(stack_id=selected_unit.stack_id, location_id=new_location_id)
-                selected_unit.loc_id = new_location_id #=moveresponse["response"]["location"]
+                moveresponse = client.root.move(stack_id=selected_unit.stack_id, location_id=planet.planet_id)
+                if moveresponse["request"]["success"] is True:
+                    for key, value in star_system.environ_locs:
+                        if value == new_location_id:
+                            new_environ_id = key
+                    selected_unit.set_environ_id (new_environ_id)
+                    selected_unit.set_loc_id ( new_location_id)
                 return None
             for environ in planet.environment.environ_list:
                 new_location_id = new_location_id + environ.location

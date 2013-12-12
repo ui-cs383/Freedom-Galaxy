@@ -273,7 +273,7 @@ class FreedomService(rpyc.Service):
         assert isinstance(stack_id, int)
         assert isinstance(unit_id, int) or isinstance(character_id, int)
 
-        self.logger.info("requested split unit " + str(unit_id) + " or " + str(character_id) + " from " + str(source_stack))
+        self.logger.info("requested split unit " + str(unit_id) + " or " + str(character_id) + " from " + str(stack_id))
 
         try:
             if unit_id:
@@ -281,7 +281,7 @@ class FreedomService(rpyc.Service):
             else:
                 actions.movement.split_stack(session, source_stack, character_id, True)
         except AssertionError:
-            self.logger.warn("splitting " + str(unit_id) + " or " + str(character_id) + " from " + str(source_stack) + " failed")
+            self.logger.warn("splitting " + str(unit_id) + " or " + str(character_id) + " from " + str(stack_id) + " failed")
 
     def exposed_merge_stack(self, source_stack, destination_stack, validate_only=False):
         """Merges source_stack into destination_stack.

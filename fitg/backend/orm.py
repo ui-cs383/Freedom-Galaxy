@@ -120,8 +120,7 @@ class Unit(Base):
     endurance = Column(Integer)    
     environ_combat = Column(Integer)
     space_combat = Column(Integer)
-    mobile = Column(Boolean)
-    wounds = Column(Integer)  
+    mobile = Column(Boolean) 
     stack_id = Column(Integer, ForeignKey('stacks.id'))
     
     def __init__(self, type, side, environ_combat, space_combat, endurance, mobile):
@@ -162,7 +161,9 @@ class Planet(Base):
     loyalty = Column(Integer)         
     environ_count = Column(Integer)
     game_id = Column(String, ForeignKey('games.id'))
-    environs = relationship("Environ", backref="planet")    
+    environs = relationship("Environ", backref="planet")
+    in_rebellion = Column(Boolean)
+    was_rebellion = Column(Boolean)    
 
     def __init__(self, control, pdb_level, pdb_state, location, name, loyalty, environ_count):
         self.pdb_level = pdb_level
@@ -172,6 +173,8 @@ class Planet(Base):
         self.name = name
         self.loyalty = loyalty
         self.environ_count = environ_count
+        self.in_rebellion = False
+        self.was_rebellion = False
         
     def __repr__(self):
         return "<Planet('%s','%s', '%s')>" % (self.id, self.name, self.environs)

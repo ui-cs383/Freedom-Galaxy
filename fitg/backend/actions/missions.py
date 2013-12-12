@@ -43,6 +43,8 @@ def resolve_mission(session, mission, success_count):
         'T' : t_mission
     }
 
+    return True
+
 def draw_action(mission, environ, session):
     action_table = (
         (('RH',CAoNA),('B',LR),('P',LSC)),(('D',CAoR),('CS',WD),('PI',CMA1aCD)),
@@ -100,15 +102,8 @@ def CAoNA(mission, session):
     session.add(new_stack)
     new_stack.characters.append(new_char)
     session.commit()
-    print "A Sentry Robot attacks!\n"
-    print "Sentry Robot \t4 \t2"
-    print "\t VS"
-    for char in mission.stack.characters:
-        print char.name, "\t", char.combat, "\t", char.endurance
-    print ""
     combat_round = 1
     while session.query(Stack).filter_by(id = new_stack.id).first():
-        print "Combat Round: ", combat_round
         combat_round += 1
         char_combat(new_stack.id, mission.stack.id, "")
     session.delete(new_stack)
@@ -123,7 +118,7 @@ def CAoNA(mission, session):
 #               or 2) sentry robot.)                                 
 #                                       
 def CAoR(mission, session):
-    pass                             
+    CAoNA(mission, session)                           
 #  CAPaAGO: Commit Atrocity Planet and Advanced Game Only            
 #       (otherwise ignore event)                                     
 #                                     
@@ -138,13 +133,19 @@ def CAPaGGO(mission, session):
 #  CD:      Characters Detected                                      
 #                              
 def CD(mission, session):
-    pass                                      
+    for character in mission.stack.characters:
+        session.add(character)
+        character.detected = True
+        # run combat ?
+    session.commit()
+
 #  CDaCS:   Characters Detected and Conduct Search                   
 #       (Enemy player may conduct search for one mission group       
 #       in environ.)                                                 
 #                            
 def CDaCS(mission, session):
-    pass                                        
+    CD(mission, session)
+    # conduct search                                        
 #  CDRaNBD: Characters Delayed Rumors and No Bonus Draws             
 #       (may be taken in this Environ this Mission Phase.)           
 #                 

@@ -271,12 +271,20 @@ class FreedomService(rpyc.Service):
         :raises: AssertionError
         """
         assert isinstance(stack_id, int)
-        assert isinstance(character_id, int) or isinstance(unit_id, int)
+        assert isinstance(unit_id, int) or isinstance(character_id, int)
 
-        self.logger.info("requested split unit " + str(unit_id) or str(character_id) + " from stack " + str(stack_id))
+        self.logger.info("requested split unit " + str(unit_id) + " or " + str(character_id) + " from " + str(source_stack))
+
+        try:
+            if unit_id:
+                actions.movement.split_stack(session, source_stack, unit_id, False)
+            else:
+                actions.movement.split_stack(session, source_stack, character_id, True)
+        except AssertionError:
+            self.logger.warn("splitting " + str(unit_id) + " or " + str(character_id) + " from " + str(source_stack) + " failed")
 
     def exposed_merge_stack(self, source_stack, destination_stack, validate_only=False):
-        """Merges merging_stack into accepting_stack.
+        """Merges source_stack into destination_stack.
 
         Move takes a stack_id and moves it to location_id. If stack_id is in an enviorn and location_id 
         is an adjacent enviorn, a environ based move is completed. If location_id is a different enviorn a space
@@ -293,15 +301,15 @@ class FreedomService(rpyc.Service):
         :returns:  dict -- a dictionary of stacks with a stack_id parameter.
         :raises: AssertionError
         """
-        assert isinstance(accepting_stack, int)
-        assert isinstance(merging_stack, int)
+        assert isinstance(source_stack, int)
+        assert isinstance(destination_stack, int)
 
-        self.logger.info("requested stack merge of " + str(merging_stack) + " into " + str(accepting_stack))
+        self.logger.info("requested stack merge of " + str(source_stack) + " into " + str(destination_stack))
 
         try:
             actions.movement.merge_stack(session, source_stack, destination_stack)
         except AssertionError:
-            self.logger.warn("merge of " + str(merging_stack) + " into " + str(accepting_stack) + " failed")
+            self.logger.warn("merge of " + str(source_stack) + " into " + str(destination_stack) + " failed")
 
     def exposed_draw_mission(self, validate_only=False):
         """Draws mission card.

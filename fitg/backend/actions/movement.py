@@ -88,6 +88,7 @@ def split_stack(session, stack_id, unit_id, is_character):
     else:
         success = True
         unit_stack = Stack()
+        session.add(unit_stack)
 
         if is_character:
             unit_stack.characters.append(unit)

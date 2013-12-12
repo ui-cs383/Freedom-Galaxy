@@ -81,7 +81,7 @@ class AI:
 					#grab the last environ just to get something
 					for environ in planet.environs:
 						tmpEnviron = environ
-					MoveStrongestUnits(tmpEnviron.id)
+					move_strongest_units(tmpEnviron.id)
 					for enemy_stack in enemy_stack_list:
 						if(enemy_stack.stack_detection() && enemy_stack.environ_id == tmpEnviron.id):
 							# don't know what my options are
@@ -95,7 +95,7 @@ class AI:
 						#check to see if any of them are detected
 						if(enemy_stack.stack_detection()):
 							#send the strongest units
-							MoveStrongestUnits(enemy_stack.environ_id)
+							move_strongest_units(enemy_stack.environ_id)
 							for stack in stack_list:
 								#tell them to move even if we can't
 								#leaders for the future
@@ -167,7 +167,7 @@ class AI:
 			# because the backend won't put us to sleep.
 			time.sleep(10)
 
-def MoveStrongestUnits(environid):
+def move_strongest_units(environid):
 	environ = self.client.root.get_state(gameid, "environ", environid)
 	stack_list # = get all stacks
 	num_units = 0 #want to make sure that we don't send too many units over

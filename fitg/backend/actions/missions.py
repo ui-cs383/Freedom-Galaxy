@@ -47,12 +47,14 @@ def resolve_mission(session, mission, successes):
 
 def a_mission(session, mission, successes):
     if successes > 0:
-        target_stacks = session.query(Stack).filter_by(environ = mission.environ).all()
+        target_stacks = session.query(Stack).filter_by(environ = mission.stack.environ_id).all()
         for stack in target_stacks:
             if stack.side() != mission.stack.side():
                 if stack.characters:
                     victim = stack.characters[randint(0,stack.size()-1)]
+                    session.add(mission)
                     session.delete(victim)
+                    mission.stack = None
                     session.commit()
                     return stack.__dict__
 
@@ -63,7 +65,14 @@ def c_mission(session, mission, successes):
     pass
 
 def d_mission(session, mission, successes):
-    mission.environ.planet
+    session.add(mission)
+    if successes > 0:
+        mission.environ.planet.loyalty += 1
+    if successes > 1:
+        mission.environ.planet.loyalty += 1
+
+    session.commit()
+    return mission.stack.__dict__
 
 def f_mission(session, mission, successes):
     pass

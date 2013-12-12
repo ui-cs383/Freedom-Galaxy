@@ -82,6 +82,14 @@ def start(session, id, player, scenario="egrix"):
         success = True
 
     return success, { 'game': game.__dict__ }
+
+def delete(session, id):
+    game = session.query(orm.Game).filter_by(id=id).one()
+
+    session.delete(game)
+    session.commit()
+
+    return True, None
     
 def join(session, id, player):
     game = session.query(orm.Game).filter_by(id = id).filter(or_(player1 = None, player2 = None)).one()

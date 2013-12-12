@@ -65,13 +65,13 @@ missions:
     result: "Gain one possession."
     bonusdraws: None
  -
-    name: "Question Prisoner"
-    side: None
-    type: 'Q'
-    brief: "Learn useful information."
-    detail: "May attempt to learn Enemy secrets by questioning a captured Enemy character. The Imperial Player may choose to torture a cpatured Rebel character.\nMay be performed by only one character stacked with a captured Enemy character."
-    result: "If rebel: Reveal the name of up to two planets that don't have a Rebel Base. If imperial: All imperial units in the star system are revealed.
-    bonusdraws: "3+intelligence-(prisoners intelligence)"
+    #name: "Question Prisoner"
+    #side: None
+    #type: 'Q'
+    #brief: "Learn useful information."
+    #detail: "May attempt to learn Enemy secrets by questioning a captured Enemy character. The Imperial Player may choose to torture a cpatured Rebel character.\nMay be performed by only one character stacked with a captured Enemy character."
+    #result: "If rebel: Reveal the name of up to two planets that don't have a Rebel Base. If imperial: All imperial units in the star system are revealed.
+    #bonusdraws: "3+intelligence-(prisoners intelligence)"
  -
     name: "Start/Stop Rebellion"
     side: None

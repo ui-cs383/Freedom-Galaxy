@@ -261,7 +261,7 @@ class FreedomService(rpyc.Service):
                     if atk_stack.units:
                         result = self.actions.combat.mil_combat(session, atk_id, def_id)
             except AssertionError:
-                self.logger.warn("combat of " + str(atk_id) + " attacking " + str(def_if) + " failed"
+                self.logger.warn("combat of " + str(atk_id) + " attacking " + str(def_if) + " failed")
 
             return self.response('combat ', request, result[0], result[1])
 

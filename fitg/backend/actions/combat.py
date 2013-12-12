@@ -305,8 +305,110 @@ def search(session, atk_obj, def_obj):
         #military units only
         for unit in atk_obj.units:
             search_value += unit.environ_combat
+
+    if(search_value == 1):
+        search_value = 0
+    elif(search_value == 2 or search_value == 3):
+        search_value = 1
+    elif(search_value > 3 and search_value < 7):
+        search_value = 2
+    elif(search_value > 6 and search_value < 10):
+        search_value = 3
+    elif(search_value > 9 and search_value < 14):
+        search_value = 4
+    elif(search_value > 13 and search_value < 18):
+        search_value = 5
+    elif(search_value > 17 and search_value < 23):
+        search_value = 6
+    else:
+        search_value = 7
+
+    hiding_value = 0
+    num_chars = 0
+    for character in def_obj.characters:
+        num_chars += 1
+        if(character.intelligence > hiding_value):
+            hiding_value = character.intelligence
+    hiding_value += def_obj.environ.size
+    hiding_value -= num_chars
+
+    if(hiding_value <= 1):
+        hiding_value = 0
+    elif(hiding_value == 2 or hiding_value == 3):
+        hiding_value = 1
+    elif(hiding_value == 4 or hiding_value == 5):
+        hiding_value = 2
+    elif(hiding_value == 6 or hiding_value == 7):
+        hiding_value = 3
+    else:
+        hiding_value = 4
+
+    result = search_table(search_value, hiding_value)
+
+    if(result == 6):
+        #characters are found, combat will result.
+        if(atk_obj.units):
+            return squad_combat(session, atk_obj, def_obj.id)
+        else:
+            return char_combat(session, atk_obj.id, def_obj.id)
+    elif(result == 0):
+        #characters are not found, nothing happens
+        pass
+    else:
+        if(randint(0,5) <= result):
+            #characters are found, combat results
+            if(atk_obj.units):
+                return squad_combat(session, atk_obj, def_obj.id)
+            else:
+                return char_combat(session, atk_obj.id, def_obj.id)
+
+def squad_combat(session, atk_obj, def_id):
+    for unit in atk_obj.units:
+        strength += unit.environ_combat
+    if(strength == 1):
+        strength = 0
+    elif(strength == 2):
+        strength = 1
+    elif(strength == 3 or strength == 4):
+        strength = 2
+    elif(strength > 4 and strength < 8):
+        strength = 3
+    elif(strength > 7 and strength < 12):
+        strength = 4
+    else:
+        strength = 5
+
+    attributes = squad_table(strength)
     
-    for unit in def_obj.units:
-
-
+    if(atk_obj.characters):
+        if(atk_obj.units):
+            attributes[1] += 2
+    squad = Character("squad", None, None, None, atk_obj.side(), 
+                attributes[0], attributes[1], 0, 0, 0, 
+                0, None, None) 
     new_stack = Stack()
+    session.add(new_stack)
+    new_stack.characters.append(squad)
+    session.commit
+    new_id = session.query(Character).filter_by(name = "squad").one().stack_id
+    return char_combat(session, new_id, def_id, None)
+
+def squad_table(strength):
+    squad_result = (
+            (4, 4)
+            (6, 4)
+            (8, 6)
+            (10, 6)
+            (12, 8)
+            (14, 8))
+    return squad_result[strength]
+
+def search_table(search_value, hiding_value):
+    search_results = (
+            (1, 2, 3, 4, 4, 5, 6, 6)
+            (1, 1, 2, 3, 4, 4, 5, 6)
+            (0, 1, 1, 2, 3, 4, 4, 5)
+            (0, 0, 1, 1, 2, 2, 3, 4)
+            (0, 0, 0, 1, 1, 1, 2, 3))
+
+    return search_results(hiding_value, search_value)

@@ -145,7 +145,7 @@ def CAoNA(mission, session):
     creature = ("Sentry Robot",4,2)
     new_char = Character("Sentry Robot", '', '', '', "Creature", 4, 2, 1, 1, 1, '', '', '')
     session.add(new_char)
-    new_stack = Stack(3111)
+    new_stack = Stack()
     session.add(new_stack)
     new_stack.characters.append(new_char)
     session.commit()

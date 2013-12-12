@@ -158,6 +158,8 @@ def mil_combat(session, atk_id, def_id):
     #atk_result = mil_combat_table(randint(0, 5), combat_ratio, True)
     #def_result = mil_combat_table(randint(0, 5), combat_ratio, False)
 
+    return True, atk_stack.__dict__, def_stack.__dict__
+
 def apply_result(dmg, stack_obj):
     unit_list = list()
     if (stack_obj.location_id % 10 == 0):           #if true, space combat.

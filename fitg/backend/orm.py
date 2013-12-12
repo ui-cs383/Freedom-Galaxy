@@ -249,8 +249,9 @@ class Stack(Base):
     characters = relationship('Character', backref='stack')
     units = relationship('Unit', backref='stack')
 
-    def __init__(self):
-        pass
+    def __init__(self, environ_id=None, game_id=None):
+        self.environ_id = environ_id
+        self.game_id = game_id
 
     def __repr__(self):
         return "<Stack('%i','%i')>" % (self.id, self.location)
@@ -259,7 +260,10 @@ class Stack(Base):
         return len(self.characters) + len(self.units)
 
     def side(self):
-        return self.characters[0].side
+        if self.characters:
+            return self.characters[0].side
+        else:
+            return self.units[0].side
 
     def spaceship(self):
         for character in self.characters:

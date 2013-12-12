@@ -56,15 +56,15 @@ def merge_stack(session, src_id, des_id):
     # check if stacks are same team? same location?
 
     try:
-        assert src_stack.location == des_stack.location
-        assert src_stack.characters[0].side == des_stack.characters[0].side
+        assert src_stack.environ_id == des_stack.environ_id
+        assert src_stack.side() == des_stack.side()
     except:
         success = False
     else:
         success = True
         for character in src_stack.characters:
             character.stack_id = des_id
-        for unit in src_stack.militaryunits:
+        for unit in src_stack.units:
             unit.stack_id = des_id
 
     if success:
@@ -87,16 +87,19 @@ def split_stack(session, stack_id, unit_id, is_character):
         success = False
     else:
         success = True
-        unit_stack = Stack()
-        session.add(unit_stack)
+        unit_stack = Stack(stack.environ_id, stack.game_id)
+        session.add(unit_stack, unit)
 
         if is_character:
             unit_stack.characters.append(unit)
         else:
             unit_stack.units.append(unit)
+
+    if not stack.characters and not stack.units:
+        session.delete(stack)
         
     if success:
         session.commit()
-        return success, { 'stack': new_stack.__dict__ }
+        return success, { 'stack': unit_stack.__dict__ }
     else:
         return success, "FATAL: Unable to split stack"

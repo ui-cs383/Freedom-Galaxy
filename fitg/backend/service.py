@@ -173,7 +173,7 @@ class FreedomService(rpyc.Service):
         assert isinstance(validate_only, bool)
 
         with session_scope(self.orm) as session:
-            self.logger.info("creating a new game" + id)
+            self.logger.info("creating a new game " + id)
 
             request = locals()
             result = self.actions.game.start(session, id, player, scenario)
@@ -277,9 +277,9 @@ class FreedomService(rpyc.Service):
 
         try:
             if unit_id:
-                actions.movement.split_stack(session, source_stack, unit_id, False)
+                self.actions.movement.split_stack(session, source_stack, unit_id, False)
             else:
-                actions.movement.split_stack(session, source_stack, character_id, True)
+                self.actions.movement.split_stack(session, source_stack, character_id, True)
         except AssertionError:
             self.logger.warn("splitting " + str(unit_id) + " or " + str(character_id) + " from " + str(stack_id) + " failed")
 
@@ -307,7 +307,7 @@ class FreedomService(rpyc.Service):
         self.logger.info("requested stack merge of " + str(source_stack) + " into " + str(destination_stack))
 
         try:
-            actions.movement.merge_stack(session, source_stack, destination_stack)
+            self.actions.movement.merge_stack(session, source_stack, destination_stack)
         except AssertionError:
             self.logger.warn("merge of " + str(source_stack) + " into " + str(destination_stack) + " failed")
 

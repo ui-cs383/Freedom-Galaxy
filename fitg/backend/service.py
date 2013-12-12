@@ -69,7 +69,7 @@ class FreedomService(rpyc.Service):
 
         return response
 
-    def exposed_get_state(self, object_type, object_id=None):
+    def exposed_get_state(self, game_id, object_type, object_id=None):
         """Get the state of an object
 
         :param object_type: The type of object to get state on ("environ", "planet" etc)
@@ -85,7 +85,7 @@ class FreedomService(rpyc.Service):
         with session_scope(self.orm) as session:
             request = locals()
 
-            result = self.actions.game.get_object(session, object_type, object_id)
+            result = self.actions.game.get_object(session, game_id, object_type, object_id)
 
             return self.response('get_state', request, result[0], result[1])
 

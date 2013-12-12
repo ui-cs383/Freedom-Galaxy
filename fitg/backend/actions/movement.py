@@ -45,13 +45,6 @@ def move(session, stack_id, environ_id):
     else:
         return success, "FATAL: Unable to find stack!"
 
-def split_stack(session, stack_id, unit_id, is_character=False):
-    stack = session.query(Stack).filter_by(id = stack_id).one()
-
-    if is_character:
-        unit = session.query(Stack).filter_by
-
-
 def merge_stack(session, src_id, des_id):
 
     src_stack = session.query(Stack).filter_by(id = src_id).one()
@@ -75,29 +68,31 @@ def merge_stack(session, src_id, des_id):
         session.add(des_stack)
         session.delete(src_stack)
         session.commit()
-        return success
+        return success, { 'stack': des_stack.__dict__ }
     else:
-        return succes, "FATAL: Stacks cannot be merged"
+        return success, "FATAL: Stacks cannot be merged"
 
-def split_stack(session, src_id, unit_id, is_character):
-    src_stack = session.query(Stack).filter_by(id = src_id).one()
+def split_stack(session, stack_id, unit_id, is_character):
+    stack = session.query(Stack).filter_by(id = stack_id).one()
 
     try:
         if is_character:
-            moving_unit = session.query(Character).filter_by(id = unit_id).one()
+            unit = session.query(Character).filter_by(id = unit_id).one()
         else:
-            moving_unit = session.query(Unit).filter_by(id = unit_id).one()
+            unit = session.query(Unit).filter_by(id = unit_id).one()
     except:
         success = False
     else:
         success = True
-        new_stack = Stack()
-        session.add(new_stack, moving_unit)
-        moving_unit.stack = new_stack
-        
+        unit_stack = Stack()
 
+        if is_character:
+            unit_stack.characters.append(unit)
+        else:
+            unit_stack.units.append(unit)
+        
     if success:
         session.commit()
-        return success, new_stack.__dict__
+        return success, { 'stack': new_stack.__dict__ }
     else:
         return success, "FATAL: Unable to split stack"

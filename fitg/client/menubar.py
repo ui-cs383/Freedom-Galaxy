@@ -3,7 +3,6 @@
 #Paul Bailey
 
 import pygame, sys, os
-from support.loadimage import load_image
 from pygame.locals import *
 
 pygame.init()
@@ -30,7 +29,7 @@ redcolor = (243,14,14)
 lightbluecolor = (100,149,237)
 
 #Marks the position of the Menu Bar relative to the master background screen
-MenuBarUpperLeftCorner = (90,0) # For test purposes. The final product will pass these coordinates into the initialization
+MenuBarUpperLeftCorner = (130,0) # For test purposes. The final product will pass these coordinates into the initialization
 x = MenuBarUpperLeftCorner[0] # take out
 y = MenuBarUpperLeftCorner[1] #take out
 
@@ -59,6 +58,8 @@ pdbdowntextcolor = (0,0,0)
 pdbdowntextpostition = (x+16,y+70)
 pdbdowntextrect = pygame.font.Font(None, 25)
 pdbdowntextsurface = pdbdowntextrect.render(pdbdowntext,1,pdbdowntextcolor)
+pdb_image = None
+pdbrect = None
 
 #Rebellion Status
 rebellionstatustext = "Rebellion Status"
@@ -136,12 +137,6 @@ systemnametextposition = (x+300,y+100)
 systemnametextrect = pygame.font.Font(None, 50)
 systemnametextsurface = systemnametextrect.render(systemname,1,systemnametextcolor)
 
-#Test Screen
-screensize = (800,600)
-screen = pygame.display.set_mode(screensize)
-starbg = pygame.image.load("data/stars.jpg")
-starbg = pygame.transform.scale(starbg, (screensize))
-
 #menubar    
 menubar = pygame.Rect(menubarposandsize)
 
@@ -167,10 +162,6 @@ loayaltytextsurface = loyaltytextrectfont.render(loyaltytext, 1, loyaltytextcolo
 pdbstatustexsurface = pdbstatustextrect.render(pdbstatustext, 1, (255,255,255))
 
 pdbdownrect = pygame.Rect(pdbbox)
-pdb_image, pdbrect = load_image("pdbup.png", None)
-pdbrect.topleft = pdbboxpostion
-
-
 
 class MenuBar():
     def __init__(self, planetname, loyaltystate, backgroundcolor, pdbup, position):#, PDBstatus=None):
@@ -186,10 +177,9 @@ class MenuBar():
         self.rebellionstatus = False
         self.rebelcontrolstatus = True
         
-    def draw(self, screen, menubar):
+    def draw(self, starbg, screen, menubar):
         pygame.draw.rect(screen, menubarcolor, menubar, 0)
         pygame.draw.rect(screen, loyaltycolor, loyaltyrect, 0)
-        pygame.transform.scale(starbg, (screensize))
         screen.blit(planetFontSurface, planetnameposition) #planetname position
         screen.blit(pdbfontsurface,pdbboxpostion)
         screen.blit(loayaltytextsurface, loyaltytextboxposition)
@@ -235,55 +225,3 @@ class MenuBar():
         self.systemname = systemname
         self.rebellionstatus = rebellionstatus
         self.rebelcontrolstatus = rebelcontrolstatus
-        
-if __name__ == '__main__':
-
-
-
-
-    menu = MenuBar(planet1name, 1, backgroundcolor, True, (90,0) )   
-    
-    while 1:
-        #refresh process
-        #do updating
-        #draw proccess
-
-
-#This section was made to test various states of the planetary menu class
-        screen.blit(starbg, (0,0))
-        menu.draw(screen, menubar)
-        pygame.display.flip()
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN and menu.planetname == planet1name:
-                menu.update(planet2name, 3, True, "Shiny Star",False,False)
-                planetFontSurface = PlanetName.render(menu.planetname, 1, planettextcolor)
-            elif event.type == pygame.MOUSEBUTTONDOWN and menu.planetname == planet2name:
-                menu.update(planet3name, 4, False, "Shiny Star",True,True)
-                planetFontSurface = PlanetName.render(menu.planetname, 1, planettextcolor)
-            elif event.type == pygame.MOUSEBUTTONDOWN and menu.planetname == planet3name:
-                menu.update(planet4name, 5, True, "Shiny Star",False,False)
-                planetFontSurface = PlanetName.render(menu.planetname, 1, planettextcolor)
-            elif event.type == pygame.MOUSEBUTTONDOWN and menu.planetname == planet4name:
-                menu.update(planet5name, 1, True, "Shiny Star",True,True)
-                planetFontSurface = PlanetName.render(menu.planetname, 1, planettextcolor)
-            elif event.type == pygame.MOUSEBUTTONDOWN and menu.planetname == planet5name:
-                menu.update(planet1name, 2, True, "Shiny Star",False,False)
-                planetFontSurface = PlanetName.render(menu.planetname, 1, planettextcolor)
-            elif event.type == QUIT:
-                pygame.quit()
-                sys.exit()        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

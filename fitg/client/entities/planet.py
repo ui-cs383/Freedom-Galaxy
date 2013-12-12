@@ -32,7 +32,7 @@ class Planet(pygame.sprite.Sprite):
         self.environment = environments.EnvironBox(self, self.rect)
         for environ in environlist:
             #print environ
-            if environ["planet_id"] == self.planet_id:
+            if environ["planet_id"] == self.planet_id and environ["location"] != 0:
                 self.environment.addEnviron(environ)
         #self.environment.addEnviron(1, 'W', 2, "Humans", "Animals", 'C')
         #self.environment.addEnviron(2, 'U', 1, "Bricktons", "Animals", 'C')

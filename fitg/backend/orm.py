@@ -36,7 +36,7 @@ class Game(Base):
 		return "<Game('%s','%s', '%s', '%s')>" % (self.name, self.player1, self.player2, self.scenario)
 
 	def advance_segment(self):
-
+		pass
 
 class Character(Base):
 	__tablename__ = 'characters'

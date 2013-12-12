@@ -272,16 +272,18 @@ class FreedomService(rpyc.Service):
         """
         assert isinstance(stack_id, int)
         assert isinstance(unit_id, int) or isinstance(character_id, int)
+        with session_scope(self.orm) as session:
+            self.logger.info("requested split unit " + str(unit_id) + " or " + str(character_id) + " from " + str(stack_id))
+            request = locals()
+            try:
+                if unit_id:
+                    result = self.actions.movement.split_stack(session, source_stack, unit_id, False)
+                else:
+                    result = self.actions.movement.split_stack(session, source_stack, character_id, True)
+            except AssertionError:
+                self.logger.warn("splitting " + str(unit_id) + " or " + str(character_id) + " from " + str(stack_id) + " failed")
 
-        self.logger.info("requested split unit " + str(unit_id) + " or " + str(character_id) + " from " + str(stack_id))
-
-        try:
-            if unit_id:
-                self.actions.movement.split_stack(session, source_stack, unit_id, False)
-            else:
-                self.actions.movement.split_stack(session, source_stack, character_id, True)
-        except AssertionError:
-            self.logger.warn("splitting " + str(unit_id) + " or " + str(character_id) + " from " + str(stack_id) + " failed")
+            return self.response('split_stack', request, result[0], result[1])
 
     def exposed_merge_stack(self, source_stack, destination_stack, validate_only=False):
         """Merges source_stack into destination_stack.
@@ -303,13 +305,15 @@ class FreedomService(rpyc.Service):
         """
         assert isinstance(source_stack, int)
         assert isinstance(destination_stack, int)
+        with session_scope(self.orm) as session:
+            self.logger.info("requested stack merge of " + str(source_stack) + " into " + str(destination_stack))
+            request = locals()
+            try:
+                result = self.actions.movement.merge_stack(session, source_stack, destination_stack)
+            except AssertionError:
+                self.logger.warn("merge of " + str(source_stack) + " into " + str(destination_stack) + " failed")
 
-        self.logger.info("requested stack merge of " + str(source_stack) + " into " + str(destination_stack))
-
-        try:
-            self.actions.movement.merge_stack(session, source_stack, destination_stack)
-        except AssertionError:
-            self.logger.warn("merge of " + str(source_stack) + " into " + str(destination_stack) + " failed")
+            return self.response('merge_stack', request, result[0], result[1])
 
     def exposed_draw_mission(self, validate_only=False):
         """Draws mission card.

@@ -65,7 +65,7 @@ missions:
     result: "Gain one possession."
     draws: None
  -
-    id: "Start or Stop Rebellion"
+    name: "Start/Stop Rebellion"
     side: None
     type: 'R'
     brief: "Start or End a Rebellion."

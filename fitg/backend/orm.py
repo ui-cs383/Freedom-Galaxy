@@ -238,7 +238,7 @@ class Race(Base):
 		self.firefight = firefight
 		
 	def __repr__(self):
-		return "<Race('%s','%s', '%i')>" % (self.name, self.environ, self.combat)
+		return "<Race('%s','%s', '%i')>" % (self.id, self.name, self.combat)
 		
 class Stack(Base):
 	__tablename__ = 'stacks'

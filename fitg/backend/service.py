@@ -27,13 +27,15 @@ def load_races(orm):
             race = races.read()
 
         race = yaml.load(race)
+        print race
 
 
         for objects, values in enumerate(race['races']):
             race = orm.Race(**values)
+            print race
             session.add(race)
 
-        session.commit()
+        #session.commit()
 
     return True
 

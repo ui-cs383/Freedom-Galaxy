@@ -299,12 +299,12 @@ class Stack(Base):
         #        print "Military units are not in their home environ type :("
          #       return False
 
-	def is_rebel_stack(self):
-		for militaryunit in self.units:
-			if militaryunit.side == 'Rebel':
-				return True
-			else:
-				return False
+    def is_rebel_stack(self):
+        for militaryunit in self.units:
+            if militaryunit.side == 'Rebel':
+                return True
+            else:
+                return False
 
 
 Base.metadata.create_all(engine)

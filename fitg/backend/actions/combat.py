@@ -304,6 +304,7 @@ def search(session, atk_obj, def_obj):
         for unit in atk_obj.units:
             search_value += unit.environ_combat
     
-    if(
+    for unit in def_obj.units:
+
 
     new_stack = Stack()

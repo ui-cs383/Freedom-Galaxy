@@ -101,8 +101,8 @@ class FreedomService(rpyc.Service):
         self.logger = self._conn._config['logger']
 
         #create mission
-        load_races(orm)
-        load_missions(orm)
+        #load_races(orm)
+        #load_missions(orm)
 
     def on_connect(self):
         pass

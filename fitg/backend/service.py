@@ -367,21 +367,22 @@ class FreedomService(rpyc.Service):
         """
         self.logger.info("requested a mission")
 
-    def exposed_assign_mission(self, mission_id, stack_id, validate_only=False):
+    def exposed_assign_mission(self, mission_type, stack_id, validate_only=False):
         """Draws mission card.
 
         :param validate_only: If true the move will only be validated.
         :type validate_only: false.
         :returns: dict -- the curent game state.
         """
-        assert isinstance(mission_id, int)
+        with session_scope(self.orm) as session:
+            self.logger.info("assigning mission " + str(mission_type) + " to " + str(stack_id))
+            request = locals()
+            try:
+                result = self.actions.missions.assign_mission(session, stack_id, mission_type)
+            except AssertionError:
+                self.logger.warn("assigning mission " + str(mission_type) + " to " + str(stack_id) + " failed ")
 
-        try:
-            assert isinstance(stack_id, int)
-            self.logger.info("requested mission " + str(mission_id) + " assignment to stack " + str(stack_id))
-        except AssertionError:
-            assert isinstance(stack_id, tuple)
-            self.logger.info("requested mission " + str(mission_id) + " assignment to stack " + str(stack_id))
+            return self.response('assign_mission', request, result[0], result[1])
 
 
 if __name__ == "__main__":

@@ -57,7 +57,7 @@ def merge_stack(session, src_id, des_id):
 
     try:
         assert src_stack.location == des_stack.location
-        assert src_stack.characters[0].side == des_stack.characters[0].side
+        assert src_stack.side() == des_stack.side()
     except:
         success = False
     else:
@@ -94,6 +94,9 @@ def split_stack(session, stack_id, unit_id, is_character):
             unit_stack.characters.append(unit)
         else:
             unit_stack.units.append(unit)
+
+    if not stack.characters and not stack.units:
+        session.delete(stack)
         
     if success:
         session.commit()

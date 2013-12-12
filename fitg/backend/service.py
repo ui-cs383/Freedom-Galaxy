@@ -358,17 +358,21 @@ class FreedomService(rpyc.Service):
 
             return self.response('merge_stack', request, result[0], result[1])
 
-    def exposed_draw_mission(self, validate_only=False):
-        """Draws mission card.
-
-        :param validate_only: If true the move will only be validated.
-        :type validate_only: false.
-        :returns:  dict -- the current game state.
+    def exposed_attempt_mission(self, environ_id, validate_only=False):
+        """Attempts to complete all missions assigned in environ_id
         """
-        self.logger.info("requested a mission")
+        with session_scope(self.orm) as session:
+            self.logger.info("attempting missions in " + str(environ_id)
+            request = locals()
+            try:
+                result = self.actions.missions.attempt_mission(session, environ_id)
+            except AssertionError:
+                self.logger.warn("attempting missions in " + str(environ_id) + " failed ")
+
+            return self.response('attempting missions', request, result[0], result[1])
 
     def exposed_assign_mission(self, mission_type, stack_id, validate_only=False):
-        """Draws mission card.
+        """Assigns mission.
 
         :param validate_only: If true the move will only be validated.
         :type validate_only: false.

@@ -76,7 +76,12 @@ def p_mission(session, mission, successes):
 	pass
 
 def r_mission(session, mission, successes):
-	pass
+	if mission.stack.side() == 'Rebel':
+		if successes > 0:
+			mission.environ.planet.in_rebellion = True
+	elif mission.stack.side() == 'Imperial':
+		if successes > 1:
+			mission.environ.planet.in_rebellion = False
 
 def s_mission(session, mission, successes):
 	if successes >= 2:
@@ -338,12 +343,12 @@ def nCA(mission, session):
 #       value in this Environ.)                                      
 #            
 def PGW(mission, session):
-	pass                                                        
+	CD(mission, session)                                                        
 #  RCOaCD:  Rebels Chicken Out and Characters Detected               
 #       (start rebellion mission aborted.)                           
 #              
 def RCOaCD(mission, session):
-	pass                                                      
+	CD(mission, session)                                                      
 #  WD:      Weather Disturbances                                     
 #       (hamper enemy operations.  The non-Phasing player may        
 #       conduct no searches in this environ this mission phase.)     

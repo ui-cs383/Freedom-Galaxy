@@ -194,7 +194,7 @@ class Planet(Base):
 		if self.pdb_level < 0:
 			self.pdb_level = 0
 		elif self.pdb_level > 2:
-			self.pdb_level = 2:
+			self.pdb_level = 2
 
 class Possession(Base):
 	__tablename__ = 'possessions'

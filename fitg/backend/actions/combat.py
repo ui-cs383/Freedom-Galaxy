@@ -25,7 +25,7 @@ def char_combat(session, atk_id, def_id, options):
         atk_result[0] *= 2
         def_result[0] *= 2
 
-    elif atk_stack.militaryunits:
+    if atk_stack.militaryunits:
         atk_result[0] *= 2
         def_result[0] *= 2
 

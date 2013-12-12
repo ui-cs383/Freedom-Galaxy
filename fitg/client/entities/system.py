@@ -48,6 +48,7 @@ class System():
                 if unit.stack_id == stack["id"]:
                     unit.set_loc_id(self.environ_locs[stack["environ_id"]])
 
+
     def addunit (self, charflag, unitdict):
         newunit = Unit(charflag, unitdict)
         createnewstack = True

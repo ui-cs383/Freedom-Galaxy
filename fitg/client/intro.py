@@ -40,8 +40,8 @@ def main ():
     playerside = ''
     playerscenario = ''
 
-    pygame.mixer.music.load('data/starwars-maintheme.mp3') 
-    pygame.mixer.music.play(-1)
+    # pygame.mixer.music.load('data/starwars-maintheme.mp3') 
+    # pygame.mixer.music.play(-1)
 
     clock = pygame.time.Clock()
 

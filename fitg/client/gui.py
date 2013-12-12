@@ -13,6 +13,14 @@ from support.custommouse import MouseCursor
 from support.loadimage import load_image
 import hud.buttons as Menu_Buttons
 
+from support.loadimage import load_image
+import menubar
+from menubar import (MenuBar, planetFontSurface, planet1name,
+                     planet2name, planet3name, planet4name,
+                     planet5name, planettextcolor, PlanetName,
+                     backgroundcolor)
+from menubar import menubar as menubar_
+
 pygame.init()
 
 def main(client, setupinfo=None):
@@ -27,6 +35,9 @@ def main(client, setupinfo=None):
     running = True
 
     background, background_rect = load_image("stars.jpg")
+    outer_menu = MenuBar(planet1name, 1, backgroundcolor, True, (90,0))
+    menubar.pdb_image, menubar.pdbrect = load_image("pdbup.png", None)
+    menubar.pdbrect.topleft = menubar.pdbboxpostion
     screen.blit(background, background_rect)
     mouse_ptr = MouseCursor("pointer2.png")
     mouse_sel = MouseCursor("selected2.png")
@@ -116,6 +127,14 @@ def main(client, setupinfo=None):
         star_system.draw()
 		#Draw buttons and menus
         menu.draw_buttons(screen, height, width, selected_unit)
+        for planet in star_system.planet_list:
+            if planet.orient == 'center':
+                current_planet = planet
+        try:
+            outer_menu.update(current_planet.name, current_planet.loyalty, current_planet.pdb_state, "Egrix", False, False)
+        except:
+            pass
+        outer_menu.draw(background, screen, menubar_)
         mouse.draw(screen)
         pygame.display.flip()
 

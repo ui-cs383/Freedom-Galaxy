@@ -21,7 +21,7 @@ class Game(Base):
 	scenario = Column(String) # this should eventually be tied to a scenario table?
 	stacks = relationship("Stack", backref=backref("game", uselist=False))
 	planets = relationship("Planet", backref=backref("game", uselist=False))
-	phasingplayer = Column(Boolean)
+	phasing_player = Column(String)
 	segment = Column(String)
 
 	def __init__(self, id, player1, player2, scenario):
@@ -29,7 +29,7 @@ class Game(Base):
 		self.player1 = player1
 		self.player2 = player2
 		self.scenario = scenario
-		self.phasingplayer = True
+		self.phasingplayer = 'Rebel'
 		self.segment = 'movement'
 
 	def __repr__(self):

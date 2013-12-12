@@ -8,69 +8,91 @@ def move(session, stack_id, environ_id):
     # need to make sure stack_id and enviorn_id are in the same game
     # this can be checked by ensuring stack.game_id = environ.planet.game_id
 
+    # See if new location can be grabbed
     try:
         newloc = session.query(Environ).filter_by(id = environ_id).one()
     except exc.NoResultFound:
-        success = False
-    else:
-        success = True
+        newloc = None
 
+    # See if old location can be grabbed
     try:
-        oldloc = session.query(Stack).filter_by(id = stack_id).one().location
+        oldloc = session.query(Stack).filter_by(id = stack_id).one().environ
     except exc.NoResultFound:
-        success = False
-    else:
-        success = True
+        oldloc = None
 
-    if success:
-        if (int(newloc.id) / 10) != (int(oldloc.id) / 10):
-            success = False
+    # Check if either are None
+    if newloc is not None and oldloc is not None:
+        # Check if they aren't adjacent
+        if oldloc.planet == newloc.planet and (newloc.location - 1 == oldloc or newloc.location + 1 == oldloc.location):
+            return False, "Invalid Move"
+    else:
+        # One is None, exit
+        return False, "Invalid Move"
 
     # if moving to Orbit (environ id ends in '0') then PDB routines ?
     try:
         moving_stack = session.query(Stack).filter_by(id = stack_id).one()
-    except exc.NoResultFound:
+    except:
         success = False
     else:
         success = True
-        moving_stack.location = newloc
+        moving_stack.environ = newloc
         session.add(moving_stack)
 
     if success:
         session.commit()
         return success, moving_stack.__dict__
     else:
-        return success, None
+        return success, "FATAL: Unable to find stack!"
 
 def merge_stack(session, src_id, des_id):
 
     src_stack = session.query(Stack).filter_by(id = src_id).one()
     des_stack = session.query(Stack).filter_by(id = des_id).one()
 
-    #assert isinstance(src_stack, Stack)
-    #assert isinstance(des_stack, Stack)
-
     # check if stacks are same team? same location?
 
-    assert src_stack.location == des_stack.location
+    try:
+        assert src_stack.location == des_stack.location
+        assert src_stack.characters[0].side == des_stack.characters[0].side
+    except:
+        success = False
+    else:
+        success = True
+        for character in src_stack.characters:
+            character.stack_id = des_id
+        for unit in src_stack.militaryunits:
+            unit.stack_id = des_id
 
-    for character in src_stack.characters:
-        character.stack_id = des_id
-    for unit in src_stack.militaryunits:
-        unit.stack_id = des_id
+    if success:
+        session.add(des_stack)
+        session.delete(src_stack)
+        session.commit()
+        return success, { 'stack': des_stack.__dict__ }
+    else:
+        return success, "FATAL: Stacks cannot be merged"
 
-    session.add(des_stack)
-    session.delete(src_stack)
-    session.commit()
+def split_stack(session, stack_id, unit_id, is_character):
+    stack = session.query(Stack).filter_by(id = stack_id).one()
 
-if __name__ == "__main__":
-    loadDatabase()
+    try:
+        if is_character:
+            unit = session.query(Character).filter_by(id = unit_id).one()
+        else:
+            unit = session.query(Unit).filter_by(id = unit_id).one()
+    except:
+        success = False
+    else:
+        success = True
+        unit_stack = Stack()
 
-    #move_environ(1,'3110')
-    #move_environ(2,'3112')
-
-    session = Session()
-    print session.query(Stack).filter_by(id = 1).one().location
-    
-    merge_stack(1,2)
-    print session.query(Stack).filter_by(id = 2).one().characters
+        if is_character:
+            unit_stack.characters.append(unit)
+        else:
+            unit_stack.units.append(unit)
+        
+    if success:
+        session.commit()
+        return success, { 'stack': new_stack.__dict__ }
+    else:
+        return success, "FATAL: Unable to split stack"

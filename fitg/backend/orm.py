@@ -15,15 +15,15 @@ Session = scoped_session(sessionmaker(engine))
 
 class Game(Base):
     __tablename__ = 'games'
-    name = Column(String, primary_key=True)
+    id = Column(String, primary_key=True)
     player1 = Column(String)
     player2 = Column(String)
     scenario = Column(String) # this should eventually be tied to a scenario table?
     stacks = relationship("Stack", backref=backref("game", uselist=False))
     planets = relationship("Planet", backref=backref("game", uselist=False))
 
-    def __init__(self, name, player1, player2, scenario):
-        self.name = name
+    def __init__(self, id, player1, player2, scenario):
+        self.id = id
         self.player1 = player1
         self.player2 = player2
         self.scenario = scenario
@@ -35,7 +35,7 @@ class Character(Base):
     __tablename__ = 'characters'
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String)                       #name of every character
-    gif = Column(String)                        #Does the DB need this?
+    img = Column(String)                        #Does the DB need this?
     title = Column(String)                      #Long title of character
     race = Column(String)                       #Character's Race
     side = Column(String)                       #Team: 'Rebel' or 'Emperial'
@@ -48,17 +48,16 @@ class Character(Base):
     homeworld = Column(String)                  #Character's Homeworld
     bonuses = Column(String)                    #Special Bonuses, unclear format
     wounds = Column(Integer)                    #Num of wounds
-    detected = Column(Boolean)                  #
-    possession = Column(Boolean)                
+    detected = Column(Boolean)                  #               
     active = Column(Boolean)
     captive = Column(Boolean)
     stack_id = Column(Integer, ForeignKey('stacks.id'))
     
-    def __init__(self, name, gif, title, race, side, 
+    def __init__(self, name, img, title, race, side, 
                 combat, endurance, intelligence, leadership, diplomacy, 
                 navigation, homeworld, bonuses) :
         self.name = name
-        self.gif = gif
+        self.img = img
         self.title = title
         self.race = race
         self.side = side
@@ -82,23 +81,24 @@ class Character(Base):
                 
 class Environ(Base):
     __tablename__ = 'environs'
-    id = Column(String, primary_key=True) 
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    location = Column(Integer) 
     type = Column(String)                   
     size = Column(Integer)                  
     star_faring = Column(Integer)            
     resources = Column(Integer)             
     star_resources = Column(Integer)         
     monster = Column(String)                
-    coup = Column(Integer)                  
+    coup = Column(Boolean)                  
     sov = Column(Integer)                   
     planet_id = Column(Integer, ForeignKey('planets.id'))
     race_name = Column(String, ForeignKey('races.name'))
     race = relationship("Race", backref=backref("races", uselist=False))
     stacks = relationship("Stack", backref=backref("environ", uselist=False))
 
-    def __init__(self, id, type, size, race_name, star_faring, resources, 
-                star_resources, monster, coup, sov) :
-        self.id = id
+    def __init__(self, location, type, size, race_name, star_faring, resources, 
+                star_resources, monster, sov) :
+        self.location = location
         self.type = type
         self.size = size
         self.race_name = race_name
@@ -106,7 +106,7 @@ class Environ(Base):
         self.resources = resources
         self.star_resources = star_resources
         self.monster = monster
-        self.coup = coup
+        self.coup = False
         self.sov = sov
       
     def __repr__(self):
@@ -116,28 +116,30 @@ class Unit(Base):
     __tablename__ = 'units'
     id = Column(Integer, primary_key=True, autoincrement=True)
     side = Column(String)     
-    type = Column(String)    
+    type = Column(String)
+    endurance = Column(Integer)    
     environ_combat = Column(Integer)
     space_combat = Column(Integer)
-    mobile = Column(Integer)
+    mobile = Column(Boolean)
     wounds = Column(Integer)  
     stack_id = Column(Integer, ForeignKey('stacks.id'))
     
-    def __init__(self, type, side, environ_combat, space_combat, mobile):
+    def __init__(self, type, side, environ_combat, space_combat, endurance, mobile):
         self.type = type
         self.side = side
         self.wounds = 0
         self.environ_combat = environ_combat
         self.space_combat = space_combat
+        self.endurance = endurance
         self.mobile = mobile
-
         
     def __repr__(self):
         return "<Unit('%s','%s', '%s')>" % (self.id, self.type, self.side)
 
 class Mission(Base):
     __tablename__ = 'missions'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    side = Column(String)     
     type = Column(String)
     stack_id = Column(Integer, ForeignKey('stacks.id'))
     stack = relationship("Stack", backref=backref('mission', order_by=id))
@@ -151,30 +153,35 @@ class Mission(Base):
 
 class Planet(Base):
     __tablename__ = 'planets'
-    id = Column(Integer, primary_key=True, autoincrement=True)  
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    control = Column(String)
+    pdb_level = Column(Integer)
+    pdb_state = Column(Integer) 
     location = Column(Integer)
-    name = Column(String)
-    race = Column(String)               
+    name = Column(String)             
     loyalty = Column(Integer)         
     environ_count = Column(Integer)
-    game_id = Column(String, ForeignKey('games.name'))
-    environs = relationship("Environ", backref="planet")        
+    game_id = Column(String, ForeignKey('games.id'))
+    environs = relationship("Environ", backref="planet")    
 
-    def __init__(self, location, name, race, loyalty, environ_count):
+    def __init__(self, control, pdb_level, pdb_state, location, name, loyalty, environ_count):
+        self.pdb_level = pdb_level
+        self.pdb_state = pdb_state
+        self.control = control
         self.location = location
         self.name = name
-        self.race = race
         self.loyalty = loyalty
         self.environ_count = environ_count
         
     def __repr__(self):
-        return "<Planet('%s','%s', '%s')>" % (self.id, self.race, self.environs)
+        return "<Planet('%s','%s', '%s')>" % (self.id, self.name, self.environs)
 
 class Possession(Base):
     __tablename__ = 'possessions'
+    id = Column(Integer, primary_key=True, autoincrement=True)
     type = Column(String)                   #Type of possession.
-    name = Column(String, primary_key=True) #Name of possession.
-    gif = Column(String)                    #gif related to the possession.
+    name = Column(String) #Name of possession.
+    img = Column(String)                    #gif related to the possession.
     stat1 = Column(Integer)                  #First stat.
     stat2 = Column(Integer)                  #Second stat.
     stat3 = Column(Integer)                  #Third stat.
@@ -182,11 +189,10 @@ class Possession(Base):
     damaged = Column(Boolean)               #Whether the possession is damaged. This really only applies to starships.
     owner_name = Column(String, ForeignKey('characters.name'))
     owner = relationship("Character", backref=backref('possessions', order_by=name))   
-    def __init__(self, type, name, gif, stat1, stat2, 
-                stat3, stat4, owner_name) :
+    def __init__(self, type, name, img, stat1, stat2, stat3, stat4, owner_name) :
         self.type = type
         self.name = name
-        self.gif = gif
+        self.img = img
         self.stat1 = stat1
         self.stat2 = stat2
         self.stat3 = stat3
@@ -199,6 +205,7 @@ class Possession(Base):
                 
 class Race(Base):
     __tablename__ = 'races'
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, primary_key=True)
     environ = Column(String)               
     combat = Column(Integer)               
@@ -220,7 +227,8 @@ class Stack(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     environ_id = Column(Integer, ForeignKey('environs.id'))
-    game_id = Column(String, ForeignKey('games.name'))
+    game_id = Column(String, ForeignKey('games.id'))
+    environ = relationship('Environ', backref='stack')
     characters = relationship('Character', backref='stack')
     units = relationship('Unit', backref='stack')
 
@@ -253,6 +261,23 @@ class Stack(Base):
             if character.leadership > leadership_rating:
                 leadership_rating = character.leadership
         return leadership_rating
+
+    def is_rebel_stack(self):
+        for militaryunit in self.militaryunits:
+            if militaryunit.side == 'Rebel':
+                return True
+            else:
+                return False
+
+    #trouble referencing the environ type that the stack is in.
+    #def check_rebel_environ(self):
+    #    for militaryunit in self.militaryunits:
+    #        if(militaryunit.type == self.environs.type):
+     #           print "Military unit type and environ type match!"
+      #          return True
+       #     else:
+        #        print "Military units are not in their home environ type :("
+         #       return False
 
 Base.metadata.create_all(engine)
 

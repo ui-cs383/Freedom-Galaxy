@@ -265,7 +265,7 @@ class Stack(Base):
         return leadership_rating
 
     def is_rebel_stack(self):
-        for militaryunit in self.militaryunits:
+        for militaryunit in self.units:
             if militaryunit.side == 'Rebel':
                 return True
             else:
@@ -273,7 +273,7 @@ class Stack(Base):
 
     #trouble referencing the environ type that the stack is in.
     #def check_rebel_environ(self):
-    #    for militaryunit in self.militaryunits:
+    #    for militaryunit in self.units:
     #        if(militaryunit.type == self.environs.type):
      #           print "Military unit type and environ type match!"
       #          return True

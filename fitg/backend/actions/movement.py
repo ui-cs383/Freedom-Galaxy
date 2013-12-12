@@ -29,8 +29,7 @@ def move(session, stack_id, environ_id):
         # One is None, exit
         return False, "Invalid Move"
 
-    # if moving to Orbit (environ id ends in '0') then PDB routines ?
-    if newloc.location / 10 == 0:
+    if (newloc.planet.pdb_state != 0) and (session.query(Stack).filter_by(id = stack_id).one().spaceship()):
         detection_routine(session, stack_id, newloc.planet.pdb_level)
     try:
         moving_stack = session.query(Stack).filter_by(id = stack_id).one()

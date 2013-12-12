@@ -288,7 +288,7 @@ class FreedomService(rpyc.Service):
                 if not def_stack.units:
                     result = self.actions.combat.char_combat(session, atk_id, def_id, options)
                 else:
-                    if atk_stack.units
+                    if atk_stack.units:
                         result = self.actions.combat.mil_combat(session, atk_id, def_id)
             except AssertionError:
                 self.logger.warn("combat of " + str(atk_id) + " attacking " + str(def_if) + " failed"

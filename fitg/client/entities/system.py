@@ -45,7 +45,10 @@ class System():
         for stack in stacklist:
             for unit in self.unit_list:
                 if unit.stack_id == stack["id"]:
-                    unit.set_loc_id(environ_locs[stack["environ_id"]])
+                    try:
+                        unit.set_loc_id(environ_locs[stack["environ_id"]])
+                    except KeyError:
+                        pass
 
     def addunit (self, charflag, unitdict):
         newunit = Unit(charflag, unitdict)

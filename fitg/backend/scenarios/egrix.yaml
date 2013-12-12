@@ -199,23 +199,20 @@ units:
     type: Line
     side: Imperial
     environ_combat: 3
-    space_combat: None
-    endurance: 2
+    space_combat: 2
     mobile: False
     count: 1
   -
     type: Militia
     side: Imperial
     environ_combat: 1
-    space_combat: None
-    endurance: 0
+    space_combat: 0
     mobile: False
     count: 3
   -
     type: Patrol
     side: Imperial
     environ_combat: 2
-    space_combat: None
-    endurance: 1
+    space_combat: 1
     mobile: False
     count: 3 

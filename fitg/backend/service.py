@@ -277,9 +277,9 @@ class FreedomService(rpyc.Service):
             request = locals()
             try:
                 if unit_id:
-                    result = self.actions.movement.split_stack(session, source_stack, unit_id, False)
+                    result = self.actions.movement.split_stack(session, stack_id, unit_id, False)
                 else:
-                    result = self.actions.movement.split_stack(session, source_stack, character_id, True)
+                    result = self.actions.movement.split_stack(session, stack_id, character_id, True)
             except AssertionError:
                 self.logger.warn("splitting " + str(unit_id) + " or " + str(character_id) + " from " + str(stack_id) + " failed")
 

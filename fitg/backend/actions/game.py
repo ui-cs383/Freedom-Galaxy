@@ -114,33 +114,22 @@ def list(session):
 
     return True, { 'games': glist }
 
-def environ():
-    return ['orm.Planet', 'orm.Game']
-
-def character():
-    return ['orm.Stack', 'orm.Game']
-
-def possession():
-    return ['orm.']
-
 def get_object(session, game_id, table, id=None):
-    planet = (orm.Game)
-    stack = (orm.Game)
+    planet = orm.Game, 
+    stack = orm.Game, 
     environ = orm.Planet, orm.Game
     character = unit = orm.Stack, orm.Game
     possession = orm.Character, orm.Stack, orm.Game
 
     orm_name = getattr(orm, table)
-    table_lowercase = table.lower()
+    join_condition = locals()[table.lower()]
 
     game = session.query(orm.Game).filter(orm.Game.id == game_id)
 
-    print(locals()[table.lower()])
-
     if id is None:
-        items = session.query(orm_name).join(*locals()[table.lower()]).filter(orm.Game.id == game_id).all()
+        items = session.query(orm_name).join(*join_condition).filter(orm.Game.id == game_id).all()
         items = [ x.__dict__ for x in items ]
     else:
-        items = session.query(orm_name).join(orm.Game).filter_by(id=id).one()
+        items = session.query(orm_name).join(*join_condition).filter_by(id=id).one()
 
     return True, { table.lower(): items }

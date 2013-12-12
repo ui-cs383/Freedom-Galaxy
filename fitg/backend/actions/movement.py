@@ -2,6 +2,7 @@
 from orm import *
 from sqlalchemy.orm import exc
 from random import randint
+from detection_routine import *
 
 
 def move(session, stack_id, environ_id):
@@ -21,10 +22,11 @@ def move(session, stack_id, environ_id):
         oldloc = None
 
     # Check if either are None
-    if newloc is not None and oldloc is not None:
+    if newloc is not None:
         # Check if they aren't adjacent
-        if oldloc.planet == newloc.planet and (newloc.location - 1 == oldloc or newloc.location + 1 == oldloc.location):
-            return False, "Invalid Move"
+        if oldloc != None:
+            if oldloc.planet != newloc.planet:
+                return False, "Invalid Move"
     else:
         # One is None, exit
         return False, "Invalid Move"

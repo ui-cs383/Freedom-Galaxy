@@ -25,7 +25,7 @@ def char_combat(session, atk_id, def_id, options):
         atk_result[0] *= 2
         def_result[0] *= 2
 
-    elif atk_stack.units:
+    if atk_stack.units:
         atk_result[0] *= 2
         def_result[0] *= 2
 
@@ -50,6 +50,8 @@ def char_combat(session, atk_id, def_id, options):
 
     if def_stack.size() == 0:
         session.delete(def_stack)
+
+    return True, atk_stack.__dict__, def_stack.__dict__
 
 def char_combat_rating(StackID, session):
     CR = 0

@@ -23,6 +23,10 @@ pprint(move)
 
 
 print("Getting state of planets")
+planet = client.root.get_state(game_id="test", object_type="Planet")
+pprint(planet)
+
+print("Getting state of environs")
 planet = client.root.get_state(game_id="test", object_type="Environ")
 pprint(planet)
 

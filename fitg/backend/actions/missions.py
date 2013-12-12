@@ -4,7 +4,7 @@ from orm import *
 from combat import *
 from random import randint
 
-def add_mission(session, stack_id, mission_type):
+def assign_mission(session, stack_id, mission_type):
 	mission = session.query(Mission).filter_by(type = mission_type).one()
 	session.add(mission)
 	if mission.stack == None:
@@ -18,32 +18,80 @@ def attempt_mission(session, environ_id):
 	environ = session.query(Environ).filter_by(id = environ_id).one()
 	for stack in environ.stacks:
 		for mission in stack.mission:
-			success_count = 0
-			for x in range(environ.size):
+			successes = 0
+			for x in range(environ.size + (mission.draws)()):
 				if draw_action(mission, environ, session) == mission.type:
-					success_count += 1
+					successes += 1
 					#   Do mission result
-			resolve_mission(session, mission, success_count)
+			resolve_mission(session, mission, successes)
 
-def resolve_mission(session, mission, success_count):
+def resolve_mission(session, mission, successes):
+	session.add(mission)
 	mission_table = {
 		'A' : a_mission,
 		'B' : b_mission,
 		'C' : c_mission,
 		'D' : d_mission,
-		'E' : e_mission,
 		'F' : f_mission,
 		'G' : g_mission,
-		'H' : h_mission,
 		'I' : i_mission,
-		'J' : j_mission,
 		'P' : p_mission,
 		'R' : r_mission,
 		'S' : s_mission,
 		'T' : t_mission
 	}
+	session.commit()
 
 	return True
+
+def a_mission(session, mission, successes):
+	if successes > 0:
+		target_stacks = session.query(Stack).filter_by(environ = mission.environ).all()
+		for stack in target_stacks:
+			if stack.side() != mission.stack.side():
+				if stack.characters:
+					victim = stack.characters[randint(0,stack.size()-1)]
+					session.delete(victim)
+					session.commit()
+
+def b_mission(session, mission, successes):
+	pass
+
+def c_mission(session, mission, successes):
+	pass
+
+def d_mission(session, mission, successes):
+	mission.environ.planet
+
+def f_mission(session, mission, successes):
+	pass
+
+def g_mission(session, mission, successes):
+	pass
+
+def i_mission(session, mission, successes):
+	pass
+
+def p_mission(session, mission, successes):
+	pass
+
+def r_mission(session, mission, successes):
+	if mission.stack.side() == 'Rebel':
+		if successes > 0:
+			mission.environ.planet.in_rebellion = True
+	elif mission.stack.side() == 'Imperial':
+		if successes > 1:
+			mission.environ.planet.in_rebellion = False
+
+def s_mission(session, mission, successes):
+	if successes >= 2:
+		mission.environ.planet.pdb_change(-1)
+	if successes >= 1:
+		mission.environ.planet.pdb_state = 0
+
+def t_mission(session, mission, successes):
+	pass
+
 
 def draw_action(mission, environ, session):
 	action_table = (
@@ -295,12 +343,12 @@ def nCA(mission, session):
 #       value in this Environ.)                                      
 #            
 def PGW(mission, session):
-	pass                                                        
+	CD(mission, session)                                                        
 #  RCOaCD:  Rebels Chicken Out and Characters Detected               
 #       (start rebellion mission aborted.)                           
 #              
 def RCOaCD(mission, session):
-	pass                                                      
+	CD(mission, session)                                                      
 #  WD:      Weather Disturbances                                     
 #       (hamper enemy operations.  The non-Phasing player may        
 #       conduct no searches in this environ this mission phase.)     

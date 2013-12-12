@@ -249,8 +249,9 @@ class Stack(Base):
     characters = relationship('Character', backref='stack')
     units = relationship('Unit', backref='stack')
 
-    def __init__(self):
-        pass
+    def __init__(self, environ_id, game_id):
+        self.environ_id = environ_id
+        self.game_id = game_id
 
     def __repr__(self):
         return "<Stack('%i','%i')>" % (self.id, self.location)

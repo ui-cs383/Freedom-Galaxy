@@ -23,7 +23,7 @@ pprint(move)
 
 
 print("Getting state of planets")
-planet = client.root.get_state(game_id="test", object_type="Environ")
+planet = client.root.get_state(game_id="test", object_type="Planet")
 pprint(planet)
 
 print("deleting game")

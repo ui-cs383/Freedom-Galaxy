@@ -137,9 +137,9 @@ class System():
             unit.visible = 1
             if loc_id:
                 digits = len(str(loc_id))
-                print digits
+                #print digits
                 if digits >= 4:
-                    print "digits >= 4"
+                    #print "digits >= 4"
                     environ_id = loc_id % 10
                     planet_id = loc_id / 10
                 elif digits >= 3:

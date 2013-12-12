@@ -229,6 +229,36 @@ class FreedomService(rpyc.Service):
 
             return self.response('move', request, result[0], result[1])
 
+    def exposed_search(self, stack_id, validate_only=False):
+        """Have a stack conduct a search at its current location
+
+        Search takes a location and a stack to conduct the search. Will result in combat upon success.
+
+        :param stack_id: The stack_id of the stack to be moved.
+        :type stack_id: int.
+        :param validate_only: If true the move will only be validated.
+        :type validate_only: bool.
+        :returns:  dict -- a dictionary of updated stack locations.
+        :raises: AssertionError
+        """
+
+        assert isinstance(stack_id, int)
+
+        with session_scope(self.orm) as session:
+            self.logger.info("stack  " + str(stack_id) + " attempting to conduct search "
+
+            request = locals()
+            atk_obj = session.query(Stack).filter_by(id = stack_id).one()
+            stack_list = session.query(Stack).filter_by(enviorn_id = atk_obj.enviorn_id).all()
+            target_list = [s for s in stack_list if s.side() != atk_obj.side()]
+            result = (False, False)
+            for stack in target_list:
+                if stack.stack_detection():
+                    result = self.actions.combat.search(session, stack_id, location_id)
+                    break
+
+            return self.response('move', request, result[0], result[1])
+
     def exposed_combat(self, atk_id, def_id, options, validate_only=False):
         """Start combat between an attacker and a defender.
 
@@ -328,30 +358,35 @@ class FreedomService(rpyc.Service):
 
             return self.response('merge_stack', request, result[0], result[1])
 
-    def exposed_draw_mission(self, validate_only=False):
-        """Draws mission card.
-
-        :param validate_only: If true the move will only be validated.
-        :type validate_only: false.
-        :returns:  dict -- the current game state.
+    def exposed_attempt_mission(self, environ_id, validate_only=False):
+        """Attempts to complete all missions assigned in environ_id
         """
-        self.logger.info("requested a mission")
+        with session_scope(self.orm) as session:
+            self.logger.info("attempting missions in " + str(environ_id)
+            request = locals()
+            try:
+                result = self.actions.missions.attempt_mission(session, environ_id)
+            except AssertionError:
+                self.logger.warn("attempting missions in " + str(environ_id) + " failed ")
 
-    def exposed_assign_mission(self, mission_id, character_id, validate_only=False):
-        """Draws mission card.
+            return self.response('attempting missions', request, result[0], result[1])
+
+    def exposed_assign_mission(self, mission_type, stack_id, validate_only=False):
+        """Assigns mission.
 
         :param validate_only: If true the move will only be validated.
         :type validate_only: false.
         :returns: dict -- the curent game state.
         """
-        assert isinstance(mission_id, int)
+        with session_scope(self.orm) as session:
+            self.logger.info("assigning mission " + str(mission_type) + " to " + str(stack_id))
+            request = locals()
+            try:
+                result = self.actions.missions.assign_mission(session, stack_id, mission_type)
+            except AssertionError:
+                self.logger.warn("assigning mission " + str(mission_type) + " to " + str(stack_id) + " failed ")
 
-        try:
-            assert isinstance(character_id, int)
-            self.logger.info("requested mission " + str(mission_id) + " assignment to character " + str(character_id))
-        except AssertionError:
-            assert isinstance(character_id, tuple)
-            self.logger.info("requested mission " + str(mission_id) + " assignment to characters " + str(character_id))
+            return self.response('assign_mission', request, result[0], result[1])
 
 
 if __name__ == "__main__":

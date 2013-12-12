@@ -276,8 +276,7 @@ class Stack(Base):
         for character in self.characters:       #stack are detected.
             if character.detected == True:
                 return True
-        return None
-    # function to add unit to stack, check if not already in another stack, if so, remove?
+        return False
 
     def find_stack_leader(self):    #stack leader will be the character with
         leadership_rating = 0       #the highest leadership rating

@@ -126,6 +126,39 @@ planets:
     environ_count: 2
 environs:
   -
+    location: 0
+    planet_location: 221
+    type: O
+    size: 20
+    race_name: None
+    star_faring: 0
+    resources: 0
+    star_resources: 0
+    monster: None
+    sov: 0
+  -
+    location: 0
+    planet_location: 222
+    type: O
+    size: 20
+    race_name: None
+    star_faring: 0
+    resources: 0
+    star_resources: 0
+    monster: None
+    sov: 0
+  -
+    location: 0
+    planet_location: 223
+    type: O
+    size: 20
+    race_name: None
+    star_faring: 0
+    resources: 0
+    star_resources: 0
+    monster: None
+    sov: 0
+  - 
     location: 1
     planet_location: 221
     type: W

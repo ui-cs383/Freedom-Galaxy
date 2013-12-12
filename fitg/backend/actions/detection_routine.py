@@ -5,6 +5,7 @@ Currently just the Detection Routine in the Combat Class.
 import random
 from orm import *
 
+def detection_table(die_roll, evasion_val):
     #The following detection table is exactly the same as the one from FitG with
     # E = -2, Dd = -1, D = 0, U = 1
     detection_table = ((-1, 0, 1, 1, 1, 1, 1, 1),
@@ -13,6 +14,7 @@ from orm import *
                        (-2, -1, -1, 0, 0, 0, 1, 1),
                        (-2, -1, -1, -1, 0, 0, 0, 1),
                        (-2, -2, -2, -1, -1, 0, 0, 0))
+    return detection_table[die_roll][evasion_val]
 # detection_table = (('Dd', 'D', 'U', 'U', 'U', 'U', 'U', 'U'),
 #                            ('Dd', 'D', 'D', 'D', 'U', 'U', 'U', 'U'),
 #                            ('Dd', 'Dd', 'D', 'D', 'D', 'U', 'U', 'U'),
@@ -67,7 +69,7 @@ def detection_routine(session, stack_id, pdb_level):
     if(pdb_level == 2):                             #modifier for when pdb is 2
         evasion_val = evasion_val - 2               #shift two to the left
 
-    result = detection_table[die_roll][evasion_val]
+    result = detection_table(die_roll, evasion_val)
 
     if(pdb_level == 0):                             #modifier for when pdb is 0
         if(result < 0):                             #if the result was Dd or E its just D.
@@ -84,7 +86,7 @@ def detection_routine(session, stack_id, pdb_level):
         for character in stack1.characters:
             character.detected = True
             session.delete(stack1.spaceship())
-    else(result == -2):
+    else:
         for character in stack1.characters:
             session.delete(character)
         session.delete(stack1)

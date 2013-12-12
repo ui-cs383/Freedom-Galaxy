@@ -116,16 +116,12 @@ def list(session):
 
 
 def get_object(session, game_id, table, id=None):
-
     orm_name = getattr(orm, table)
 
     if id is None:
-        print("Getting all of the stuff")
         items = session.query(orm_name).join(orm.Planet, orm.Game).filter(orm.Game.id == game_id).all()
         items = [ x.__dict__ for x in items ]
     else:
         items = session.query(orm_name).join(orm.Game).filter_by(id=id).one()
-
-    print(items)
 
     return True, { table.lower(): items }

@@ -87,7 +87,7 @@ def split_stack(session, stack_id, unit_id, is_character):
         success = False
     else:
         success = True
-        unit_stack = Stack()
+        unit_stack = Stack(stack.environ_id, stack.game_id)
         session.add(unit_stack, unit)
 
         if is_character:

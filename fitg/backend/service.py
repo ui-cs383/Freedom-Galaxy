@@ -57,8 +57,11 @@ class FreedomService(rpyc.Service):
         pass
 
     def response(self, called, parameters, success, result):
-        if result is not None:
-            if 'self' in result: del result['self']
+        if parameters is not None:
+            if 'self' in parameters: 
+                parameters.pop('self', None)
+            if 'session' in parameters:
+                parameters.pop('session', None)
 
         response = { 'request': dict(), 'response': dict() }
 

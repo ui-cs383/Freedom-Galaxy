@@ -133,18 +133,23 @@ class System():
     def _update_unit_location(self):
         for unit in self.unit_list:
             loc_id = unit.loc_id
+            #print "Location of unit: " + str(loc_id)
             unit.visible = 1
-            while loc_id:
+            if loc_id:
                 digits = len(str(loc_id))
+                print digits
                 if digits >= 4:
+                    print "digits >= 4"
                     environ_id = loc_id % 10
+                    planet_id = loc_id / 10
                 elif digits >= 3:
-                    planet_id = loc_id % 10
+                    planet_id = loc_id / 10
                 elif digits >= 2:
                     self.system_id = loc_id % 10
-                loc_id /= 10
+                #loc_id /= 10
+            #print "Resolved loc_id: " + str(loc_id)
             for planet in self.planet_list:
-                if planet.location%10 == planet_id:
+                if planet.location == planet_id:
                     if environ_id == 0:
                         unit.pos = None
                         unit.loc = planet.collide_rect

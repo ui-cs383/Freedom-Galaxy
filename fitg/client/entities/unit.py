@@ -30,7 +30,7 @@ class Unit(pygame.sprite.DirtySprite):
             for prop in properties:
                 setattr(self, prop, unitdict[prop])
             self.image, self.rect = load_image(unitdict["img"]) 
-        self.loc_id = 2210
+        #self.loc_id = 2210
         self.pos = None
         self.loc = None
         self.prev_image = self.image
@@ -43,6 +43,8 @@ class Unit(pygame.sprite.DirtySprite):
             unit.stack_id = new_stack_id
             
     def set_loc_id (self, new_loc_id):
+        print "Setting location: " + str(new_loc_id)
+        self.loc_id = new_loc_id
         for unit in self.stack_list:
             unit.loc_id = new_loc_id
             

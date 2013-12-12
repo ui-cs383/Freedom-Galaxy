@@ -64,7 +64,7 @@ def merge_stack(session, src_id, des_id):
         success = True
         for character in src_stack.characters:
             character.stack_id = des_id
-        for unit in src_stack.militaryunits:
+        for unit in src_stack.units:
             unit.stack_id = des_id
 
     if success:

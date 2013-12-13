@@ -79,7 +79,7 @@ class System():
         for planet in self.planet_list:
             planet.update()
             planet.environment.update()
-        self._update_unit_location()
+        self._update_unit_location(self.unit_list)
         for unit in self.unit_list:
             unit.update()
 
@@ -141,8 +141,8 @@ class System():
                 cur_frame += 1
         self.update()
 
-    def _update_unit_location(self):
-        for unit in self.unit_list:
+    def _update_unit_location(self, units):
+        for unit in units:
             loc_id = unit.loc_id
             #print "Location of unit: " + str(loc_id)
             unit.visible = 1

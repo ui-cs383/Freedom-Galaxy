@@ -233,7 +233,7 @@ units:
     side: Imperial
     environ_combat: 3
     space_combat: 2
-    mobile: False
+    mobile: True
     count: 1
   -
     type: Militia
@@ -247,5 +247,5 @@ units:
     side: Imperial
     environ_combat: 2
     space_combat: 1
-    mobile: False
+    mobile: True
     count: 3 

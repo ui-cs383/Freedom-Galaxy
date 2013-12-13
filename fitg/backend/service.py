@@ -245,7 +245,7 @@ class FreedomService(rpyc.Service):
         assert isinstance(stack_id, int)
 
         with session_scope(self.orm) as session:
-            self.logger.info("stack  " + str(stack_id) + " attempting to conduct search "
+            self.logger.info("stack  " + str(stack_id) + " attempting to conduct search ")
 
             request = locals()
             atk_obj = session.query(Stack).filter_by(id = stack_id).one()

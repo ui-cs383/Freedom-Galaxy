@@ -29,7 +29,7 @@ redcolor = (243,14,14)
 lightbluecolor = (100,149,237)
 
 #Marks the position of the Menu Bar relative to the master background screen
-MenuBarUpperLeftCorner = (130,0) # For test purposes. The final product will pass these coordinates into the initialization
+MenuBarUpperLeftCorner = (200,0) # For test purposes. The final product will pass these coordinates into the initialization
 x = MenuBarUpperLeftCorner[0] # take out
 y = MenuBarUpperLeftCorner[1] #take out
 
@@ -177,10 +177,15 @@ class MenuBar():
         self.rebellionstatus = False
         self.rebelcontrolstatus = True
         
+        
+    def label(self, text, color, font_size):
+        font = pygame.font.Font(None, font_size)
+        return font.render(text, 1, color)
+        
     def draw(self, starbg, screen, menubar):
         pygame.draw.rect(screen, menubarcolor, menubar, 0)
         pygame.draw.rect(screen, loyaltycolor, loyaltyrect, 0)
-        screen.blit(planetFontSurface, planetnameposition) #planetname position
+        screen.blit(self.label(self.planetname, planettextcolor, 50), planetnameposition) #planetname position
         screen.blit(pdbfontsurface,pdbboxpostion)
         screen.blit(loayaltytextsurface, loyaltytextboxposition)
         screen.blit(pdbstatustexsurface, pdbstatustextposition)
@@ -201,20 +206,22 @@ class MenuBar():
         else:
             pygame.draw.rect(screen,lightbluecolor,rebellionboxrect,0)
             screen.blit(norebelliontextsurface,rebelliontextposition)
+            
         if self.pdbup == True:
             screen.blit(pdb_image, pdbboxpostion)
         else:
             pygame.draw.rect(screen, pdbdowncolor, pdbdownrect, 0)
             screen.blit(pdbdowntextsurface, pdbdowntextpostition)
-        if self.loyaltystate == 1:
+        #print self.loyaltystate  
+        if self.loyaltystate == -2:
             pygame.draw.rect(screen, loyaltymarkercolor, loyaltymarker1, 0)
-        elif self.loyaltystate == 2:
+        elif self.loyaltystate == -1:
             pygame.draw.rect(screen, loyaltymarkercolor, loyaltymarker2, 0)            
-        elif self.loyaltystate == 3:
+        elif self.loyaltystate == 0:
             pygame.draw.rect(screen, loyaltymarkercolor, loyaltymarker3, 0)            
-        elif self.loyaltystate == 4:
+        elif self.loyaltystate == 1:
             pygame.draw.rect(screen, loyaltymarkercolor, loyaltymarker4, 0)            
-        elif self.loyaltystate == 5:
+        elif self.loyaltystate == 2:
             pygame.draw.rect(screen, loyaltymarkercolor, loyaltymarker5, 0)            
             
         

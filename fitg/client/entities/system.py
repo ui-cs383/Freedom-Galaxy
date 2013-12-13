@@ -34,7 +34,7 @@ class System():
         #=======================================================================
         
         self.unit_list = pygame.sprite.LayeredDirty()
-        print "Starting length: " + str(len(self.unit_list.sprites()))
+        #print "Starting length: " + str(len(self.unit_list.sprites()))
         for character in characterlist:
             #print character
             self.addunit(True, character)
@@ -47,6 +47,7 @@ class System():
             for unit in self.unit_list:
                 if unit.stack_id == stack["id"]:
                     unit.set_loc_id(self.environ_locs[stack["environ_id"]])
+                    unit.set_environ_id(stack["environ_id"])
 
 
     def addunit (self, charflag, unitdict):
@@ -55,21 +56,21 @@ class System():
         #self.unit_list.add(newunit)
         #print "Length: " + str(len(self.unit_list.sprites()) )
         if len(self.unit_list.sprites()) == 0:
-            print "First unit"
+            #print "First unit"
             self.unit_list.add(newunit)
         else:
             for unit in self.unit_list:
-                print "unit's stack id: " + str(unit.stack_id)
-                print "new unit's stack id: " + str(newunit.stack_id)
+                #print "unit's stack id: " + str(unit.stack_id)
+                #print "new unit's stack id: " + str(newunit.stack_id)
                 if newunit.stack_id == unit.stack_id:
-                    print "Adding unit "+ str(newunit.id) + " to stack " + str(unit.stack_id) + "char?: " + str(charflag)
-                    print "---"
+                    #print "Adding unit "+ str(newunit.id) + " to stack " + str(unit.stack_id) + "char?: " + str(charflag)
+                    #print "---"
                     unit.add_unit(newunit)
                     createnewstack = False
                     break
             if createnewstack:
-                print "New stack for "+ str(unit.id) + " for stack " + str(unit.stack_id) + "char?: " + str(charflag)
-                print "---"
+                #print "New stack for "+ str(unit.id) + " for stack " + str(unit.stack_id) + "char?: " + str(charflag)
+                #print "---"
                 self.unit_list.add(newunit)
                     
         

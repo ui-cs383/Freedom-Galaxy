@@ -28,7 +28,7 @@ class Environ():
                       'resources')
         for prop in properties:
             setattr(self, prop, environdict[prop])
-        self.id = int(environdict["id"])
+        #self.id = int(environdict["id"])
         self.startangle = STARTANGLE + (self.location * UNITANGLE)
         self.endangle = self.startangle + UNITANGLE#*self.size
         self.iradius = iradius

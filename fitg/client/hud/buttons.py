@@ -37,10 +37,10 @@ class Button():
 
     def pressed(self, mouse_cursor):
         #print "The mouse cursor is a :"+str(type(mouse_cursor))
-        if self.rect.colliderect(mouse_cursor):
-            return True
-        else:
-            return False
+        #if self.rect.colliderect(mouse_cursor):
+        #    return True
+        #else:
+        return False
 
 
 class TextRectException():

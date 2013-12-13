@@ -12,7 +12,7 @@ class Planet(pygame.sprite.Sprite):
         self.planet_id = planetdict["id"]
         self.name = planetdict["name"]
         self.pdb_state = planetdict["pdb_state"]
-        self.loyalty = planetdict["loyalty"]
+        self.loyalty = int(planetdict["loyalty"])
         self.pdb_level = planetdict["pdb_level"]
         self.environ_count = planetdict["environ_count"]
         self.orient = planet_orientation

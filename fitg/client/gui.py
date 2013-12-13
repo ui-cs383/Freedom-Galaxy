@@ -155,25 +155,31 @@ def left_mouse_unselect_check(client, mouse, selected_unit, star_system):
         for planet in star_system.planet_list:
             new_location_id = planet.location * 10
             if planet.collide_rect.colliderect(selected_unit.rect):
-                moveresponse = client.root.move(stack_id=selected_unit.stack_id, location_id=planet.planet_id)
-                if moveresponse["request"]["success"] is True:
-                    for key, value in star_system.environ_locs:
+                for key, value in star_system.environ_locs.items():
                         if value == new_location_id:
                             new_environ_id = key
-                    selected_unit.set_environ_id (new_environ_id)
-                    selected_unit.set_loc_id ( new_location_id)
+                if new_environ_id != selected_unit.loc_id:
+                    moveresponse = client.root.move(stack_id=selected_unit.stack_id, location_id=new_environ_id)
+                    print moveresponse
+                    if moveresponse["request"]["success"] is True:
+                        
+                        selected_unit.set_environ_id (new_environ_id)
+                        selected_unit.set_loc_id ( new_location_id)
                 return None
             for environ in planet.environment.environ_list:
                 new_location_id = new_location_id + environ.location
                 new_environ_id = environ.id
-                for point in environ.collision_points:
-                    if selected_unit.rect.colliderect(pygame.Rect((point), (10, 10))):
-                        moveresponse = client.root.move(stack_id=selected_unit.stack_id, location_id=environ.id)
-                        print moveresponse
-                        if moveresponse["request"]["success"] is True:
-                            selected_unit.set_loc_id (new_location_id )
-                            selected_unit.set_environ_id (new_environ_id)
-                        return None
+                print "checking to move from " + str(selected_unit.environ_id) + " to "
+                print environ.id
+                if new_environ_id != selected_unit.loc_id:
+                    for point in environ.collision_points:
+                        if selected_unit.rect.colliderect(pygame.Rect((point), (10, 10))):
+                            moveresponse = client.root.move(stack_id=selected_unit.stack_id, location_id=environ.id)
+                            print moveresponse
+                            if moveresponse["request"]["success"] is True:
+                                selected_unit.set_loc_id (new_location_id )
+                                selected_unit.set_environ_id (new_environ_id)
+            return None
     '''    for unit in star_system.unit_list:
             if unit is not selected_unit:
                 if unit.rect.colliderect(selected_unit.rect):

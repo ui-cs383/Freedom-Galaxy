@@ -94,11 +94,12 @@ def main(client, setupinfo=None):
                             hover_unit = star_system.unit_list.get_sprites_at(mouse_ptr.pos)
                             print "STACK REMOVING FROM", hover_unit
                             if hover_unit:
-                                #splitresponse = client.root.split_stack(hover_unit[0].stack_id, hover_unit[0].unit_list[-1].id)
-                                #if splitresponse["Success"]:
-                                #   sprite.set_stack_id(splitresponse["response"]["stack id"])
-                                sprite = hover_unit[0].remove_unit()
-                                if sprite:
+                                splitresponse = client.root.split_stack(hover_unit[0].stack_id, hover_unit[0].stack_list[-1].id)
+                                print splitresponse
+                                if splitresponse["request"]["success"]:
+                                    sprite = hover_unit[0].remove_unit()
+                                    sprite.set_stack_id(splitresponse["response"]["stack id"])
+                                #if sprite:
                                     #splitresponse = client.root.split_stack(hover_unit[0].stack_id, sprite.id)
                                     #if splitresponse["Success"]:
                                     #   sprite.set_stack_id(splitresponse["response"]["stack id"])

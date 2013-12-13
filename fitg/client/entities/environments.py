@@ -38,7 +38,7 @@ class Environ():
         self.getcolor(self.type)
         self.collision_points = []
         self.updatepoints()
-        print "made environ " + str(self.id)
+        #print "made environ " + str(self.id)
 
     #def __str__(self):
     #    return str(self.id)

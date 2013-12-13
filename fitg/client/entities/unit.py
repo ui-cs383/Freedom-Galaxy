@@ -43,7 +43,7 @@ class Unit(pygame.sprite.DirtySprite):
             unit.stack_id = new_stack_id
             
     def set_loc_id (self, new_loc_id):
-        print "Setting location: " + str(new_loc_id)
+        #print "Setting location: " + str(new_loc_id)
         self.loc_id = new_loc_id
         for unit in self.stack_list:
             unit.loc_id = new_loc_id

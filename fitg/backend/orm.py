@@ -265,6 +265,16 @@ class Stack(Base):
         else:
             return self.units[0].side
 
+    def can_fly(self):
+        if len(self.units) > 0:
+            for unit in self.units:
+                if unit.mobile is False:
+                    return False
+        if len(self.characters) > 0:
+            if self.spaceship() is None:
+                return False
+        return True
+            
     def spaceship(self):
         for character in self.characters:
             for possession in character.possessions:
@@ -301,13 +311,6 @@ class Stack(Base):
        #     else:
         #        print "Military units are not in their home environ type :("
          #       return False
-
-    def is_rebel_stack(self):
-        for militaryunit in self.units:
-            if militaryunit.side == 'Rebel':
-                return True
-            else:
-                return False
 
 
 Base.metadata.create_all(engine)

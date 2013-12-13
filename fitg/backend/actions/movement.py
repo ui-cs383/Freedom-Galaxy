@@ -26,8 +26,9 @@ def move(session, stack_id, environ_id):
         # Check if they aren't adjacent
         if oldloc != None:
             if oldloc.planet != newloc.planet:
-                if oldloc.location != 0 and newloc.location != 0:
-                    return False, "Invalid Move"
+                if (oldloc.location != 0) and (newloc.location != 0):
+                    if (session.query(Stack).filter_by(id = stack_id).one().spaceship()):
+                        return False, "Invalid Move"
     else:
         # One is None, exit
         return False, "Invalid Move"
@@ -76,12 +77,12 @@ def merge_stack(session, src_id, des_id):
     else:
         return success, "FATAL: Stacks cannot be merged"
 
-def split_stack(session, stack_id, unit_id, is_character):
+def split_stack(session, stack_id, unit_id=None, character_id=None):
     stack = session.query(Stack).filter_by(id = stack_id).one()
 
     try:
-        if is_character:
-            unit = session.query(Character).filter_by(id = unit_id).one()
+        if character_id:
+            unit = session.query(Character).filter_by(id = character_id).one()
         else:
             unit = session.query(Unit).filter_by(id = unit_id).one()
     except:
@@ -91,7 +92,7 @@ def split_stack(session, stack_id, unit_id, is_character):
         unit_stack = Stack(stack.environ_id, stack.game_id)
         session.add(unit_stack, unit)
 
-        if is_character:
+        if character_id:
             unit_stack.characters.append(unit)
         else:
             unit_stack.units.append(unit)

@@ -49,7 +49,7 @@ def main ():
     screen.blit(background, background.get_rect())
     pygame.display.flip()
     
-    gamelistasync = rpyc.async(client.root.list_games)
+    #gamelistasync = rpyc.async(client.root.list_games)
     
     selectedtextbox = gametextbox
     gametextbox.switchchar()
@@ -100,7 +100,7 @@ def main ():
                     print('my_button start game clicked')
                 elif join.obj.collidepoint(mouse):
                     listingbox.visible = True
-                    gamelisting = gamelistasync()
+                    gamelisting = client.root.list_games()
                     print('my_button join game clicked')
                 elif allegiance.obj.collidepoint(mouse):
                     allegiance.switch_text()
@@ -142,7 +142,7 @@ def main ():
                             print gamesetup
                             gui.main(gamesetup, client)
                         elif listingbox.refreshbutton.obj.collidepoint(mouse):
-                            gamelisting = gamelistasync()
+                            gamelisting = client.root.list_games()
                         elif listingbox.gamebox.collidepoint(mouse):
                             listingbox.checkclick(mouse)
                             

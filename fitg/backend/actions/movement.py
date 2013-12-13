@@ -106,6 +106,6 @@ def split_stack(session, stack_id, unit_id=None, character_id=None):
         
     if success:
         session.commit()
-        return success,  'stack': unit_stack.__dict__ 
+        return success,  unit_stack.__dict__ 
     else:
         return success, "FATAL: Unable to split stack"

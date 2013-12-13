@@ -362,7 +362,7 @@ class FreedomService(rpyc.Service):
         """Attempts to complete all missions assigned in environ_id
         """
         with session_scope(self.orm) as session:
-            self.logger.info("attempting missions in " + str(environ_id)
+            self.logger.info("attempting missions in " + str(environ_id))
             request = locals()
             try:
                 result = self.actions.missions.attempt_mission(session, environ_id)

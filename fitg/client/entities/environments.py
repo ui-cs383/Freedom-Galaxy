@@ -14,7 +14,7 @@ LINECOLOR = (0, 200, 0)
 
 
 class Environ():
-    __slots__ = ['parent', 'rect', 'id', 'planet_id', 'type', 'size',
+    __slots__ = ['parent', 'rect', 'planet_id', 'type', 'size',
                  'star_faring', 'race_name', 'star_resources', 'location',
                  'monster', 'coup', 'sov', 'resources', 'startangle',
                  'endangle', 'iradius', 'oradius', 'averadius',
@@ -23,12 +23,12 @@ class Environ():
         #print environdict
         self.parent = parent
         self.rect = pygame.Rect(center[0] - oradius, center[1] - oradius, oradius * 2, oradius * 2)
-        properties = ('planet_id', 'type', 'size', 'star_faring', 'location', 'id',
+        properties = ('planet_id', 'type', 'size', 'star_faring', 'location',
                       'race_name', 'star_resources', 'monster', 'coup', 'sov',
                       'resources')
         for prop in properties:
             setattr(self, prop, environdict[prop])
-        #self.id = int(environdict["id"])
+        self.id = int(environdict["id"])
         self.startangle = STARTANGLE + (self.location * UNITANGLE)
         self.endangle = self.startangle + UNITANGLE#*self.size
         self.iradius = iradius
@@ -38,9 +38,10 @@ class Environ():
         self.getcolor(self.type)
         self.collision_points = []
         self.updatepoints()
+        print "made environ " + str(self.id)
 
-    def __str__(self):
-        return str(self.id)
+    #def __str__(self):
+    #    return str(self.id)
 
     def getcolor(self, type):
         self.fillcolor = ETcolors[type]

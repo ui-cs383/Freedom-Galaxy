@@ -101,7 +101,7 @@ def main(client, setupinfo=None):
                                 print splitresponse
                                 if splitresponse["request"]["success"]:
                                     sprite = hover_unit[0].remove_unit()
-                                    sprite.set_stack_id(splitresponse["response"]["stack id"])
+                                    sprite.set_stack_id(splitresponse["response"]["id"])
                                 #if sprite:
                                     #splitresponse = client.root.split_stack(hover_unit[0].stack_id, sprite.id)
                                     #if splitresponse["Success"]:
@@ -185,6 +185,7 @@ def left_mouse_unselect_check(client, mouse, selected_unit, star_system):
                             if moveresponse["request"]["success"] is True:
                                 selected_unit.set_loc_id (new_location_id )
                                 selected_unit.set_environ_id (new_environ_id)
+                            break
         return None
     '''    for unit in star_system.unit_list:
             if unit is not selected_unit:

@@ -284,6 +284,8 @@ class Stack(Base):
             
     def spaceship(self):
         for character in self.characters:
+            if character.name == 'Boccanegra':
+                return True
             for possession in character.possessions:
                 if possession.type == 'spaceship':
                     return possession

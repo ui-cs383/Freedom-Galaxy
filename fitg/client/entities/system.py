@@ -23,6 +23,7 @@ class System():
         self.environ_locs = dict()
         for planet in planetlist:
             self.planet_locs[str(planet["id"])] = int(planet["location"])*10
+        #self.planet_locs["None"] = 0000
         #print self.planet_locs
         for environ in environlist:
             #print environ["planet_id"]
@@ -46,8 +47,12 @@ class System():
         for stack in stacklist:
             for unit in self.unit_list:
                 if unit.stack_id == stack["id"]:
-                    unit.set_loc_id(self.environ_locs[stack["environ_id"]])
-                    unit.set_environ_id(stack["environ_id"])
+                    try:
+                        unit.set_loc_id(self.environ_locs[stack["environ_id"]])
+                        unit.set_environ_id(stack["environ_id"])
+                    except:
+                        unit.set_loc_id(0000)
+                        unit.set_environ_id("None")
 
 
     def addunit (self, charflag, unitdict):
@@ -146,38 +151,43 @@ class System():
             loc_id = unit.loc_id
             #print "Location of unit: " + str(loc_id)
             unit.visible = 1
-            if loc_id:
-                digits = len(str(loc_id))
-                #print digits
-                if digits >= 4:
-                    #print "digits >= 4"
-                    environ_id = loc_id % 10
-                    planet_id = loc_id / 10
-                elif digits >= 3:
-                    planet_id = loc_id / 10
-                elif digits >= 2:
-                    self.system_id = loc_id % 10
-                #loc_id /= 10
-            #print "Resolved loc_id: " + str(loc_id)
-            for planet in self.planet_list:
-                if planet.location == planet_id:
-                    if environ_id == 0:
-                        unit.pos = None
-                        unit.loc = planet.collide_rect
-                    else:
-                        if planet.orient is "center":
-                            for point in planet.environment.environ_list[environ_id - 1].collision_points:
-                                if unit.rect.colliderect(pygame.Rect((point), (2, 2))):
-                                    unit.pos = point
-                                    unit.loc = None
-                                    unit.update()
-                                    break
-                                else:
-                                    if len(self.unit_list.get_sprites_at(point)) == 0:
+            if loc_id == 0000:
+                unit.pos = (50, 50)
+                unit.loc = None
+                unit.update()
+            else:
+                if loc_id:
+                    digits = len(str(loc_id))
+                    #print digits
+                    if digits >= 4:
+                        #print "digits >= 4"
+                        environ_id = loc_id % 10
+                        planet_id = loc_id / 10
+                    elif digits >= 3:
+                        planet_id = loc_id / 10
+                    elif digits >= 2:
+                        self.system_id = loc_id % 10
+                    #loc_id /= 10
+                #print "Resolved loc_id: " + str(loc_id)
+                for planet in self.planet_list:
+                    if planet.location == planet_id:
+                        if environ_id == 0:
+                            unit.pos = None
+                            unit.loc = planet.collide_rect
+                        else:
+                            if planet.orient is "center":
+                                for point in planet.environment.environ_list[environ_id - 1].collision_points:
+                                    if unit.rect.colliderect(pygame.Rect((point), (2, 2))):
                                         unit.pos = point
                                         unit.loc = None
                                         unit.update()
                                         break
-                        else:
-                            unit.visible = 0
-                            break
+                                    else:
+                                        if len(self.unit_list.get_sprites_at(point)) == 0:
+                                            unit.pos = point
+                                            unit.loc = None
+                                            unit.update()
+                                            break
+                            else:
+                                unit.visible = 0
+                                break

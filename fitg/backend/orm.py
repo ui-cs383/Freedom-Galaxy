@@ -78,7 +78,7 @@ class Character(Base):
         self.bonuses = bonuses
         self.wounds = 0
         self.detected = False
-        self.possession = False
+        self.possession = []
         self.active = True
         self.captive = False
         
@@ -284,8 +284,6 @@ class Stack(Base):
             
     def spaceship(self):
         for character in self.characters:
-            if character.name == 'Boccanegra':
-                return True
             for possession in character.possessions:
                 if possession.type == 'spaceship':
                     return possession

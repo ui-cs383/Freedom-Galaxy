@@ -6,6 +6,10 @@ python:
 install:
     - "pip install pylint --use-mirrors"
     - "pip install coverage --use-mirrors"
+    - "pip install sqlalchemy --use-mirrors"
+    - "pip install rpyc --use-mirrors"
+    - "pip install pygame --use-mirrors"
+    - "pip install pyyaml --use-mirrors"
 # command to run tests
 script: 
     - nosetests --with-coverage

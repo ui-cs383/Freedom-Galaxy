@@ -73,10 +73,10 @@ def main(client, setupinfo=None):
                     if selected_unit:
                         hover_unit = left_mouse_select_check(client, mouse_sel, star_system)
                         if hover_unit != selected_unit:
-                            #mergeresponse = client.root.merge_stack(unit.stack_id, selected_unit.stack_id)
-                            #if mergeresponse["Success"]:
-                            selected_unit.add_unit(hover_unit)
-                            star_system.unit_list.remove(hover_unit)
+                            mergeresponse = client.root.merge_stack(unit.stack_id, selected_unit.stack_id)
+                            if mergeresponse["Success"]:
+                                selected_unit.add_unit(hover_unit)
+                                star_system.unit_list.remove(hover_unit)
                     print "SPACE BAR"
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
@@ -101,7 +101,10 @@ def main(client, setupinfo=None):
                                 print splitresponse
                                 if splitresponse["request"]["success"]:
                                     sprite = hover_unit[0].remove_unit()
-                                    sprite.set_stack_id(splitresponse["response"]["unit"]["stack_id"])
+                                    try:
+                                        sprite.set_stack_id(splitresponse["response"]["unit"]["stack_id"])
+                                    except:
+                                        sprite.set_stack_id(splitresponse["response"]["stack"]["id"])
                                     star_system.unit_list.add(sprite)
                             print "SHIFT RIGHT CLICK"
                         else:
@@ -150,6 +153,15 @@ def left_mouse_select_check(client, mouse, star_system):
 
 def left_mouse_unselect_check(client, mouse, selected_unit, star_system):
     if selected_unit:
+        for unit in star_system.unit_list:
+            if unit is not selected_unit:
+                if unit.rect.colliderect(selected_unit.rect):
+                    mergeresponse = client.root.merge_stack(unit.stack_id, selected_unit.stack_id)
+                    print mergeresponse
+                    if mergeresponse["request"]["success"]:
+                        unit.add_unit(selected_unit)
+                        star_system.unit_list.remove(selected_unit)
+                        return None
         for planet in star_system.planet_list:
             new_location_id = planet.location * 10
             if planet.collide_rect.colliderect(selected_unit.rect):
@@ -185,14 +197,8 @@ def left_mouse_unselect_check(client, mouse, selected_unit, star_system):
                                 star_system.update()
                             break
         return None
-    '''    for unit in star_system.unit_list:
-            if unit is not selected_unit:
-                if unit.rect.colliderect(selected_unit.rect):
-                    mergeresponse = client.root.merge_stack(unit.stack_id, selected_unit.stack_id)
-                    if mergeresponse["Success"]:
-                        unit.add_unit(selected_unit)
-                        star_system.unit_list.remove(selected_unit)
-    '''
+        
+    
 
 
 if __name__ == '__main__':

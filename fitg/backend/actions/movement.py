@@ -26,7 +26,8 @@ def move(session, stack_id, environ_id):
         # Check if they aren't adjacent
         if oldloc != None:
             if (oldloc.location != 0) or (newloc.location != 0):
-                if (session.query(Stack).filter_by(id = stack_id).one().can_fly()):
+                stack = session.query(Stack).filter_by(id = stack_id).one()
+                if (stack.can_fly()):
                     return False, "Invalid Move, Full Stack does not have space capabilities."
             if oldloc.planet != newloc.planet:
                 return False, "Invalid Move, must go through orbit box to travel between planets."
@@ -39,8 +40,10 @@ def move(session, stack_id, environ_id):
         # One is None, exit
         return False, "Invalid Move"
 
-    if (newloc.planet.pdb_state != 0) and (session.query(Stack).filter_by(id = stack_id).one().spaceship()):
-        detection_routine(session, stack_id, newloc.planet.pdb_level)
+    if (newloc.planet.pdb_state != 0):
+        stack = (session.query(Stack).filter_by(id = stack_id).one())
+        if stack.spaceship():
+            detection_routine(session, stack_id, newloc.planet.pdb_level)
     try:
         moving_stack = session.query(Stack).filter_by(id = stack_id).one()
     except:

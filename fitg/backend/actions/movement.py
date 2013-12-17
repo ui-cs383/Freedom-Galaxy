@@ -33,6 +33,8 @@ def move(session, stack_id, environ_id):
             #    if (oldloc.location != 0) and (newloc.location != 0):
             #        if (session.query(Stack).filter_by(id = stack_id).one().spaceship()):
             #            return False, "Invalid Move, Stack does not have space capabilities."
+        else:
+            pass
     else:
         # One is None, exit
         return False, "Invalid Move"

@@ -267,9 +267,16 @@ class Stack(Base):
 
     def can_fly(self):
         if len(self.units) > 0:
+            self.mobiles = 0
+            self.nonmobiles = 0
             for unit in self.units:
                 if unit.mobile is False:
-                    return False
+                    self.nonmobiles = self.nonmobiles + 1
+                else:
+                    self.mobiles = self.mobiles + 1
+            if self.mobiles < self.nonmobiles:
+                return False
+                    
         if len(self.characters) > 0:
             if self.spaceship() is None:
                 return False

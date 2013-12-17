@@ -74,9 +74,11 @@ def main(client, setupinfo=None):
                         hover_unit = left_mouse_select_check(client, mouse_sel, star_system)
                         if hover_unit != selected_unit:
                             mergeresponse = client.root.merge_stack(unit.stack_id, selected_unit.stack_id)
-                            if mergeresponse["Success"]:
+                            print mergeresponse
+                            if mergeresponse["request"]["success"]:
                                 selected_unit.add_unit(hover_unit)
                                 star_system.unit_list.remove(hover_unit)
+                                selected_unit.set_stack_id(mergeresponse["request"]["parameters"]["destination_stack"])
                     print "SPACE BAR"
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:

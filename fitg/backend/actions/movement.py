@@ -30,7 +30,10 @@ def move(session, stack_id, environ_id):
                 if (stack.can_fly()):
                     return False, "Invalid Move, Full Stack does not have space capabilities."
             if oldloc.planet != newloc.planet:
-                return False, "Invalid Move, must go through orbit box to travel between planets."
+                if oldloc.location == newloc.location == 0:
+                    pass
+                else:
+                    return False, "Invalid Move, must go through orbit box to travel between planets."
             #    if (oldloc.location != 0) and (newloc.location != 0):
             #        if (session.query(Stack).filter_by(id = stack_id).one().spaceship()):
             #            return False, "Invalid Move, Stack does not have space capabilities."

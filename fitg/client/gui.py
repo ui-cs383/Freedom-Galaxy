@@ -14,19 +14,19 @@ from support.loadimage import load_image
 import hud.buttons as Menu_Buttons
 
 from support.loadimage import load_image
-import menubar
-from menubar import (MenuBar, planetFontSurface, planet1name,
+import hud.planetbar as menubar
+from hud.planetbar import (MenuBar, planetFontSurface, planet1name,
                      planet2name, planet3name, planet4name,
                      planet5name, planettextcolor, PlanetName,
                      backgroundcolor)
-from menubar import menubar as menubar_
+from hud.planetbar import menubar as menubar_
 
 pygame.init()
 
 def main(client, setupinfo=None):
     gameid = 'test1'#setupinfo["request"]["parameters"]["id"]
-    height = 720
-    width = 1024
+    height = 800
+    width = 1550
     screensize = (width, height)
     screen = pygame.display.set_mode(screensize)
     clock = pygame.time.Clock()
@@ -35,7 +35,7 @@ def main(client, setupinfo=None):
     running = True
 
     background, background_rect = load_image("stars.jpg")
-    outer_menu = MenuBar(planet1name, 1, backgroundcolor, True, (90,0))
+    outer_menu = MenuBar(planet1name, 1, backgroundcolor, True, (700,0))
     menubar.pdb_image, menubar.pdbrect = load_image("pdbup.png", None)
     menubar.pdbrect.topleft = menubar.pdbboxpostion
     screen.blit(background, background_rect)

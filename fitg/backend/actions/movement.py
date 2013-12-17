@@ -115,7 +115,7 @@ def split_stack(session, stack_id, unit_id=None, character_id=None):
             unit = session.query(Character).filter_by(id = character_id).one()
         else:
             unit = session.query(Unit).filter_by(id = unit_id).one() 
-        stack = session.query(Stack).filter_by(id = unit.id).one()
+        stack = session.query(Stack).filter_by(id = unit.stack_id).one()
         return success, { 'stack': unit_stack.__dict__ , 'unit': unit.__dict__}
     else:
         return success, "FATAL: Unable to split stack"

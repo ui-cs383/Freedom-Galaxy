@@ -101,10 +101,10 @@ def main(client, setupinfo=None):
                                 print splitresponse
                                 if splitresponse["request"]["success"]:
                                     sprite = hover_unit[0].remove_unit()
-                                    try:
-                                        sprite.set_stack_id(splitresponse["response"]["unit"]["stack_id"])
-                                    except:
-                                        sprite.set_stack_id(splitresponse["response"]["stack"]["id"])
+                                    #try:
+                                    #    sprite.set_stack_id(splitresponse["response"]["unit"]["stack_id"])
+                                    #except:
+                                    sprite.set_stack_id(splitresponse["response"]["stack"]["id"])
                                     star_system.unit_list.add(sprite)
                             print "SHIFT RIGHT CLICK"
                         else:

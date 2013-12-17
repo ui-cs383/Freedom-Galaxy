@@ -4,7 +4,12 @@ from contextlib import contextmanager
 
 @contextmanager
 def session_scope(orm):
-    """Provide a transactional scope around a series of operations."""
+    """Used with contextmanager for session connections.
+
+    :param orm: The imported Object Relational Mapper to use.
+    :type orm: module -- the ORM module.
+    :raises: Exception
+    """
     session = orm.Session()
     try:
         yield session
@@ -16,6 +21,12 @@ def session_scope(orm):
         session.close()
 
 def load_races(orm):
+    """Loads races into the database.
+
+    :param orm: The imported Object Relational Mapper to use.
+    :type orm: module -- the ORM module.
+    :returns: bool -- True if the races have loaded.
+    """
     with session_scope(orm) as session:
 
         if session.query(orm.Race).all().count(orm.Race.id) > 0:
@@ -40,11 +51,13 @@ def load_races(orm):
     return True
 
 def load_missions(orm):
-    with session_scope(orm) as session:
+    """Loads missions into the database.
 
-        print("========================")
-        print(session.query(orm.Mission).all())
-        print("========================")
+    :param orm: The imported Object Relational Mapper to use.
+    :type orm: module -- the ORM module.
+    :returns: bool -- True if the races have loaded.
+    """
+    with session_scope(orm) as session:
 
         if session.query(orm.Mission).all().count(orm.Mission.id) > 0:
             return True
@@ -89,9 +102,16 @@ class ClientService(rpyc.Service):
 
 
 class FreedomService(rpyc.Service):
+    """Handles service calls to the server.
+    """
     ALIASES = ["fitg"]
 
     def __init__(self, conn):
+        """Sets up the FreedomService server.
+
+        :param conn: The object list related to RPyC
+        :type conn: dict.
+        """
         super(FreedomService, self).__init__(conn)
         import orm
         import actions
@@ -100,17 +120,24 @@ class FreedomService(rpyc.Service):
         self.orm = orm
         self.logger = self._conn._config['logger']
 
-        #create mission
+        #we never load these :(
         #load_races(orm)
         #load_missions(orm)
 
-    def on_connect(self):
-        pass
-
-    def on_disconnect(self):
-        pass
-
     def response(self, called, parameters, success, result):
+        """Sets up the FreedomService server.
+
+        :param called: A string defining the method that was called.
+        :type called: str.
+        :param parameters: The dictionary of parameters called with the function.
+        :type parameters: dict.
+        :param success: Whether or not the call was successful.
+        :type success: bool.
+        :param result: The result of the call
+        :type result: dict.
+        :returns:  dict -- the current game state.
+        """
+
         if parameters is not None:
             if 'self' in parameters: 
                 parameters.pop('self', None)
@@ -129,11 +156,15 @@ class FreedomService(rpyc.Service):
     def exposed_get_state(self, game_id, object_type, object_id=None):
         """Get the state of an object
 
-        :param object_type: The type of object to get state on ("environ", "planet" etc)
+        :param game_id: The game id to call.
+        :type game_id: int.
+        :param object_type: The type of object to get state on ("Environ", "Planet" etc)
         :type object_type: str.
-        :param name: Optional name of the object.
-        :type object_type: str.
+        :param object_id: Optional id of the object.
+        :type object_id: str.
+        :returns:  dict -- the current game state.
         """
+
         if object_id is None:
             self.logger.info("requested state of " + object_type)
         else:
@@ -146,31 +177,25 @@ class FreedomService(rpyc.Service):
 
             return self.response('get_state', request, result[0], result[1])
 
-    def exposed_turn_state(self, validate_only=False):
-        """Returns the current turn state.
+    def exposed_start_game(self, id, player, scenario="egrix", ai=False):
+        """Start a new game.
 
-        :param validate_only: If true the move will only be validated.
-        :type validate_only: bool.
+        :param id: The id of the game.
+        :type id: str.
+        :param player: The username of the player.
+        :type player: str.
+        :param scenario: The scenario name.
+        :type scenario: str.
+        :param ai: Whether or not to create an ai game.
+        :type ai: bool.
         :returns:  dict -- the current game state.
         :raises: AssertionError
         """
-        self.logger.info("requested current turn state")
 
-    def exposed_start_game(self, id, player, scenario="egrix", ai=False, validate_only=False):
-        """Start a new game.
-
-        Creates a new game.
-        How do we initialize this call to another player? The AI?
-        Will this assert anything?
-
-        :param validate_only: If true the move will only be validated.
-        :type validate_only: bool.
-        :returns:  bool -- True on game creation, false on error.
-        :raises: AssertionError
-        """
         assert isinstance(id, str)
+        assert isinstance(player, str)
+        assert isinstance(scenario, str)
         assert isinstance(ai, bool)
-        assert isinstance(validate_only, bool)
 
         with session_scope(self.orm) as session:
             self.logger.info("creating a new game " + id)
@@ -181,6 +206,14 @@ class FreedomService(rpyc.Service):
             return self.response('start_game', request, result[0], result[1])
 
     def exposed_delete_game(self, id):
+        """Delete a new game.
+
+        :param id: The id of the game.
+        :type id: str.
+        :returns:  dict -- the current game state.
+        :raises: AssertionError
+        """
+
         assert isinstance(id, str)
 
         with session_scope(self.orm) as session:
@@ -192,6 +225,11 @@ class FreedomService(rpyc.Service):
             return self.response('delete_game', request, result[0], result[1])
 
     def exposed_list_games(self):
+        """List current games.
+
+        :returns:  dict -- the current game state.
+        """
+
         with session_scope(self.orm) as session:
 
             self.logger.info("getting a list of available games")
@@ -201,7 +239,7 @@ class FreedomService(rpyc.Service):
 
             return self.response('list_games', request, result[0], result[1])
 
-    def exposed_move(self, stack_id, location_id, validate_only=False):
+    def exposed_move(self, stack_id, location_id):
         """Move a stack to a location.
 
         Move takes a stack_id and moves it to location_id. If stack_id is in an enviorn and location_id 
@@ -212,8 +250,6 @@ class FreedomService(rpyc.Service):
         :type stack_id: int.
         :param location_id: Current state to be in.
         :type location_id: int.
-        :param validate_only: If true the move will only be validated.
-        :type validate_only: bool.
         :returns:  dict -- a dictionary of updated stack locations.
         :raises: AssertionError
         """
@@ -229,15 +265,13 @@ class FreedomService(rpyc.Service):
 
             return self.response('move', request, result[0], result[1])
 
-    def exposed_search(self, stack_id, validate_only=False):
+    def exposed_search(self, stack_id):
         """Have a stack conduct a search at its current location
 
         Search takes a location and a stack to conduct the search. Will result in combat upon success.
 
         :param stack_id: The stack_id of the stack to be moved.
         :type stack_id: int.
-        :param validate_only: If true the move will only be validated.
-        :type validate_only: bool.
         :returns:  dict -- a dictionary of updated stack locations.
         :raises: AssertionError
         """
@@ -259,7 +293,7 @@ class FreedomService(rpyc.Service):
 
             return self.response('move', request, result[0], result[1])
 
-    def exposed_combat(self, atk_id, def_id, options, validate_only=False):
+    def exposed_combat(self, atk_id, def_id, options):
         """Start combat between an attacker and a defender.
 
         Move takes a stack_id and moves it to location_id. If stack_id is in an enviorn and location_id 
@@ -272,13 +306,13 @@ class FreedomService(rpyc.Service):
         :type def_id: int.
         :param options: A tuple of flags as options for combat.
         :type options: tuple.
-        :param validate_only: If true the move will only be validated.
-        :type validate_only: false.
         :returns:  dict -- the results of the combat
         :raises: AssertionError
         """
+
         assert isinstance(atk_id, int)
         assert isinstance(def_id, int)
+
         with session_scope(self.orm) as session:
             self.logger.info("requested combat outcome for attacker " + str(atk_id) + " and " + str(def_id))
             request = locals()
@@ -295,7 +329,7 @@ class FreedomService(rpyc.Service):
 
             return self.response('combat ', request, result[0], result[1])
 
-    def exposed_split_stack(self, stack_id, unit_id=None, character_id=None, validate_only=False):
+    def exposed_split_stack(self, stack_id, unit_id=None, character_id=None):
         """Move a stack to a location.
 
         Move takes a stack_id and moves it to location_id. If stack_id is in an enviorn and location_id 
@@ -313,8 +347,10 @@ class FreedomService(rpyc.Service):
         :returns:  dict -- a dictionary of stacks with a stack_id parameter.
         :raises: AssertionError
         """
+
         assert isinstance(stack_id, int)
         assert isinstance(unit_id, int) or isinstance(character_id, int)
+
         with session_scope(self.orm) as session:
             self.logger.info("requested split unit " + str(unit_id) + " or " + str(character_id) + " from " + str(stack_id))
             request = locals()
@@ -328,7 +364,7 @@ class FreedomService(rpyc.Service):
 
             return self.response('split_stack', request, result[0], result[1])
 
-    def exposed_merge_stack(self, source_stack, destination_stack, validate_only=False):
+    def exposed_merge_stack(self, source_stack, destination_stack):
         """Merges source_stack into destination_stack.
 
         Move takes a stack_id and moves it to location_id. If stack_id is in an enviorn and location_id 
@@ -348,6 +384,7 @@ class FreedomService(rpyc.Service):
         """
         assert isinstance(source_stack, int)
         assert isinstance(destination_stack, int)
+
         with session_scope(self.orm) as session:
             self.logger.info("requested stack merge of " + str(source_stack) + " into " + str(destination_stack))
             request = locals()
@@ -358,7 +395,7 @@ class FreedomService(rpyc.Service):
 
             return self.response('merge_stack', request, result[0], result[1])
 
-    def exposed_attempt_mission(self, environ_id, validate_only=False):
+    def exposed_attempt_mission(self, environ_id):
         """Attempts to complete all missions assigned in environ_id
         """
         with session_scope(self.orm) as session:

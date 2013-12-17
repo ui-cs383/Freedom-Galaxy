@@ -73,7 +73,7 @@ def main(client, setupinfo=None):
                     if selected_unit:
                         hover_unit = left_mouse_select_check(client, mouse_sel, star_system)
                         if hover_unit != selected_unit:
-                            mergeresponse = client.root.merge_stack(unit.stack_id, selected_unit.stack_id)
+                            mergeresponse = client.root.merge_stack(hover_unit.stack_id, selected_unit.stack_id)
                             print mergeresponse
                             if mergeresponse["request"]["success"]:
                                 selected_unit.add_unit(hover_unit)

@@ -69,7 +69,8 @@ class Environ():
         angle = self.startangle
         while angle < self.endangle:
             angle = angle + UNITANGLE / 2
-            self.collision_points.append((int(self.center[0] + (cos(angle) * self. averadius)), int(self.center[1] - (sin(angle) * self. averadius))))
+            self.collision_points.append((int(self.center[0] + (cos(angle) * self. averadius)),
+                                          int(self.center[1] - (sin(angle) * self. averadius))))
             angle = angle + UNITANGLE / 2
         self.stacks = len(self.collision_points)
 
@@ -98,7 +99,8 @@ class EnvironBox():
         self.refresh = True
         self.planet = planetrect
         self.environ_list = []
-        self.envarc = pygame.Rect(planetrect.topleft[0] - 75, planetrect.topleft[1] - 75, planetrect.width + 150, planetrect.height + 150)
+        self.envarc = pygame.Rect(planetrect.topleft[0] - 75, planetrect.topleft[1] - 75,
+                                  planetrect.width + 150, planetrect.height + 150)
 
     #def addEnviron(self, idnumber, type, size, race, creature, politics):
     def addEnviron(self, environdict):

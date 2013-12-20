@@ -29,7 +29,7 @@ redcolor = (243,14,14)
 lightbluecolor = (100,149,237)
 
 #Marks the position of the Menu Bar relative to the master background screen
-MenuBarUpperLeftCorner = (200,0) # For test purposes. The final product will pass these coordinates into the initialization
+MenuBarUpperLeftCorner = (450,0) # For test purposes. The final product will pass these coordinates into the initialization
 x = MenuBarUpperLeftCorner[0] # take out
 y = MenuBarUpperLeftCorner[1] #take out
 

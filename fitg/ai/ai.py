@@ -46,6 +46,8 @@ class AI:
 		# ASSASSINATION: A
 		# STOP REBELLION: R
 		# GAIN CHARACTERS: G
+
+		# Start game loop
 		environ_list = c.get_state(gameid, "Environ")# = all environs in this scenario
 		# when it's our turn
 		while(True):

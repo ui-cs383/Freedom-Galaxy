@@ -4,6 +4,19 @@
 
 This repository is just for general information, issue tracking and discussions.  Please see the issues tab!
 
+## Installation
+This assumes you have Python and pip installed.
+
+https://pypi.python.org/pypi/pip
+
+```cd some_directory```
+
+```git clone https://github.com/ui-cs383/Freedom-Galaxy.git```
+
+```pip install pygame rpyc```
+
+```python Freedom-Galaxy/fitg/client/intro.py```
+
 ## Wiki
 The [wiki](https://github.com/ui-cs383/Freedom-Galaxy/wiki) is now up!  Please read it!
 
